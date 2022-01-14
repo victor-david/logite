@@ -1,0 +1,132 @@
+﻿<UserControl 
+    x:Class="Restless.Logite.View.StartView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:tk="http://schemas.restless.toolkit.com/2021"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:r="clr-namespace:Restless.Logite.Resources"
+    xmlns:vm="clr-namespace:Restless.Logite.ViewModel" d:DataContext="{d:DesignInstance Type=vm:StartViewModel}"
+    mc:Ignorable="d"
+    d:DesignWidth="860" d:DesignHeight="400">
+
+    <HeaderedContentControl Header="{Binding DisplayName, Mode=OneTime}">
+        <Grid tk:Property.ColumnWidths="1.5*,*">
+
+            <FlowDocumentScrollViewer>
+                <FlowDocument>
+                    <Paragraph>
+                        Before you get started you must:
+                    </Paragraph>
+                    <List>
+                        <ListItem>
+                            <Paragraph>
+                                <Hyperlink Command="{Binding Commands[ConfigureDatabaseDirectory]}">Specify the database root directory</Hyperlink>
+                            </Paragraph>
+                            <Paragraph>
+                                Currently set to
+                                <Run Style="{StaticResource RunHighlightStyle}" Text="{Binding DatabaseDirectory, Mode=OneWay}"/>
+                            </Paragraph>
+                            <Paragraph>
+                                If you change the database root directory, a new database will be created with default values.
+                                <Bold>Requires restart</Bold>
+                            </Paragraph>
+                            <Paragraph>
+                                To move an existing database, first copy the directories that are inside the current root location to the new location.
+                            </Paragraph>
+                        </ListItem>
+                        
+                        <ListItem>
+                            <Paragraph>
+                                <Hyperlink Command="{Binding Commands[ConfigureLogDirectory]}">Specify the log file directory</Hyperlink>
+                            </Paragraph>
+                            <Paragraph>
+                                Currently set to
+                                <Run Style="{StaticResource RunHighlightStyle}" Text="{Binding LogFileDirectory, Mode=OneWay}"/>
+                            </Paragraph>
+                        </ListItem>                    
+                        
+                        <ListItem>
+                            <Paragraph>
+                                <Bold>
+                                    Set up domains
+                                </Bold>
+                            </Paragraph>
+
+                            <List>
+                                <ListItem>
+                                    <Paragraph>
+                                        Domains enable you to separate log files by domain. 
+                                    </Paragraph>
+                                </ListItem>
+                                <ListItem>
+                                    <Paragraph>
+                                        There are currently
+                                        <Run Style="{StaticResource RunHighlightStyle}" Text="{Binding UserDomainCount}"/>
+                                        user domains defined.
+                                    </Paragraph>
+                                </ListItem>
+
+                                <!--<ListItem>
+                                    <Paragraph>
+                                        If you don't establish domains,
+                                        <Bold>
+                                            <Run Text="{Binding AppInfo.Assembly.Product, Mode=OneWay}"/>
+                                        </Bold>
+                                        will associate all log file entries with the default domain.
+                                    </Paragraph>
+                                </ListItem>-->
+
+                                <ListItem>
+                                    <Paragraph>
+                                        The domain preface specifies how the name of the log file begins
+                                        in order to associate a log entry with a specific domain.
+                                        If more than one domain has the same preface, the first one is used.
+                                    </Paragraph>
+                                </ListItem>
+                                
+                            </List>
+                        </ListItem>
+                    </List>
+                    <Paragraph>
+                        <CheckBox IsChecked="{Binding Config.NavigateStart}">Show this screen on startup</CheckBox>
+                    </Paragraph>
+                </FlowDocument>
+            </FlowDocumentScrollViewer>
+            
+            <!-- Domains -->
+            <DockPanel Grid.Column="1" Margin="10">
+                <ToolBarTray DockPanel.Dock="Top">
+                    <ToolBar>
+                        <HeaderedItemsControl Header="{x:Static r:Strings.HeaderDomainView}" Style="{StaticResource MenuButtonGroup}">
+                            <Button Content="{x:Static r:Strings.MenuItemAddDomain}" Command="{Binding Commands[AddDomain]}"/>
+                            <Button Content="{x:Static r:Strings.MenuItemRemoveDomain}" Command="{Binding Commands[RemoveDomain]}"/>
+                        </HeaderedItemsControl>
+                    </ToolBar>
+                </ToolBarTray>
+                <DataGrid 
+                    DockPanel.Dock="Top"
+                    ItemsSource="{Binding ListView}"
+                    SelectedItem="{Binding SelectedItem}"
+                    tk:DataGridColumns.Columns="{Binding Columns}"/>
+                
+                <Grid 
+                    DockPanel.Dock="Top" 
+                    tk:Property.ColumnWidths="*,*" 
+                    tk:Property.RowHeights="Auto,Auto" 
+                    Style="{StaticResource DataEntryPanelStyle}"
+                    tk:Property.IsVisible="{Binding IsItemSelected}">
+                    <TextBlock Text="Display Name"/>
+                    <TextBox Grid.Row="1" Text="{Binding Domain.DisplayName}"/>
+                    
+                    <TextBlock Grid.Column="1" Text="Preface"/>
+                    <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Domain.Preface}"/>
+                </Grid>
+
+            </DockPanel>
+
+
+        </Grid>
+
+    </HeaderedContentControl>
+</UserControl>

@@ -1,0 +1,43 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Description>Application to analyse nginx web logs</Description>
+    <Company>Restless Animal Development</Company>
+    <Product>Logite</Product>
+    <Copyright>2022 Restless Animal Development</Copyright>
+    <RootNamespace>Restless.Logite</RootNamespace>
+    <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>    
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Ookii.Dialogs.Wpf" Version="5.0.1" />
+    <PackageReference Include="Restless.Toolkit" Version="2.5.11" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Logite.Controls\Logite.Controls.csproj" />
+    <ProjectReference Include="..\Logite.Database\Logite.Database.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Resources\Strings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Strings.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\Strings.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+</Project>

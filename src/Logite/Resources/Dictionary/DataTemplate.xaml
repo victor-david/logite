@@ -1,0 +1,15 @@
+﻿<ResourceDictionary 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vw="clr-namespace:Restless.Logite.View"
+    xmlns:vm="clr-namespace:Restless.Logite.ViewModel">
+
+    <DataTemplate DataType="{x:Type vm:StartViewModel}">
+        <vw:StartView/>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vm:TableViewModel}">
+        <vw:TableView/>
+    </DataTemplate>
+
+</ResourceDictionary>

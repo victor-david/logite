@@ -1,0 +1,59 @@
+﻿<ResourceDictionary 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    <Style x:Key="DefaultCheckBoxStyle" TargetType="CheckBox">
+        <Setter Property="OverridesDefaultStyle" Value="True"/>
+        <Setter Property="Margin" Value="2,4"/>
+        <Setter Property="Background" Value="{StaticResource DefaultBackgroundBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource DefaultForegroundBrush}"/>
+        <Setter Property="Cursor" Value="Hand"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="CheckBox">
+                    <StackPanel Orientation="Horizontal">
+                        <Border 
+                            x:Name="OuterBorder"
+                            Height="16" Width="16"
+                            BorderBrush="{StaticResource DefaultBorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="1"
+                            Background="Transparent">
+
+                            <Border 
+                                x:Name="InnerBorder"
+                                Height="8" Width="8"
+                                CornerRadius="1"
+                                Background="{StaticResource DarkAlertForegroundBrush}"
+                                Visibility="Collapsed"/>
+                        </Border>
+                        <ContentPresenter 
+                            Margin="6,0"
+                            VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="InnerBorder" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="OuterBorder" Property="BorderBrush" Value="{StaticResource DarkBorderBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="OuterBorder" Property="BorderBrush" Value="{StaticResource DarkBorderBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Foreground" Value="{StaticResource DisabledForegroundBrush}"/>
+                            <Setter TargetName="OuterBorder" Property="Opacity" Value="0.45"/>
+                            <Setter TargetName="InnerBorder" Property="Opacity" Value="0.5"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                    
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+    <Style TargetType="CheckBox" BasedOn="{StaticResource DefaultCheckBoxStyle}"/>
+
+</ResourceDictionary>

@@ -1,0 +1,58 @@
+﻿<tk:AppWindow 
+    x:Class="Restless.Logite.View.AboutWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:tk="http://schemas.restless.toolkit.com/2021" 
+    xmlns:vm="clr-namespace:Restless.Logite.ViewModel" d:DataContext="{d:DesignInstance Type=vm:AboutWindowViewModel}"
+    mc:Ignorable="d"
+    Title="{Binding DisplayName, Mode=OneTime}"
+    Style="{StaticResource DefaultAppWindowStyle}"
+    WindowStartupLocation="CenterScreen"
+    Height="320" Width="520" ResizeMode="NoResize">
+
+    <Window.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Margin" Value="2,10"/>
+            <Setter Property="Foreground" Value="{DynamicResource ControlForegroundBrush}"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+        </Style>
+    </Window.Resources>
+
+    <StackPanel Margin="10">
+        <TextBlock Text="{Binding AppInfo.Assembly.Description, Mode=OneTime}"/>
+        <TextBlock Text="{Binding AppInfo.Assembly.Copyright, Mode=OneTime}"/>
+
+        <TextBlock>
+            <Run Text="Database:"/>
+            <Run Text="{Binding AppInfo.DatabaseRootFolder, Mode=OneTime}"/>
+        </TextBlock>
+
+        <TextBlock>
+            <Run Text="64 Bit:"/>
+            <Run Text="{Binding AppInfo.Is64Bit, Mode=OneTime}"/>
+        </TextBlock>
+
+        <TextBlock Text="Icons"/>
+        <WrapPanel>
+            <WrapPanel.Resources>
+                <Style TargetType="Path" BasedOn="{StaticResource StandardPathStyle}">
+                    <Setter Property="Margin" Value="4"/>
+                </Style>
+            </WrapPanel.Resources>
+            <Path Data="{StaticResource AddGeometryKey}"/>
+            <Path Data="{StaticResource ChevronLeftGeometryKey}"/>
+            <Path Data="{StaticResource ChevronRightGeometryKey}"/>
+            <Path Data="{StaticResource ClipboardGeometryKey}"/>
+            <Path Data="{StaticResource DatabaseGeometryKey}"/>
+            <Path Data="{StaticResource ExitGeometryKey}"/>
+            <Path Data="{StaticResource LogGeometryKey}"/>
+            <Path Data="{StaticResource SaveGeometryKey}"/>
+            <Path Data="{StaticResource SettingsGeometryKey}"/>
+            <Path Data="{StaticResource TableGeometryKey}"/>
+            <Path Data="{StaticResource XPathGeometryKey}"/>
+        </WrapPanel>
+    </StackPanel>
+</tk:AppWindow>

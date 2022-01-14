@@ -1,0 +1,6 @@
+*.suo
+obj/
+bin/
+.docs/
+.vs/
+install.cmd
