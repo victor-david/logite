@@ -1,6 +1,7 @@
 ﻿using Restless.Logite.Controls;
 using Restless.Logite.Core;
 using Restless.Logite.Database.Core;
+using Restless.Logite.Database.Tables;
 using Restless.Logite.Resources;
 using System;
 using System.Collections.Generic;
@@ -145,7 +146,11 @@ namespace Restless.Logite.ViewModel
 
         private void RegisterDomainNavigatorItems()
         {
-
+            NavigatorItems.Clear<DomainViewModel>();
+            foreach (DomainRow domain in DatabaseController.Instance.GetTable<DomainTable>().EnumerateAll())
+            {
+                NavigatorItems.Add<DomainViewModel>(NavigationGroup.Domain, domain.DisplayName, true, GetGeometry(GeometryKeys.LogGeometryKey), domain.Id);
+            }
         }
 
         private void NavigatorItemsSelectedItemChanged(object sender, NavigatorItem navItem)

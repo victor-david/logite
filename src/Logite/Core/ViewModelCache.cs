@@ -1,4 +1,6 @@
 ﻿using Restless.Logite.Controls;
+using Restless.Logite.Database.Core;
+using Restless.Logite.Database.Tables;
 using Restless.Logite.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -35,10 +37,10 @@ namespace Restless.Logite.Core
         {
             if (navItem == null) throw new ArgumentNullException(nameof(navItem));
 
-            //if (navItem.GroupIndex == NavigationGroup.Domain && navItem.TargetType == typeof(DomainViewModel))
-            //{
-            //    return GetDomainItem(navItem, owner);
-            //}
+            if (navItem.GroupIndex == NavigationGroup.Domain && navItem.TargetType == typeof(DomainViewModel))
+            {
+                return GetDomainItem(navItem);
+            }
             return GetStandardItem(navItem);
         }
 
@@ -60,7 +62,7 @@ namespace Restless.Logite.Core
         #region Private methods
         private ApplicationViewModel GetStandardItem(NavigatorItem navItem)
         {
-            foreach (var item in this)
+            foreach (ApplicationViewModel item in this)
             {
                 if (item.GetType() == navItem.TargetType)
                 {
@@ -73,21 +75,20 @@ namespace Restless.Logite.Core
             return createdItem;
         }
 
-        private ApplicationViewModel GetDomainItem(NavigatorItem navItem, ApplicationViewModel owner)
+        private ApplicationViewModel GetDomainItem(NavigatorItem navItem)
         {
-            throw new NotImplementedException();
-            //foreach (var item in this.OfType<DomainViewModel>())
-            //{
-            //    if (item.Account.Id == navItem.Id)
-            //    {
-            //        return item;
-            //    }
-            //}
+            foreach (var item in this.OfType<DomainViewModel>())
+            {
+                if (item.Domain.Id == navItem.Id)
+                {
+                    return item;
+                }
+            }
 
-            //var account = DatabaseController.Instance.GetTable<AccountTable>().GetSingleRecord(navItem.Id);
-            //var createdItem = new RegisterViewModel(owner, account);
-            //Add(createdItem);
-            //return createdItem;
+            DomainRow domain = DatabaseController.Instance.GetTable<DomainTable>().GetSingleRecord(navItem.Id);
+            DomainViewModel createdItem = new(domain);
+            Add(createdItem);
+            return createdItem;
         }
         #endregion
     }
