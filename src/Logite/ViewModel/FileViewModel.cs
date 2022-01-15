@@ -95,7 +95,7 @@ namespace Restless.Logite.ViewModel
         }
         private void SetLogFileStatus(LogFile logFile)
         {
-            if (logFile.DomainId == 0)
+            if (logFile.DomainId == LogFile.UninitializedDomaindId)
             {
                 logFile.Status = LogFile.StatusIneligible;
                 return;
@@ -109,17 +109,23 @@ namespace Restless.Logite.ViewModel
         {
             try
             {
+                LogEntryProcessor.Init();
                 List<LogFile> processed = new List<LogFile>();
+
                 foreach (LogFile logFile in LogFiles.Where(lf => lf.Status == LogFile.StatusReady))
                 {
                     string[] lines = System.IO.File.ReadAllLines(logFile.Path);
                     foreach (string line in lines)
                     {
                         LogEntry entry = LineParser.ParseLine(line);
+                        entry.DomainId = logFile.DomainId;
+                        LogEntryProcessor.Process(entry);
                     }
 
                     processed.Add(logFile);
                 }
+                
+                DatabaseController.Instance.Save();
 
                 foreach (LogFile logFile in processed)
                 {

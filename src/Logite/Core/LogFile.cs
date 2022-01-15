@@ -23,6 +23,7 @@ namespace Restless.Logite.Core
         public const string StatusReady = "Ready";
         public const string StatusImported = "Imported";
         public const string StatusIneligible = "Ineligible";
+        public const long UninitializedDomaindId = -1;
 
         /// <summary>
         /// Gets the full path to the file
@@ -79,6 +80,7 @@ namespace Restless.Logite.Core
         {
             Path = path;
             DisplayName = System.IO.Path.GetFileName(path);
+            DomainId = UninitializedDomaindId;
         }
         #endregion
 

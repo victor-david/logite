@@ -55,17 +55,17 @@ namespace Restless.Logite.Database.Tables
                 /// <summary>
                 /// The id for the default domain.
                 /// </summary>
-                public const long DefaultDomainId = 1;
+                public const long DomainZeroId = 0;
 
                 /// <summary>
                 /// The display name for the default domain.
                 /// </summary>
-                public const string DefaultDomainDisplayName = "Default";
+                public const string DomainZeroDisplayName = "Default";
 
                 /// <summary>
                 /// The preface for the default domain.
                 /// </summary>
-                public const string DefaultDomainPreface = "default";
+                public const string DomainZeroPreface = "default";
 
                 /// <summary>
                 /// The display name when adding a new domain
@@ -198,12 +198,12 @@ namespace Restless.Logite.Database.Tables
         /// <returns>An IEnumerable</returns>
         protected override IEnumerable<object[]> EnumeratePopulateValues()
         {
-            yield return new object[] { Defs.Values.DefaultDomainId, Defs.Values.DefaultDomainDisplayName, Defs.Values.DefaultDomainPreface, DateTime.UtcNow };
+            yield return new object[] { Defs.Values.DomainZeroId, Defs.Values.DomainZeroDisplayName, Defs.Values.DomainZeroPreface, DateTime.UtcNow };
 #if DEBUG
-            yield return new object[] { 2, "Public", "public", DateTime.UtcNow };
-            yield return new object[] { 3, "User", "user", DateTime.UtcNow };
-            yield return new object[] { 4, "Kong", "kong", DateTime.UtcNow };
-            yield return new object[] { 5, "Service", "service", DateTime.UtcNow };
+            yield return new object[] { Defs.Values.DomainZeroId + 1, "Public", "public", DateTime.UtcNow };
+            yield return new object[] { Defs.Values.DomainZeroId + 2, "User", "user", DateTime.UtcNow };
+            yield return new object[] { Defs.Values.DomainZeroId + 3, "Kong", "kong", DateTime.UtcNow };
+            yield return new object[] { Defs.Values.DomainZeroId + 4, "Service", "service", DateTime.UtcNow };
 
 #endif
         }

@@ -1,6 +1,8 @@
-﻿using Restless.Toolkit.Core.Database.SQLite;
+﻿using Restless.Logite.Database.Core;
+using Restless.Toolkit.Core.Database.SQLite;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Text;
 
 namespace Restless.Logite.Database.Tables
@@ -52,6 +54,21 @@ namespace Restless.Logite.Database.Tables
                 /// The number of bytes sent.
                 /// </summary>
                 public const string BytesSent = "bytes";
+
+                /// <summary>
+                /// Length of attack byte string, or zero
+                /// </summary>
+                public const string ByteLength = "bytelength";
+
+                /// <summary>
+                /// Id of the domain
+                /// </summary>
+                public const string DomainId = "domainid";
+
+                /// <summary>
+                /// Id of the method
+                /// </summary>
+                public const string MethodId = "methodid";
 
                 /// <summary>
                 /// Id of the request
@@ -111,14 +128,36 @@ namespace Restless.Logite.Database.Tables
                 { Defs.Columns.RemoteUser, ColumnType.Text, false, true },
                 { Defs.Columns.Timestamp, ColumnType.Timestamp, false, false, null, IndexType.Index },
                 { Defs.Columns.Status, ColumnType.Integer, false, false, 0L, IndexType.Index },
-                { Defs.Columns.BytesSent, ColumnType.Integer, false, false },
-                { Defs.Columns.RequestId, ColumnType.Integer, false, false, 0L, IndexType.Index },
-                { Defs.Columns.RefererId, ColumnType.Integer, false, false, 0L, IndexType.Index },
+                { Defs.Columns.BytesSent, ColumnType.Integer, false, false, 0L },
+                { Defs.Columns.ByteLength, ColumnType.Integer, false, false, 0L },
+                { Defs.Columns.DomainId, ColumnType.Integer, false, false, DomainTable.Defs.Values.DomainZeroId, IndexType.Index },
+                { Defs.Columns.MethodId, ColumnType.Integer, false, false, MethodTable.Defs.Values.MethodZeroId, IndexType.Index },
+                { Defs.Columns.RequestId, ColumnType.Integer, false, false, RequestTable.Defs.Values.RequestZeroId, IndexType.Index },
+                { Defs.Columns.RefererId, ColumnType.Integer, false, false, RefererTable.Defs.Values.RefererZeroId, IndexType.Index },
                 { Defs.Columns.UserAgentId, ColumnType.Integer, false, false, UserAgentTable.Defs.Values.UserAgentZeroId, IndexType.Index }
             };
         }
         #endregion
 
+        /************************************************************************/
 
+        #region Internal methods
+        internal void Insert(LogEntry entry, long methodId, long requestId, long refererId, long agentId)
+        {
+            DataRow row = NewRow();
+            row[Defs.Columns.RemoteAddress] = entry.RemoteAddress;
+            row[Defs.Columns.RemoteUser] = entry.RemoteUser;
+            row[Defs.Columns.Timestamp] = entry.RequestTime;
+            row[Defs.Columns.Status] = entry.Status;
+            row[Defs.Columns.BytesSent] = entry.BytesSent;
+            row[Defs.Columns.ByteLength] = entry.BytesLength;
+            row[Defs.Columns.DomainId] = entry.DomainId;
+            row[Defs.Columns.MethodId] = methodId;
+            row[Defs.Columns.RequestId] = requestId;
+            row[Defs.Columns.RefererId] = refererId;
+            row[Defs.Columns.UserAgentId] = agentId;
+            Rows.Add(row);
+        }
+        #endregion
     }
 }

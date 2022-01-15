@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Restless.Logite.Database.Tables;
+using System;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
-namespace Restless.Logite.Core
+namespace Restless.Logite.Database.Core
 {
     /// <summary>
     /// Represents a single log entry, i.e. one line from a log file
@@ -14,12 +10,6 @@ namespace Restless.Logite.Core
     public class LogEntry
     {
         #region Private
-        private static string[] Methods = 
-        { 
-            "GET", "HEAD", "POST", "PUT", "DELETE",
-            "CONNECT", "OPTIONS", "TRACE", "PATCH"
-        };
-
         private string referer;
         private string userAgent;
         #endregion
@@ -27,6 +17,15 @@ namespace Restless.Logite.Core
         /************************************************************************/
 
         #region Properties
+        /// <summary>
+        /// Gets or set the domain id for this log entry
+        /// </summary>
+        public long DomainId
+        {
+            get;
+            set;
+        }
+
         /// <summary>
         /// Gets or sets the remote address.
         /// </summary>
@@ -75,7 +74,10 @@ namespace Restless.Logite.Core
             private set;
         }
 
-        public int ByteStringLength
+        /// <summary>
+        /// When the request is a byte attack, the length of the byte string.
+        /// </summary>
+        public int BytesLength
         {
             get;
             private set;
@@ -141,7 +143,12 @@ namespace Restless.Logite.Core
         /************************************************************************/
 
         #region Public methods
-
+        /// <summary>
+        /// Sets the request time from the parsed string value.
+        /// </summary>
+        /// <param name="value">The value from which to extract the request time.</param>
+        /// <param name="format">The format to use.</param>
+        /// <param name="culture">The culture identifier.</param>
         public void SetRequestTime(string value, string format, string culture)
         {
             // Date example:   14/Jan/2022:09:37:43 -0600
@@ -161,29 +168,30 @@ namespace Restless.Logite.Core
         {
             if (!string.IsNullOrEmpty(value))
             {
-                foreach (string method in Methods)
+                foreach (MethodRow method in DatabaseController.Instance.GetTable<MethodTable>().EnumerateAll())
                 {
-                    if (value.StartsWith(method))
+                    if (value.StartsWith(method.Method))
                     {
-                        Method = method;
+                        Method = method.Method;
                         break;
                     }
                 }
 
-                Request = string.IsNullOrEmpty(Method) ? value.Trim() : value.Substring(Method.Length).Trim();
-                if (string.IsNullOrEmpty(Method) && Request.StartsWith(@"\x"))
+                string request = string.IsNullOrEmpty(Method) ? value.Trim() : value.Substring(Method.Length).Trim();
+                if (string.IsNullOrEmpty(Method) || request.Contains(@"\x"))
                 {
-                    ByteStringLength = Request.Length;
-                    Request = "Byte Attack";
+                    BytesLength = request.Length;
+                    request = RequestTable.Defs.Values.ByteAttackRequest;
                 }
                 else
                 {
-                    int httpPos = Request.IndexOf("HTTP/1");
+                    int httpPos = request.IndexOf("HTTP/1");
                     if (httpPos != -1)
                     {
-                        Request = Request.Substring(0, httpPos).Trim();
+                        request = request.Substring(0, httpPos).Trim();
                     }
                 }
+                Request = request;
             }
         }
 

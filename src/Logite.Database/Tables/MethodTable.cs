@@ -1,12 +1,14 @@
 ﻿using Restless.Toolkit.Core.Database.SQLite;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Text;
 
 namespace Restless.Logite.Database.Tables
 {
-    public class UserAgentTable : Core.ApplicationTableBase
+    /// <summary>
+    /// Lookup table for http methods
+    /// </summary>
+    public class MethodTable : Core.ApplicationTableBase
     {
         #region Public properties
         /// <summary>
@@ -17,7 +19,7 @@ namespace Restless.Logite.Database.Tables
             /// <summary>
             /// Specifies the name of this table.
             /// </summary>
-            public const string TableName = "useragent";
+            public const string TableName = "method";
 
             /// <summary>
             /// Provides static column names for this table.
@@ -30,9 +32,9 @@ namespace Restless.Logite.Database.Tables
                 public const string Id = DefaultPrimaryKeyName;
 
                 /// <summary>
-                /// The user agent string
+                /// The method name.
                 /// </summary>
-                public const string Agent = "agent";
+                public const string Method = "method";
             }
 
             /// <summary>
@@ -41,14 +43,14 @@ namespace Restless.Logite.Database.Tables
             public static class Values
             {
                 /// <summary>
-                /// The id for the "No user agent" entry.
+                /// The id for the "No method" entry.
                 /// </summary>
-                public const long UserAgentZeroId = 0;
+                public const long MethodZeroId = 0;
 
                 /// <summary>
-                /// The name for the "No user agent" entry.
+                /// The name for the "No method" entry.
                 /// </summary>
-                public const string UserAgentZeroName = "--";
+                public const string MethodZeroName = "--";
             }
         }
         #endregion
@@ -57,9 +59,9 @@ namespace Restless.Logite.Database.Tables
 
         #region Constructor
         /// <summary>
-        /// Initializes a new instance of the <see cref="UserAgentTable"/> class.
+        /// Initializes a new instance of the <see cref="MethodTable"/> class.
         /// </summary>
-        public UserAgentTable() : base(Defs.TableName)
+        public MethodTable() : base(Defs.TableName)
         {
         }
         #endregion
@@ -73,6 +75,38 @@ namespace Restless.Logite.Database.Tables
         public override void Load()
         {
             Load(null, Defs.Columns.Id);
+        }
+
+        /// <summary>
+        /// Provides an enumerable that returns all records
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<MethodRow> EnumerateAll()
+        {
+            foreach (var row in EnumerateRows(null, Defs.Columns.Id))
+            {
+                yield return new MethodRow(row);
+            }
+        }
+
+        /// <summary>
+        /// Gets the method id for the specified method.
+        /// </summary>
+        /// <param name="method">The method string</param>
+        /// <returns>The method id</returns>
+        public long GetMethodId(string method)
+        {
+            if (!string.IsNullOrEmpty(method))
+            {
+                foreach (MethodRow row in EnumerateAll())
+                {
+                    if (row.Method.Equals(method, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        return row.Id;
+                    }
+                }
+            }
+            return Defs.Values.MethodZeroId;
         }
         #endregion
 
@@ -88,7 +122,7 @@ namespace Restless.Logite.Database.Tables
             return new ColumnDefinitionCollection()
             {
                 { Defs.Columns.Id, ColumnType.Integer, true },
-                { Defs.Columns.Agent, ColumnType.Text}
+                { Defs.Columns.Method, ColumnType.Text },
             };
         }
 
@@ -99,7 +133,7 @@ namespace Restless.Logite.Database.Tables
         /// <returns>A list of column names</returns>
         protected override List<string> GetPopulateColumnList()
         {
-            return new List<string>() { Defs.Columns.Id, Defs.Columns.Agent };
+            return new List<string>() { Defs.Columns.Id, Defs.Columns.Method };
         }
 
         /// <summary>
@@ -108,36 +142,24 @@ namespace Restless.Logite.Database.Tables
         /// <returns>An IEnumerable</returns>
         protected override IEnumerable<object[]> EnumeratePopulateValues()
         {
-            yield return new object[] { Defs.Values.UserAgentZeroId, Defs.Values.UserAgentZeroName };
+            yield return new object[] { Defs.Values.MethodZeroId, Defs.Values.MethodZeroName };
+            yield return new object[] { Defs.Values.MethodZeroId + 1, "GET" };
+            yield return new object[] { Defs.Values.MethodZeroId + 2, "POST" };
+            yield return new object[] { Defs.Values.MethodZeroId + 3, "HEAD" };
+            yield return new object[] { Defs.Values.MethodZeroId + 4, "PUT" };
+            yield return new object[] { Defs.Values.MethodZeroId + 5, "DELETE" };
+            yield return new object[] { Defs.Values.MethodZeroId + 6, "CONNECT" };
+            yield return new object[] { Defs.Values.MethodZeroId + 7, "OPTIONS" };
+            yield return new object[] { Defs.Values.MethodZeroId + 8, "TRACE" };
+            yield return new object[] { Defs.Values.MethodZeroId + 9, "PATCH" };
         }
         #endregion
 
         /************************************************************************/
 
         #region Internal methods
-        /// <summary>
-        /// Inserts a user agent record if it doesn't yet exist.
-        /// </summary>
-        /// <param name="agent">The agent</param>
-        /// <returns>The newly inserted id, or the existing id</returns>
-        internal long InsertIf(string agent)
-        {
-            if (!string.IsNullOrEmpty(agent))
-            {
-                DataRow row = GetUniqueRow(Select($"{Defs.Columns.Agent}='{agent}'"));
-                if (row != null)
-                {
-                    return (long)row[Defs.Columns.Id];
-                }
 
-                row = NewRow();
-                row[Defs.Columns.Agent] = agent;
-                Rows.Add(row);
-                Save();
-                return (long)row[Defs.Columns.Id];
-            }
-            return Defs.Values.UserAgentZeroId;
-        }
         #endregion
+
     }
 }

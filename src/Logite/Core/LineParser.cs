@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Restless.Logite.Database.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,9 +8,12 @@ using System.Threading.Tasks;
 
 namespace Restless.Logite.Core
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class LineParser
     {
-        private const string RegexExpression =
+        private static string RegexExpression =
             "(?<ip>[^ ]*)" +                // ip 
              @"[^[]*\[" +                   // everything that's not a [ up to the starting [ of the date, and swallow the [
              @"(?<date>[^]]*)\]" +          // the date and swallow the ]
@@ -20,6 +24,24 @@ namespace Restless.Logite.Core
              "\"(?<referer>[^\"]*)\" " +    // referer, swallow quote and space
              "\"(?<agent>[^\"]*)";          // user agent
 
+        /// <summary>
+        /// Sets the regular expression string used to parse a log line.
+        /// </summary>
+        /// <param name="expression">The expression</param>
+        /// <remarks>
+        /// The default regular expression handles the default log format.
+        /// Use this method if you have different requirements
+        /// </remarks>
+        public static void SetRegexExpression(string expression)
+        {
+            RegexExpression = expression;
+        }
+
+        /// <summary>
+        /// Parses a single log line
+        /// </summary>
+        /// <param name="line">The line to parse</param>
+        /// <returns>An <see cref="LogEntry"/> object</returns>
         public static LogEntry ParseLine(string line)
         {
             Match match = Regex.Match(line, RegexExpression);

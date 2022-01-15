@@ -1,4 +1,6 @@
-﻿namespace Restless.Logite.Database.Core
+﻿using System.Data;
+
+namespace Restless.Logite.Database.Core
 {
     /// <summary>
     /// Represents the base class for application tables. This class must be inherited.

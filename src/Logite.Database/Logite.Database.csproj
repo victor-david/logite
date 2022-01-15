@@ -25,11 +25,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Core\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Update="Tables\DomainTable.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Tables\MethodTable.cs">
       <SubType>Component</SubType>
     </Compile>
   </ItemGroup>
