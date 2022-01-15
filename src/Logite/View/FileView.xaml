@@ -1,0 +1,49 @@
+﻿<UserControl 
+    x:Class="Restless.Logite.View.FileView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:tk="http://schemas.restless.toolkit.com/2021"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:r="clr-namespace:Restless.Logite.Resources"
+    xmlns:vm="clr-namespace:Restless.Logite.ViewModel" d:DataContext="{d:DesignInstance Type=vm:FileViewModel}"
+    mc:Ignorable="d"
+    d:DesignWidth="860" d:DesignHeight="400">
+
+    <HeaderedContentControl Header="{Binding DisplayName, Mode=OneTime}">
+        <Grid tk:Property.ColumnWidths="*,*">
+            <DockPanel>
+                <Border DockPanel.Dock="Top" Style="{StaticResource SectionHeaderBorderStyle}">
+                    <TextBlock Text="Pending Files"/>
+                </Border>
+
+                <ToolBarTray DockPanel.Dock="Top" Margin="{StaticResource SubContentPadding}">
+                    <ToolBar>
+                        <Button Command="{Binding Commands[Import]}" Content="{x:Static r:Strings.MenuItemImport}"/>
+                    </ToolBar>
+                </ToolBarTray>
+
+                <Border DockPanel.Dock="Top" Style="{StaticResource SubContentBorderStyle}">
+                    <DataGrid ItemsSource="{Binding LogFiles}" tk:DataGridColumns.Columns="{Binding LogFileColumns}"/>
+                </Border>
+            </DockPanel>
+            
+            <DockPanel Grid.Column="1">
+                <Border DockPanel.Dock="Top" Style="{StaticResource SectionHeaderBorderStyle}">
+                    <TextBlock Text="Imported Files"/>
+                </Border>
+                
+                <ToolBarTray DockPanel.Dock="Top" Margin="{StaticResource SubContentPadding}">
+                    <ToolBar>
+                        <Button Command="{Binding Commands[ClearData]}" Content="{x:Static r:Strings.MenuItemClearData}"/>
+                    </ToolBar>
+                </ToolBarTray>                
+                
+                <Border DockPanel.Dock="Top" Style="{StaticResource SubContentBorderStyle}">
+                    <DataGrid ItemsSource="{Binding ListView}" tk:DataGridColumns.Columns="{Binding Columns}"/>
+                </Border>
+            </DockPanel>
+        </Grid>
+
+    </HeaderedContentControl>
+</UserControl>

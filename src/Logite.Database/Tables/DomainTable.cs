@@ -60,7 +60,7 @@ namespace Restless.Logite.Database.Tables
                 /// <summary>
                 /// The display name for the default domain.
                 /// </summary>
-                public const string DefaultDomainDisplayName = "Default Domain";
+                public const string DefaultDomainDisplayName = "Default";
 
                 /// <summary>
                 /// The preface for the default domain.
@@ -199,6 +199,13 @@ namespace Restless.Logite.Database.Tables
         protected override IEnumerable<object[]> EnumeratePopulateValues()
         {
             yield return new object[] { Defs.Values.DefaultDomainId, Defs.Values.DefaultDomainDisplayName, Defs.Values.DefaultDomainPreface, DateTime.UtcNow };
+#if DEBUG
+            yield return new object[] { 2, "Public", "public", DateTime.UtcNow };
+            yield return new object[] { 3, "User", "user", DateTime.UtcNow };
+            yield return new object[] { 4, "Kong", "kong", DateTime.UtcNow };
+            yield return new object[] { 5, "Service", "service", DateTime.UtcNow };
+
+#endif
         }
         #endregion
     }

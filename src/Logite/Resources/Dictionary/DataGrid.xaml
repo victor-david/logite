@@ -12,22 +12,9 @@
         <Setter Property="Foreground" Value="{StaticResource LightForegroundBrush}"/>
     </Style>
     
-    <Style x:Key="ExpiredDataGridRowStyle" TargetType="DataGridRow">
-        <Setter Property="Opacity" Value="0.85"/>
-        <Setter Property="Foreground" Value="{StaticResource DarkForegroundBrush}"/>
-    </Style>
-
-    <Style x:Key="MidAlertDataGridRowStyle" TargetType="DataGridRow">
-        <Setter Property="Foreground" Value="{StaticResource DefaultForegroundBrush}"/>
-    </Style>
-
-    <Style x:Key="AlertDataGridRowStyle" TargetType="DataGridRow">
-        <Setter Property="Foreground" Value="{StaticResource AlertForegroundBrush}"/>
-    </Style>
-    
     <Style x:Key="DefaultDataGridStyle" TargetType="DataGrid">
         <Setter Property="MinHeight" Value="64"/>
-        <Setter Property="Margin" Value="0,6"/>
+        <Setter Property="Margin" Value="{StaticResource DefaultListMargin}"/>
         <Setter Property="ColumnWidth" Value="*"/>
         <Setter Property="MinRowHeight" Value="{StaticResource DataGridMinRowHeight}"/>
         <Setter Property="BorderBrush" Value="{StaticResource DefaultBorderBrush}"/>

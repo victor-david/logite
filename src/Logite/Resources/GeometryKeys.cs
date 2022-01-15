@@ -15,6 +15,7 @@ namespace Restless.Logite.Resources
         public const string ClipboardGeometryKey = nameof(ClipboardGeometryKey);
         public const string DatabaseGeometryKey = nameof(DatabaseGeometryKey);
         public const string ExitGeometryKey = nameof(ExitGeometryKey);
+        public const string FileGeometryKey = nameof(FileGeometryKey);
         public const string LogGeometryKey = nameof(LogGeometryKey);
         public const string SaveGeometryKey = nameof(SaveGeometryKey);
         public const string SettingsGeometryKey = nameof(SettingsGeometryKey);

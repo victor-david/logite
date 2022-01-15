@@ -6,9 +6,9 @@ using System.Data;
 namespace Restless.Logite.Database.Tables
 {
     /// <summary>
-    /// Represents the table that holds log file name info.
+    /// Represents the table that holds ingo about log files that have been imported.
     /// </summary>
-    public partial class LogFileTable : Core.ApplicationTableBase
+    public partial class ImportFileTable : Core.ApplicationTableBase
     {
         #region Public properties
         /// <summary>
@@ -19,7 +19,7 @@ namespace Restless.Logite.Database.Tables
             /// <summary>
             /// Specifies the name of this table.
             /// </summary>
-            public const string TableName = "logfile";
+            public const string TableName = "importfile";
 
             /// <summary>
             /// Provides static column names for this table.
@@ -37,6 +37,11 @@ namespace Restless.Logite.Database.Tables
                 public const string FileName = "filename";
 
                 /// <summary>
+                /// The domain id that owns this log file
+                /// </summary>
+                public const string DomainId = "domainid";
+
+                /// <summary>
                 /// The number of lines in the file.
                 /// </summary>
                 public const string LineCount = "linecount";
@@ -45,11 +50,6 @@ namespace Restless.Logite.Database.Tables
                 /// Date / time record created.
                 /// </summary>
                 public const string Created = "created";
-
-                /// <summary>
-                /// Date / time record updated.
-                /// </summary>
-                public const string Updated = "updated";
             }
         }
         #endregion
@@ -58,9 +58,9 @@ namespace Restless.Logite.Database.Tables
 
         #region Constructor
         /// <summary>
-        /// Initializes a new instance of the <see cref="LogFileTable"/> class.
+        /// Initializes a new instance of the <see cref="ImportFileTable"/> class.
         /// </summary>
-        public LogFileTable() : base(Defs.TableName)
+        public ImportFileTable() : base(Defs.TableName)
         {
         }
         #endregion
@@ -80,15 +80,16 @@ namespace Restless.Logite.Database.Tables
         /// Creates a new log file record.
         /// </summary>
         /// <param name="fileName">The from name</param>
+        /// <param name="domainId">The domain id</param>
         /// <param name="lineCount">The line count</param>
-        /// <returns>The newly added <see cref="LogFileRow"/></returns>
-        public LogFileRow Create(string fileName, long lineCount)
+        /// <returns>The newly added <see cref="ImportFileRow"/></returns>
+        public ImportFileRow Create(string fileName, long domainId, long lineCount)
         {
-            var obj = new LogFileRow(NewRow());
+            var obj = new ImportFileRow(NewRow());
             obj.Row[Defs.Columns.FileName] = fileName;
+            obj.Row[Defs.Columns.DomainId] = domainId;
             obj.Row[Defs.Columns.LineCount] = lineCount;
             obj.Row[Defs.Columns.Created] = DateTime.UtcNow;
-            obj.Row[Defs.Columns.Updated] = DateTime.UtcNow;
             Rows.Add(obj.Row);
             Save();
             return obj;
@@ -99,25 +100,42 @@ namespace Restless.Logite.Database.Tables
         /// </summary>
         /// <param name="id"></param>
         /// <returns>A row object, or null if none.</returns>
-        public LogFileRow GetSingleRecord(long id)
+        public ImportFileRow GetSingleRecord(long id)
         {
             DataRow[] rows = Select($"{Defs.Columns.Id}={id}");
             if (rows.Length == 1)
             {
-                return new LogFileRow(rows[0]);
+                return new ImportFileRow(rows[0]);
             }
             return null;
         }
+
+        /// <summary>
+        /// Gets a single record identified by <paramref name="domainId"/> and <paramref name="fileName"/>
+        /// </summary>
+        /// <param name="domainId"></param>
+        /// <param name="fileName"></param>
+        /// <returns>A row object, or null if none.</returns>
+        public ImportFileRow GetSingleRecord(long domainId, string fileName)
+        {
+            DataRow[] rows = Select($"{Defs.Columns.Id}={domainId} AND {Defs.Columns.FileName}='{fileName}'");
+            if (rows.Length == 1)
+            {
+                return new ImportFileRow(rows[0]);
+            }
+            return null;
+        }
+
         #endregion
 
         /************************************************************************/
 
         #region Public methods (enumeration)
-        public IEnumerable<LogFileRow> EnumerateAll()
+        public IEnumerable<ImportFileRow> EnumerateAll()
         {
             foreach (var row in EnumerateRows(null, Defs.Columns.FileName))
             {
-                yield return new LogFileRow(row);
+                yield return new ImportFileRow(row);
             }
         }
         #endregion
@@ -135,9 +153,9 @@ namespace Restless.Logite.Database.Tables
             {
                 { Defs.Columns.Id, ColumnType.Integer, true },
                 { Defs.Columns.FileName, ColumnType.Text, false, false},
+                { Defs.Columns.DomainId, ColumnType.Integer, false, false, 0L, IndexType.Index },
                 { Defs.Columns.LineCount, ColumnType.Integer, false, false, 0L, IndexType.Index },
                 { Defs.Columns.Created, ColumnType.Timestamp },
-                { Defs.Columns.Updated, ColumnType.Timestamp },
             };
         }
 

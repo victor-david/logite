@@ -124,7 +124,7 @@ namespace Restless.Logite.Database.Core
             {
                 CreateAndRegisterTable<ConfigTable>();
                 CreateAndRegisterTable<DomainTable>();
-                CreateAndRegisterTable<LogFileTable>();
+                CreateAndRegisterTable<ImportFileTable>();
                 TableRegistrationComplete(MainDepotSchemaName);
                 MainDatabaseAlias = alias;
                 MainDatabaseId = databaseFileId;

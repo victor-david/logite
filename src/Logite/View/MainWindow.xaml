@@ -28,7 +28,7 @@
                 <MenuItem Header="{x:Static r:Strings.MenuItemExit}" Icon="{StaticResource ExitPathIconKey}" Command="{Binding Commands[ExitApp]}" />
             </MenuItem>
             <MenuItem Header="{x:Static r:Strings.MenuItemSettings}">
-                <MenuItem Header="{x:Static r:Strings.MenuItemGettingStarted}" Icon="{StaticResource ClipboardPathIconKey}" Command="{Binding Commands[NavigateStart]}" />
+                <MenuItem Header="{x:Static r:Strings.MenuItemStart}" Icon="{StaticResource ClipboardPathIconKey}" Command="{Binding Commands[NavigateStart]}" />
                 <MenuItem Header="{x:Static r:Strings.MenuItemAppOptions}" Icon="{StaticResource SettingsPathIconKey}" Command="{Binding Commands[OpenSettings]}" />
             </MenuItem>
             <MenuItem Header="{x:Static r:Strings.MenuItemTools}">

@@ -1,14 +1,14 @@
 ﻿using Restless.Toolkit.Core.Database.SQLite;
 using System;
 using System.Data;
-using Columns = Restless.Logite.Database.Tables.LogFileTable.Defs.Columns;
+using Columns = Restless.Logite.Database.Tables.ImportFileTable.Defs.Columns;
 
 namespace Restless.Logite.Database.Tables
 {
     /// <summary>
-    /// Encapsulates a single row from the <see cref="LogFileTable"/>.
+    /// Encapsulates a single row from the <see cref="ImportFileTable"/>.
     /// </summary>
-    public class LogFileRow : RowObjectBase<LogFileTable>
+    public class ImportFileRow : RowObjectBase<ImportFileTable>
     {
         #region Public properties
         /// <summary>
@@ -28,6 +28,14 @@ namespace Restless.Logite.Database.Tables
         }
 
         /// <summary>
+        /// Gets the domain id.
+        /// </summary>
+        public long DomainId
+        {
+            get => GetInt64(Columns.DomainId);
+        }
+
+        /// <summary>
         /// Gets the line count.
         /// </summary>
         public long LineCount
@@ -43,34 +51,27 @@ namespace Restless.Logite.Database.Tables
             get => GetDateTime(Columns.Created);
         }
 
-        /// <summary>
-        /// Gets the date / time record updated.
-        /// </summary>
-        public DateTime Updated
-        {
-            get => GetDateTime(Columns.Updated);
-        }
         #endregion
 
         /************************************************************************/
 
         #region Constructor
         /// <summary>
-        /// Initializes a new instance of the <see cref="LogFileRow"/> class.
+        /// Initializes a new instance of the <see cref="ImportFileRow"/> class.
         /// </summary>
         /// <param name="row">The data row</param>
-        public LogFileRow(DataRow row) : base(row)
+        public ImportFileRow(DataRow row) : base(row)
         {
         }
 
         /// <summary>
-        /// If <paramref name="row"/> is not null, creates a new instance of the <see cref="AliasRow"/> class.
+        /// If <paramref name="row"/> is not null, creates a new instance of the <see cref="ImportFileRow"/> class.
         /// </summary>
         /// <param name="row">The data row, or null.</param>
         /// <returns>A new AliasRow (if <paramref name="row"/> is not null); otherwise, null.</returns>
-        public static LogFileRow Create(DataRow row)
+        public static ImportFileRow Create(DataRow row)
         {
-            return row != null ? new LogFileRow(row) : null;
+            return row != null ? new ImportFileRow(row) : null;
         }
         #endregion
 
@@ -98,10 +99,6 @@ namespace Restless.Logite.Database.Tables
         /// <inheritdoc/>
         protected override void OnSetValue(string columnName, object value)
         {
-            if (columnName != Columns.Updated)
-            {
-                Row[Columns.Updated] = DateTime.UtcNow;
-            }
         }
         #endregion
     }

@@ -123,6 +123,15 @@ namespace Restless.Logite.Core
                 /// Gets the maximum value for data grid alternation count.
                 /// </summary>
                 public const int MaxAlternationCount = 5;
+            }
+
+            public static class Format
+            {
+                public const string AppDate = "yyyy-MM-dd";
+
+                public const string LogDate = "dd/MMM/yyyy:HH:mm:ss zzz";
+
+                public const string LogCulture = "en-us";
 
             }
         }
@@ -172,60 +181,6 @@ namespace Restless.Logite.Core
             set => SetItem(value);
         }
 
-        ///// <summary>
-        ///// Gets or sets whether the domain detail panel is visible.
-        ///// </summary>
-        //public bool DomainDetailVisible
-        //{
-        //    get => GetItem(false);
-        //    set => SetItem(value);
-        //}
-
-        ///// <summary>
-        ///// Gets or sets the domain detail width.
-        ///// </summary>
-        //public int DomainDetailWidth
-        //{
-        //    get => GetItem((int)DetailPanel.DomainDefaultWidth);
-        //    set => SetItem(value);
-        //}
-
-        ///// <summary>
-        ///// Gets or sets the domain filter id.
-        ///// </summary>
-        //public int DomainFilterId
-        //{
-        //    get => GetItem(0);
-        //    set => SetItem(value);
-        //}
-
-        ///// <summary>
-        ///// Gets or sets whether the alias detail panel is visible.
-        ///// </summary>
-        //public bool AliasDetailVisible
-        //{
-        //    get => GetItem(false);
-        //    set => SetItem(value);
-        //}
-
-        ///// <summary>
-        ///// Gets or sets the alias detail width.
-        ///// </summary>
-        //public int AliasDetailWidth
-        //{
-        //    get => GetItem((int)DetailPanel.AliasDefaultWidth);
-        //    set => SetItem(value);
-        //}
-
-        ///// <summary>
-        ///// Gets or sets the alias filter id.
-        ///// </summary>
-        //public int AliasFilterId
-        //{
-        //    get => GetItem(0);
-        //    set => SetItem(value);
-        //}
-
         /// <summary>
         /// Gets or sets whether the services navigator is expanded.
         /// </summary>
@@ -267,17 +222,35 @@ namespace Restless.Logite.Core
 
         #region Formatting options
         /// <summary>
-        /// Gets the date format for the application.
+        /// Gets or sets the date format for the application.
         /// </summary>
         public string DateFormat
         {
-            get => GetItem("yyyy-MM-dd");
+            get => GetItem(Default.Format.AppDate);
             set
             {
                 SetItem(value);
                 Toolkit.Core.Default.Format.Date = value;
                 //Controls.PopupCalendar.SetDateFormat(value);
             }
+        }
+
+        /// <summary>
+        /// Gets or sets the date format used to parse the date portion of a log line.
+        /// </summary>
+        public string LogLineDateFormat
+        {
+            get => GetItem(Default.Format.LogDate);
+            set => SetItem(value);
+        }
+
+        /// <summary>
+        /// Gets or sets the culture identifier used to parse the date portion of a log line.
+        /// </summary>
+        public string LogLineCulture
+        {
+            get => GetItem(Default.Format.LogCulture);
+            set => SetItem(value);
         }
         #endregion
 

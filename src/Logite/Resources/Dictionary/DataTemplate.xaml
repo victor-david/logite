@@ -7,7 +7,11 @@
     <DataTemplate DataType="{x:Type vm:DomainViewModel}">
         <vw:DomainView/>
     </DataTemplate>
-    
+
+    <DataTemplate DataType="{x:Type vm:FileViewModel}">
+        <vw:FileView/>
+    </DataTemplate>
+
     <DataTemplate DataType="{x:Type vm:StartViewModel}">
         <vw:StartView/>
     </DataTemplate>

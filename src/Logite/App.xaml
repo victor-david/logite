@@ -6,10 +6,12 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/Dictionary/Values.xaml"/>
                 <ResourceDictionary Source="Resources/Dictionary/Brush.xaml"/>
                 <ResourceDictionary Source="Resources/Dictionary/Border.xaml"/>
                 <ResourceDictionary Source="Resources/Dictionary/Checkbox.xaml"/>
                 <ResourceDictionary Source="Resources/Dictionary/DataGrid.xaml"/>
+                <ResourceDictionary Source="Resources/Dictionary/ListBox.xaml"/>
                 <ResourceDictionary Source="Resources/Dictionary/FlowDocument.xaml"/>
                 <ResourceDictionary Source="Resources/Dictionary/Path.xaml"/>
                 <ResourceDictionary Source="Resources/Dictionary/Expander.xaml"/>

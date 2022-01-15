@@ -10,11 +10,6 @@
         <Setter Property="HorizontalAlignment" Value="Left"/>
     </Style>
 
-    <Style x:Key="HeaderTextBlockStyle" TargetType="TextBlock">
-        <Setter Property="FontSize" Value="18"/>
-        <Setter Property="Foreground" Value="{StaticResource DarkAlertForegroundBrush}"/>
-    </Style>
-
     <Style x:Key="DefaultTextBlockStyle" TargetType="TextBlock">
         <Setter Property="Foreground" Value="{StaticResource DefaultForegroundBrush}"/>
     </Style>

@@ -67,23 +67,18 @@
                                     </Paragraph>
                                 </ListItem>
 
-                                <!--<ListItem>
-                                    <Paragraph>
-                                        If you don't establish domains,
-                                        <Bold>
-                                            <Run Text="{Binding AppInfo.Assembly.Product, Mode=OneWay}"/>
-                                        </Bold>
-                                        will associate all log file entries with the default domain.
-                                    </Paragraph>
-                                </ListItem>-->
-
                                 <ListItem>
                                     <Paragraph>
                                         The domain preface specifies how the name of the log file begins
                                         in order to associate a log entry with a specific domain.
-                                        If more than one domain has the same preface, the first one is used.
                                     </Paragraph>
                                 </ListItem>
+                                
+                                <ListItem>
+                                    <Paragraph>
+                                        If a log file does not match a domain preface, it will not be imported.
+                                    </Paragraph>
+                                </ListItem>                                
                                 
                             </List>
                         </ListItem>

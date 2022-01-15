@@ -9,7 +9,8 @@
     <Product>Logite</Product>
     <Copyright>2022 Restless Animal Development</Copyright>
     <RootNamespace>Restless.Logite</RootNamespace>
-    <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>    
+    <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
+    <ApplicationIcon>App.ico</ApplicationIcon>    
   </PropertyGroup>
 
   <ItemGroup>
@@ -39,5 +40,19 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Strings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Resources\Dictionary\ListBox.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Resources\Dictionary\Values.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\FileView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
   </ItemGroup>
 </Project>

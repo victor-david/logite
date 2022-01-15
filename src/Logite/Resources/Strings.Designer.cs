@@ -124,6 +124,15 @@ namespace Restless.Logite.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Clear data.
+        /// </summary>
+        public static string MenuItemClearData {
+            get {
+                return ResourceManager.GetString("MenuItemClearData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Exit.
         /// </summary>
         public static string MenuItemExit {
@@ -142,20 +151,20 @@ namespace Restless.Logite.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Getting started.
-        /// </summary>
-        public static string MenuItemGettingStarted {
-            get {
-                return ResourceManager.GetString("MenuItemGettingStarted", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Help.
         /// </summary>
         public static string MenuItemHelp {
             get {
                 return ResourceManager.GetString("MenuItemHelp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import.
+        /// </summary>
+        public static string MenuItemImport {
+            get {
+                return ResourceManager.GetString("MenuItemImport", resourceCulture);
             }
         }
         
@@ -192,6 +201,15 @@ namespace Restless.Logite.Resources {
         public static string MenuItemSettings {
             get {
                 return ResourceManager.GetString("MenuItemSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Getting started.
+        /// </summary>
+        public static string MenuItemStart {
+            get {
+                return ResourceManager.GetString("MenuItemStart", resourceCulture);
             }
         }
         
