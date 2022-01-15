@@ -7,10 +7,10 @@
     {
         #region Constructor
         /// <summary>
-        /// Initializes a new instance of the <see cref="ApplicationTableBase"/> class using <see cref="DatabaseController.MainDepotSchemaName"/>.
+        /// Initializes a new instance of the <see cref="ApplicationTableBase"/> class using <see cref="DatabaseController.MainAppSchemaName"/>.
         /// </summary>
         /// <param name="tableName">The table name</param>
-        protected ApplicationTableBase(string tableName) : base(DatabaseController.Instance, DatabaseController.MainDepotSchemaName, tableName)
+        protected ApplicationTableBase(string tableName) : base(DatabaseController.Instance, DatabaseController.MainAppSchemaName, tableName)
         {
         }
 

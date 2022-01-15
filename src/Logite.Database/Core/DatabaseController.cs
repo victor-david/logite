@@ -35,7 +35,7 @@ namespace Restless.Logite.Database.Core
         /// <summary>
         /// Gets the name for the attached data schema. This schema holds all the main tables.
         /// </summary>
-        public const string MainDepotSchemaName = "logite";
+        public const string MainAppSchemaName = "logite";
 
         /// <summary>
         /// Gets the name for the attached memory only schema
@@ -120,12 +120,16 @@ namespace Restless.Logite.Database.Core
 
             string fullFileName =  GetFileNameFromId(databaseFileId);
 
-            Attach(MainDepotSchemaName, fullFileName, () =>
+            Attach(MainAppSchemaName, fullFileName, () =>
             {
                 CreateAndRegisterTable<ConfigTable>();
                 CreateAndRegisterTable<DomainTable>();
+                CreateAndRegisterTable<LogEntryTable>();
                 CreateAndRegisterTable<ImportFileTable>();
-                TableRegistrationComplete(MainDepotSchemaName);
+                CreateAndRegisterTable<RefererTable>();
+                CreateAndRegisterTable<RequestTable>();
+                CreateAndRegisterTable<UserAgentTable>();
+                TableRegistrationComplete(MainAppSchemaName);
                 MainDatabaseAlias = alias;
                 MainDatabaseId = databaseFileId;
             });
@@ -136,7 +140,7 @@ namespace Restless.Logite.Database.Core
         /// </summary>
         public void DetachMainDatabase()
         {
-            Detach(MainDepotSchemaName);
+            Detach(MainAppSchemaName);
             MainDatabaseAlias = MainDatabaseId = null;
         }
 
