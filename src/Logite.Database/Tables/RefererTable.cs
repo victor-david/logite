@@ -49,6 +49,11 @@ namespace Restless.Logite.Database.Tables
                 /// The name for the "No referer" entry.
                 /// </summary>
                 public const string RefererZeroName = "--";
+
+                /// <summary>
+                /// The name for an attack referer.
+                /// </summary>
+                public const string RefererAttackName = "Referer attack";
             }
         }
         #endregion

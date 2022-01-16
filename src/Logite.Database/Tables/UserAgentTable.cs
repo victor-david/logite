@@ -49,6 +49,11 @@ namespace Restless.Logite.Database.Tables
                 /// The name for the "No user agent" entry.
                 /// </summary>
                 public const string UserAgentZeroName = "--";
+
+                /// <summary>
+                /// The name for an attack user agent.
+                /// </summary>
+                public const string UserAgentAttackName = "User Agent attack";
             }
         }
         #endregion

@@ -12,6 +12,7 @@ namespace Restless.Logite.Database.Core
         #region Private
         private string referer;
         private string userAgent;
+        private const string HttpVersionZero = "0.0";
         #endregion
 
         /************************************************************************/
@@ -75,9 +76,19 @@ namespace Restless.Logite.Database.Core
         }
 
         /// <summary>
+        /// Gets the http version, i.e "1.0", "1.1"
+        /// To set, call <see cref="SetRequest(string)"/>
+        /// </summary>
+        public string HttpVersion
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
         /// When the request is a byte attack, the length of the byte string.
         /// </summary>
-        public int BytesLength
+        public int AttackLength
         {
             get;
             private set;
@@ -107,13 +118,7 @@ namespace Restless.Logite.Database.Core
         public string Referer
         {
             get => referer;
-            set
-            {
-                if (!string.IsNullOrEmpty(value) && value != "-")
-                {
-                    referer = value;
-                }
-            }
+            set => SetCleanValue(ref referer, value, RefererTable.Defs.Values.RefererAttackName);
         }
 
         /// <summary>
@@ -122,13 +127,7 @@ namespace Restless.Logite.Database.Core
         public string UserAgent
         {
             get => userAgent;
-            set
-            {
-                if (!string.IsNullOrEmpty(value) && value != "-")
-                {
-                    userAgent = value;
-                }
-            }
+            set => SetCleanValue(ref userAgent, value, UserAgentTable.Defs.Values.UserAgentAttackName);
         }
         #endregion
 
@@ -137,6 +136,7 @@ namespace Restless.Logite.Database.Core
         #region Constructor
         public LogEntry()
         {
+            HttpVersion = HttpVersionZero;
         }
         #endregion
 
@@ -180,7 +180,7 @@ namespace Restless.Logite.Database.Core
                 string request = string.IsNullOrEmpty(Method) ? value.Trim() : value.Substring(Method.Length).Trim();
                 if (string.IsNullOrEmpty(Method) || request.Contains(@"\x"))
                 {
-                    BytesLength = request.Length;
+                    AttackLength = request.Length;
                     request = RequestTable.Defs.Values.ByteAttackRequest;
                 }
                 else
@@ -188,10 +188,15 @@ namespace Restless.Logite.Database.Core
                     int httpPos = request.IndexOf("HTTP/1");
                     if (httpPos != -1)
                     {
+                        string[] http = request.Substring(httpPos).Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
                         request = request.Substring(0, httpPos).Trim();
+                        if (http.Length > 1)
+                        {
+                            HttpVersion = http[1];
+                        }
                     }
                 }
-                Request = request;
+                Request = Uri.UnescapeDataString(request);
             }
         }
 
@@ -202,6 +207,25 @@ namespace Restless.Logite.Database.Core
         public override string ToString()
         {
             return $"{RemoteAddress} Time:{RequestTime} Method:{Method} Request:{Request} Status:{Status} Bytes:{BytesSent}";
+        }
+        #endregion
+
+        /************************************************************************/
+
+        #region Private methods
+        private void SetCleanValue(ref string target, string value, string attackName)
+        {
+            if (!string.IsNullOrEmpty(value) && value != "-")
+            {
+                if (value.Contains(@"\x"))
+                {
+                    target = attackName;
+                }
+                else
+                {
+                    target = value;
+                }
+            }
         }
         #endregion
     }

@@ -109,28 +109,43 @@ namespace Restless.Logite.ViewModel
         {
             try
             {
-                LogEntryProcessor.Init();
-                List<LogFile> processed = new List<LogFile>();
-
-                foreach (LogFile logFile in LogFiles.Where(lf => lf.Status == LogFile.StatusReady))
+                ApplicationTableBase[] tables = 
                 {
-                    string[] lines = System.IO.File.ReadAllLines(logFile.Path);
-                    foreach (string line in lines)
+                    DatabaseController.Instance.GetTable<ImportFileTable>(),
+                    DatabaseController.Instance.GetTable<LogEntryTable>(),
+                    DatabaseController.Instance.GetTable<RefererTable>(),
+                    DatabaseController.Instance.GetTable<RequestTable>(),
+                    DatabaseController.Instance.GetTable<UserAgentTable>()
+                };
+
+                DatabaseController.Instance.Transaction.ExecuteTransaction((transaction) =>
+                {
+                    LogEntryProcessor.Init();
+                    List<LogFile> processed = new List<LogFile>();
+
+                    foreach (LogFile logFile in LogFiles.Where(lf => lf.Status == LogFile.StatusReady))
                     {
-                        LogEntry entry = LineParser.ParseLine(line);
-                        entry.DomainId = logFile.DomainId;
-                        LogEntryProcessor.Process(entry);
+                        string[] lines = System.IO.File.ReadAllLines(logFile.Path);
+                        foreach (string line in lines)
+                        {
+                            LogEntry entry = LineParser.ParseLine(line);
+                            entry.DomainId = logFile.DomainId;
+                            LogEntryProcessor.Process(entry);
+                        }
+
+                        processed.Add(logFile);
                     }
 
-                    processed.Add(logFile);
-                }
-                
-                DatabaseController.Instance.Save();
+                    foreach (LogFile logFile in processed)
+                    {
+                        LogFiles.Remove(logFile);
+                    }
 
-                foreach (LogFile logFile in processed)
-                {
-                    LogFiles.Remove(logFile);
-                }
+                    foreach (ApplicationTableBase table in tables)
+                    {
+                        table.Save(transaction);
+                    }
+                }, tables);
             }
             catch (Exception ex)
             {

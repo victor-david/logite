@@ -58,7 +58,12 @@ namespace Restless.Logite.Database.Tables
                 /// <summary>
                 /// Length of attack byte string, or zero
                 /// </summary>
-                public const string ByteLength = "bytelength";
+                public const string AttackLength = "attacklength";
+
+                /// <summary>
+                /// The http version, i.e 1.0, 1.1, or 0.0
+                /// </summary>
+                public const string HttpVersion = "http";
 
                 /// <summary>
                 /// Id of the domain
@@ -129,7 +134,8 @@ namespace Restless.Logite.Database.Tables
                 { Defs.Columns.Timestamp, ColumnType.Timestamp, false, false, null, IndexType.Index },
                 { Defs.Columns.Status, ColumnType.Integer, false, false, 0L, IndexType.Index },
                 { Defs.Columns.BytesSent, ColumnType.Integer, false, false, 0L },
-                { Defs.Columns.ByteLength, ColumnType.Integer, false, false, 0L },
+                { Defs.Columns.AttackLength, ColumnType.Integer, false, false, 0L },
+                { Defs.Columns.HttpVersion, ColumnType.Text },
                 { Defs.Columns.DomainId, ColumnType.Integer, false, false, DomainTable.Defs.Values.DomainZeroId, IndexType.Index },
                 { Defs.Columns.MethodId, ColumnType.Integer, false, false, MethodTable.Defs.Values.MethodZeroId, IndexType.Index },
                 { Defs.Columns.RequestId, ColumnType.Integer, false, false, RequestTable.Defs.Values.RequestZeroId, IndexType.Index },
@@ -150,7 +156,8 @@ namespace Restless.Logite.Database.Tables
             row[Defs.Columns.Timestamp] = entry.RequestTime;
             row[Defs.Columns.Status] = entry.Status;
             row[Defs.Columns.BytesSent] = entry.BytesSent;
-            row[Defs.Columns.ByteLength] = entry.BytesLength;
+            row[Defs.Columns.AttackLength] = entry.AttackLength;
+            row[Defs.Columns.HttpVersion] = entry.HttpVersion;
             row[Defs.Columns.DomainId] = entry.DomainId;
             row[Defs.Columns.MethodId] = methodId;
             row[Defs.Columns.RequestId] = requestId;
