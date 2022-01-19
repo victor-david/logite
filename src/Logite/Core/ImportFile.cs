@@ -9,13 +9,12 @@ namespace Restless.Logite.Core
     /// <summary>
     /// Represents a single file in the log import directory
     /// </summary>
-    public class LogFile : ObservableObject
+    public class ImportFile : ObservableObject
     {
         #region Private
         private string domain;
         private string status;
         #endregion
-
 
         /************************************************************************/
 
@@ -73,10 +72,10 @@ namespace Restless.Logite.Core
 
         #region Constructor
         /// <summary>
-        /// Creates a new instance of the <see cref="LogFile"/> class.
+        /// Creates a new instance of the <see cref="ImportFile"/> class.
         /// </summary>
         /// <param name="path"></param>
-        public LogFile(string path)
+        public ImportFile(string path)
         {
             Path = path;
             DisplayName = System.IO.Path.GetFileName(path);

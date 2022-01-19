@@ -24,7 +24,7 @@
                 </ToolBarTray>
 
                 <Border DockPanel.Dock="Top" Style="{StaticResource SubContentBorderStyle}">
-                    <DataGrid ItemsSource="{Binding LogFiles}" tk:DataGridColumns.Columns="{Binding LogFileColumns}"/>
+                    <DataGrid ItemsSource="{Binding ImportFiles}" tk:DataGridColumns.Columns="{Binding ImportFileColumns}"/>
                 </Border>
             </DockPanel>
             

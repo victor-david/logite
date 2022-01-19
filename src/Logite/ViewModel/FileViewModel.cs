@@ -22,12 +22,12 @@ namespace Restless.Logite.ViewModel
         /************************************************************************/
 
         #region Properties
-        public ObservableCollection<LogFile> LogFiles
+        public ObservableCollection<ImportFile> ImportFiles
         {
             get;
         }
 
-        public DataGridColumnCollection LogFileColumns
+        public DataGridColumnCollection ImportFileColumns
         {
             get;
         }
@@ -47,11 +47,11 @@ namespace Restless.Logite.ViewModel
             Columns.Create("Name", ImportFileTable.Defs.Columns.FileName);
             Columns.Create("Lines", ImportFileTable.Defs.Columns.LineCount).MakeFixedWidth(FixedWidth.W052);
 
-            LogFiles = new ObservableCollection<LogFile>();
-            LogFileColumns = new DataGridColumnCollection();
-            LogFileColumns.Create("File", nameof(LogFile.DisplayName));
-            LogFileColumns.Create("Domain", nameof(LogFile.Domain)).MakeFixedWidth(FixedWidth.W096);
-            LogFileColumns.Create("Status", nameof(LogFile.Status)).MakeFixedWidth(FixedWidth.W136);
+            ImportFiles = new ObservableCollection<ImportFile>();
+            ImportFileColumns = new DataGridColumnCollection();
+            ImportFileColumns.Create("File", nameof(ImportFile.DisplayName));
+            ImportFileColumns.Create("Domain", nameof(ImportFile.Domain)).MakeFixedWidth(FixedWidth.W096);
+            ImportFileColumns.Create("Status", nameof(ImportFile.Status)).MakeFixedWidth(FixedWidth.W136);
 
             Commands.Add("Import", RunImportCommand);
         }
@@ -64,6 +64,11 @@ namespace Restless.Logite.ViewModel
         {
             UpdatePending();
         }
+
+        protected override int OnDataRowCompare(DataRow item1, DataRow item2)
+        {
+            return DataRowCompareLong(item2, item1, ImportFileTable.Defs.Columns.Id);
+        }
         #endregion
 
         /************************************************************************/
@@ -71,38 +76,42 @@ namespace Restless.Logite.ViewModel
         #region Private methods
         private void UpdatePending()
         {
-            LogFiles.Clear();
+            ImportFiles.Clear();
             foreach (string file in System.IO.Directory.EnumerateFiles(Config.LogFileDirectory))
             {
-                LogFile logFile = new(file);
-                SetLogFileDomain(logFile);
-                SetLogFileStatus(logFile);
-                LogFiles.Add(logFile);
+                ImportFile importFile = new(file);
+                SetImportFileDomain(importFile);
+                SetImportFileStatus(importFile);
+                if (importFile.Status != ImportFile.StatusImported)
+                {
+                    ImportFiles.Add(importFile);
+                }
             }
         }
 
-        private void SetLogFileDomain(LogFile logFile)
+        private void SetImportFileDomain(ImportFile importFile)
         {
             foreach(DomainRow domain in DatabaseController.Instance.GetTable<DomainTable>().EnumerateAll())
             {
-                if (logFile.DisplayName.StartsWith(domain.Preface, StringComparison.InvariantCulture))
+                if (importFile.DisplayName.StartsWith(domain.Preface, StringComparison.InvariantCulture))
                 {
-                    logFile.DomainId = domain.Id;
-                    logFile.Domain = domain.DisplayName;
+                    importFile.DomainId = domain.Id;
+                    importFile.Domain = domain.DisplayName;
                     return;
                 }
             }
         }
-        private void SetLogFileStatus(LogFile logFile)
+
+        private void SetImportFileStatus(ImportFile importFile)
         {
-            if (logFile.DomainId == LogFile.UninitializedDomaindId)
+            if (importFile.DomainId == ImportFile.UninitializedDomaindId)
             {
-                logFile.Status = LogFile.StatusIneligible;
+                importFile.Status = ImportFile.StatusIneligible;
                 return;
             }
 
-            ImportFileRow logFileRow = DatabaseController.Instance.GetTable<ImportFileTable>().GetSingleRecord(logFile.DomainId, logFile.DisplayName);
-            logFile.Status = logFileRow == null ? LogFile.StatusReady : LogFile.StatusImported;
+            ImportFileRow logFileRow = DatabaseController.Instance.GetTable<ImportFileTable>().GetSingleRecord(importFile.DomainId, importFile.DisplayName);
+            importFile.Status = logFileRow == null ? ImportFile.StatusReady : ImportFile.StatusImported;
         }
 
         private void RunImportCommand(object parm)
@@ -123,9 +132,9 @@ namespace Restless.Logite.ViewModel
                 DatabaseController.Instance.Transaction.ExecuteTransaction((transaction) =>
                 {
                     LogEntryProcessor.Init();
-                    List<LogFile> processed = new List<LogFile>();
+                    List<ImportFile> processed = new List<ImportFile>();
 
-                    foreach (LogFile logFile in LogFiles.Where(lf => lf.Status == LogFile.StatusReady))
+                    foreach (ImportFile logFile in ImportFiles.Where(lf => lf.Status == ImportFile.StatusReady))
                     {
                         string[] lines = System.IO.File.ReadAllLines(logFile.Path);
                         ImportFileRow import = importTable.Create(logFile.DisplayName, logFile.DomainId, lines.LongLength);
@@ -140,9 +149,9 @@ namespace Restless.Logite.ViewModel
                         processed.Add(logFile);
                     }
 
-                    foreach (LogFile logFile in processed)
+                    foreach (ImportFile logFile in processed)
                     {
-                        LogFiles.Remove(logFile);
+                        ImportFiles.Remove(logFile);
                     }
 
                     foreach (ApplicationTableBase table in tables)

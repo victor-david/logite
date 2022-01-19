@@ -73,7 +73,7 @@ namespace Restless.Logite.Database.Tables
         /// </summary>
         public override void Load()
         {
-            Load(null, Defs.Columns.Created);
+            Load(null, $"{Defs.Columns.Id} desc");
         }
 
         /// <summary>
@@ -118,7 +118,7 @@ namespace Restless.Logite.Database.Tables
         /// <returns>A row object, or null if none.</returns>
         public ImportFileRow GetSingleRecord(long domainId, string fileName)
         {
-            DataRow[] rows = Select($"{Defs.Columns.Id}={domainId} AND {Defs.Columns.FileName}='{fileName}'");
+            DataRow[] rows = Select($"{Defs.Columns.DomainId}={domainId} AND {Defs.Columns.FileName}='{fileName}'");
             if (rows.Length == 1)
             {
                 return new ImportFileRow(rows[0]);
