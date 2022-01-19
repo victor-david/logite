@@ -2,9 +2,9 @@
 
 namespace Restless.Logite.View
 {
-    public partial class FileView : UserControl
+    public partial class ImportView : UserControl
     {
-        public FileView()
+        public ImportView()
         {
             InitializeComponent();
         }

@@ -12,9 +12,9 @@ using System.Linq;
 namespace Restless.Logite.ViewModel
 {
     /// <summary>
-    /// Provides the logic that is used to display the log files.
+    /// Provides the logic that is used to display and import the raw log files.
     /// </summary>
-    public class FileViewModel : DataGridViewModel<ImportFileTable>
+    public class ImportViewModel : DataGridViewModel<ImportFileTable>
     {
         #region Private
         #endregion
@@ -37,9 +37,9 @@ namespace Restless.Logite.ViewModel
 
         #region Constructor
         /// <summary>
-        /// Initializes a new instance of the <see cref="FileViewModel"/> class.
+        /// Initializes a new instance of the <see cref="ImportViewModel"/> class.
         /// </summary>
-        public FileViewModel() : base()
+        public ImportViewModel() : base()
         {
             DisplayName = Strings.MenuItemImport;
 

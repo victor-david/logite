@@ -8,8 +8,8 @@
         <vw:DomainView/>
     </DataTemplate>
 
-    <DataTemplate DataType="{x:Type vm:FileViewModel}">
-        <vw:FileView/>
+    <DataTemplate DataType="{x:Type vm:ImportViewModel}">
+        <vw:ImportView/>
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type vm:StartViewModel}">

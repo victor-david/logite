@@ -141,7 +141,7 @@ namespace Restless.Logite.ViewModel
         private void RegisterStandardNavigatorItems()
         {
             NavigatorItems.Add<StartViewModel>(NavigationGroup.Services, Strings.MenuItemStart, false, GetGeometry(GeometryKeys.ClipboardGeometryKey));
-            NavigatorItems.Add<FileViewModel>(NavigationGroup.Services, Strings.MenuItemImport, false, GetGeometry(GeometryKeys.FileGeometryKey));
+            NavigatorItems.Add<ImportViewModel>(NavigationGroup.Services, Strings.MenuItemImport, false, GetGeometry(GeometryKeys.FileGeometryKey));
 
             NavigatorItems.Add<TableViewModel>(NavigationGroup.Tools, Strings.MenuItemTableInfo, false, GetGeometry(GeometryKeys.DatabaseGeometryKey));
         }
