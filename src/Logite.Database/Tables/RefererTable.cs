@@ -36,6 +36,17 @@ namespace Restless.Logite.Database.Tables
             }
 
             /// <summary>
+            /// Provides static relation names.
+            /// </summary>
+            public static class Relations
+            {
+                /// <summary>
+                /// The name of the relation that relates the <see cref="RefererTable"/> to the <see cref="LogEntryTable"/>.
+                /// </summary>
+                public const string ToLogEntry = "RefererToLogEntry";
+            }
+
+            /// <summary>
             /// Provides static values.
             /// </summary>
             public static class Values
@@ -128,6 +139,12 @@ namespace Restless.Logite.Database.Tables
         protected override IEnumerable<object[]> EnumeratePopulateValues()
         {
             yield return new object[] { Defs.Values.RefererZeroId, Defs.Values.RefererZeroName };
+        }
+
+        /// <inheritdoc/>
+        protected override void SetDataRelations()
+        {
+            CreateParentChildRelation<LogEntryTable>(Defs.Relations.ToLogEntry, Defs.Columns.Id, LogEntryTable.Defs.Columns.RefererId);
         }
         #endregion
 

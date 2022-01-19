@@ -38,6 +38,17 @@ namespace Restless.Logite.Database.Tables
             }
 
             /// <summary>
+            /// Provides static relation names.
+            /// </summary>
+            public static class Relations
+            {
+                /// <summary>
+                /// The name of the relation that relates the <see cref="MethodTable"/> to the <see cref="LogEntryTable"/>.
+                /// </summary>
+                public const string ToLogEntry = "MethodToLogEntry";
+            }
+
+            /// <summary>
             /// Provides static values.
             /// </summary>
             public static class Values
@@ -152,6 +163,12 @@ namespace Restless.Logite.Database.Tables
             yield return new object[] { Defs.Values.MethodZeroId + 7, "OPTIONS" };
             yield return new object[] { Defs.Values.MethodZeroId + 8, "TRACE" };
             yield return new object[] { Defs.Values.MethodZeroId + 9, "PATCH" };
+        }
+
+        /// <inheritdoc/>
+        protected override void SetDataRelations()
+        {
+            CreateParentChildRelation<LogEntryTable>(Defs.Relations.ToLogEntry, Defs.Columns.Id, LogEntryTable.Defs.Columns.MethodId);
         }
         #endregion
 

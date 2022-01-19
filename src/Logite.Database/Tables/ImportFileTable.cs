@@ -51,6 +51,17 @@ namespace Restless.Logite.Database.Tables
                 /// </summary>
                 public const string Created = "created";
             }
+
+            /// <summary>
+            /// Provides static relation names.
+            /// </summary>
+            public static class Relations
+            {
+                /// <summary>
+                /// The name of the relation that relates the <see cref="ImportFileTable"/> to the <see cref="LogEntryTable"/>.
+                /// </summary>
+                public const string ToLogEntry = "ImportToLogEntry";
+            }
         }
         #endregion
 
@@ -162,18 +173,11 @@ namespace Restless.Logite.Database.Tables
         /// <inheritdoc/>
         protected override void SetDataRelations()
         {
+            CreateParentChildRelation<LogEntryTable>(Defs.Relations.ToLogEntry, Defs.Columns.Id, LogEntryTable.Defs.Columns.ImportFileId);
         }
 
         protected override void UseDataRelations()
         {
-            //CreateChildToParentColumn(Defs.Columns.Calculated.FromDomainName, DomainTable.Defs.Relations.ToAliasFrom, DomainTable.Defs.Columns.Name);
-            //CreateChildToParentColumn(Defs.Columns.Calculated.ToDomainName, DomainTable.Defs.Relations.ToAliasTo, DomainTable.Defs.Columns.Name);
-
-            //string expr1 = $"{Defs.Columns.FromName} + '@' + {Defs.Columns.Calculated.FromDomainName}";
-            //CreateExpressionColumn<string>(Defs.Columns.Calculated.FromEmailAddress, expr1);
-
-            //string expr2 = $"{Defs.Columns.ToName} + '@' + {Defs.Columns.Calculated.ToDomainName}";
-            //CreateExpressionColumn<string>(Defs.Columns.Calculated.ToEmailAddress, expr2);
         }
         #endregion
     }
