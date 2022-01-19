@@ -35,7 +35,7 @@
                 
                 <ToolBarTray DockPanel.Dock="Top" Margin="{StaticResource SubContentPadding}">
                     <ToolBar>
-                        <Button Command="{Binding Commands[ClearData]}" Content="{x:Static r:Strings.MenuItemClearData}"/>
+                        <!--<Button Command="{Binding Commands[ClearData]}" Content="{x:Static r:Strings.MenuItemClearData}"/>-->
                     </ToolBar>
                 </ToolBarTray>                
                 
