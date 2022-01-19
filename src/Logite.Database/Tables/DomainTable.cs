@@ -45,6 +45,17 @@ namespace Restless.Logite.Database.Tables
                 /// Date / time record created.
                 /// </summary>
                 public const string Created = "created";
+
+                /// <summary>
+                /// Provides static column names for columns that are calculated from other values.
+                /// </summary>
+                public class Calculated
+                {
+                    /// <summary>
+                    /// Number of log entries.
+                    /// </summary>
+                    public const string LogEntryCount = "CalcLogEntryCount";
+                }
             }
 
             /// <summary>
@@ -188,8 +199,11 @@ namespace Restless.Logite.Database.Tables
             CreateParentChildRelation<LogEntryTable>(Defs.Relations.ToLogEntry, Defs.Columns.Id, LogEntryTable.Defs.Columns.DomainId);
         }
 
+        /// <inheritdoc/>
         protected override void UseDataRelations()
         {
+            string expr = string.Format("Count(Child({0}).{1})", Defs.Relations.ToLogEntry, LogEntryTable.Defs.Columns.Id);
+            CreateExpressionColumn<long>(Defs.Columns.Calculated.LogEntryCount, expr);
         }
 
         /// <summary>

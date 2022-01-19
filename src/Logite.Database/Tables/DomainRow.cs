@@ -38,6 +38,14 @@ namespace Restless.Logite.Database.Tables
         }
 
         /// <summary>
+        /// Gets the count of log entries for this domain.
+        /// </summary>
+        public long LogEntryCount
+        {
+            get => GetInt64(Columns.Calculated.LogEntryCount);
+        }
+
+        /// <summary>
         /// Gets the date / time record created.
         /// </summary>
         public DateTime Created

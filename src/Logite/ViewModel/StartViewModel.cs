@@ -67,6 +67,7 @@ namespace Restless.Logite.ViewModel
             Columns.Create("Id", DomainTable.Defs.Columns.Id).MakeFixedWidth(FixedWidth.W032);
             Columns.Create("Name", DomainTable.Defs.Columns.DisplayName);
             Columns.Create("Preface", DomainTable.Defs.Columns.Preface);
+            Columns.Create("Count", DomainTable.Defs.Columns.Calculated.LogEntryCount).MakeFixedWidth(FixedWidth.W096);
 
             Commands.Add("ConfigureLogDirectory", RunConfigureLogDirectoryCommand);
             Commands.Add("ConfigureDatabaseDirectory", RunConfigureDatabaseDirectoryCommand);
