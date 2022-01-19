@@ -3,6 +3,7 @@ using Restless.Logite.Core;
 using Restless.Logite.Database.Core;
 using Restless.Logite.Database.Tables;
 using Restless.Logite.Resources;
+using Restless.Logite.ViewModel.Domain;
 using System;
 using System.Collections.Generic;
 using System.Windows;

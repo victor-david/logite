@@ -2,6 +2,7 @@
 using Restless.Logite.Database.Core;
 using Restless.Logite.Database.Tables;
 using Restless.Logite.ViewModel;
+using Restless.Logite.ViewModel.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -133,6 +133,7 @@ namespace Restless.Logite.Core
 
                 public const string LogCulture = "en-us";
 
+                public const string DisplayDate = "yyyy-MMM-dd HH:mm";
             }
         }
 
@@ -250,6 +251,12 @@ namespace Restless.Logite.Core
         public string LogLineCulture
         {
             get => GetItem(Default.Format.LogCulture);
+            set => SetItem(value);
+        }
+
+        public string LogDisplayFormat
+        {
+            get => GetItem(Default.Format.DisplayDate);
             set => SetItem(value);
         }
         #endregion

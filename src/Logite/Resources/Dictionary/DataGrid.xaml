@@ -5,7 +5,7 @@
     xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
 
-    <sys:Double x:Key="DataGridMinRowHeight">32</sys:Double>
+    <sys:Double x:Key="DataGridMinRowHeight">30</sys:Double>
     <sys:Double x:Key="DataGridMaxRowHeight">44</sys:Double>
 
     <Style x:Key="DefaultDataGridRowStyle" TargetType="DataGridRow">
@@ -62,7 +62,7 @@
             </Setter.Value>
         </Setter>
         <Setter Property="Foreground" Value="{StaticResource DarkForegroundBrush}"/>
-        <Setter Property="Height" Value="32"/>
+        <Setter Property="Height" Value="30"/>
         <Setter Property="Padding" Value="3,0"/>
         <Setter Property="Background" Value="{StaticResource DefaultBackgroundBrush}"/>
         <Setter Property="BorderBrush" Value="{StaticResource DefaultBorderBrush}"/>
@@ -76,6 +76,9 @@
 
     <Style TargetType="DataGrid" BasedOn="{StaticResource DefaultDataGridStyle}"/>
     <Style TargetType="tk:DataGrid" BasedOn="{StaticResource DefaultDataGridStyle}"/>
+    <Style x:Key="DataGridCompactStyle" TargetType="DataGrid" BasedOn="{StaticResource DefaultDataGridStyle}">
+        <Setter Property="MinRowHeight" Value="24"/>
+    </Style>
     <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource DefaultDataGridColumnHeaderStyle}"/>
 
 </ResourceDictionary>

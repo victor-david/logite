@@ -174,8 +174,8 @@
   <data name="MenuItemTools" xml:space="preserve">
     <value>Tools</value>
   </data>
-  <data name="NavHeaderAnalysis" xml:space="preserve">
-    <value>Analysis</value>
+  <data name="NavHeaderDomain" xml:space="preserve">
+    <value>Domains</value>
   </data>
   <data name="NavHeaderSetup" xml:space="preserve">
     <value>Setup</value>

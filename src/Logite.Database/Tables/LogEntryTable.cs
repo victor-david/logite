@@ -3,6 +3,7 @@ using Restless.Toolkit.Core.Database.SQLite;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Text;
 
 namespace Restless.Logite.Database.Tables
@@ -99,6 +100,27 @@ namespace Restless.Logite.Database.Tables
                 /// </summary>
                 public const string UserAgentId = "agentid";
 
+                /// <summary>
+                /// Provides static column names for columns that are calculated from other values.
+                /// </summary>
+                public class Calculated
+                {
+                    /// <summary>
+                    /// Method.
+                    /// </summary>
+                    public const string Method = "CalcMethod";
+
+                    /// <summary>
+                    /// Request
+                    /// </summary>
+                    public const string Request = "CalcRequest";
+
+                    /// <summary>
+                    /// Referer
+                    /// </summary>
+                    public const string Referer = "CalcReferer";
+                }
+
             }
         }
         #endregion
@@ -122,7 +144,7 @@ namespace Restless.Logite.Database.Tables
         /// </summary>
         public override void Load()
         {
-            Load(null, Defs.Columns.Id);
+            Load(null, $"{Defs.Columns.Id} DESC");
         }
         #endregion
 
@@ -153,6 +175,13 @@ namespace Restless.Logite.Database.Tables
                 { Defs.Columns.RefererId, ColumnType.Integer, false, false, RefererTable.Defs.Values.RefererZeroId, IndexType.Index },
                 { Defs.Columns.UserAgentId, ColumnType.Integer, false, false, UserAgentTable.Defs.Values.UserAgentZeroId, IndexType.Index }
             };
+        }
+
+        protected override void UseDataRelations()
+        {
+            CreateChildToParentColumn(Defs.Columns.Calculated.Method, MethodTable.Defs.Relations.ToLogEntry, MethodTable.Defs.Columns.Method);
+            CreateChildToParentColumn(Defs.Columns.Calculated.Request, RequestTable.Defs.Relations.ToLogEntry, RequestTable.Defs.Columns.Request);
+            CreateChildToParentColumn(Defs.Columns.Calculated.Referer, RefererTable.Defs.Relations.ToLogEntry, RefererTable.Defs.Columns.Referer);
         }
         #endregion
 

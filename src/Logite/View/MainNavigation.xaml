@@ -23,7 +23,7 @@
         
         <con:MainNavigator
             IsExpanded="{Binding Config.NavAnalysisExpander}"
-            HeaderText="{x:Static r:Strings.NavHeaderAnalysis}"
+            HeaderText="{x:Static r:Strings.NavHeaderDomain}"
             ItemsSource="{Binding NavigatorItems.Groups[1]}"
             SelectedItem="{Binding NavigatorItems.SelectedItems[1]}"/>
         

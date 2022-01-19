@@ -2,10 +2,12 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:vw="clr-namespace:Restless.Logite.View"
-    xmlns:vm="clr-namespace:Restless.Logite.ViewModel">
+    xmlns:vm="clr-namespace:Restless.Logite.ViewModel"
+    xmlns:vwd="clr-namespace:Restless.Logite.View.Domain"
+    xmlns:vmd="clr-namespace:Restless.Logite.ViewModel.Domain">
     
-    <DataTemplate DataType="{x:Type vm:DomainViewModel}">
-        <vw:DomainView/>
+    <DataTemplate DataType="{x:Type vmd:DomainViewModel}">
+        <vwd:DomainView/>
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type vm:ImportViewModel}">

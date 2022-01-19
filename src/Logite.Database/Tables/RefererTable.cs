@@ -33,6 +33,17 @@ namespace Restless.Logite.Database.Tables
                 /// The referer.
                 /// </summary>
                 public const string Referer = "referer";
+
+                /// <summary>
+                /// Provides static column names for columns that are calculated from other values.
+                /// </summary>
+                public class Calculated
+                {
+                    /// <summary>
+                    /// Number of usages.
+                    /// </summary>
+                    public const string UsageCount = "CalcUsageCount";
+                }
             }
 
             /// <summary>
@@ -145,6 +156,13 @@ namespace Restless.Logite.Database.Tables
         protected override void SetDataRelations()
         {
             CreateParentChildRelation<LogEntryTable>(Defs.Relations.ToLogEntry, Defs.Columns.Id, LogEntryTable.Defs.Columns.RefererId);
+        }
+
+        /// <inheritdoc/>
+        protected override void UseDataRelations()
+        {
+            string expr = string.Format("Count(Child({0}).{1})", Defs.Relations.ToLogEntry, LogEntryTable.Defs.Columns.Id);
+            CreateExpressionColumn<long>(Defs.Columns.Calculated.UsageCount, expr);
         }
         #endregion
 

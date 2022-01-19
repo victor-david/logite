@@ -232,11 +232,11 @@ namespace Restless.Logite.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Analysis.
+        ///   Looks up a localized string similar to Domains.
         /// </summary>
-        public static string NavHeaderAnalysis {
+        public static string NavHeaderDomain {
             get {
-                return ResourceManager.GetString("NavHeaderAnalysis", resourceCulture);
+                return ResourceManager.GetString("NavHeaderDomain", resourceCulture);
             }
         }
         

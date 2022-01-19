@@ -1,14 +1,10 @@
-﻿using Restless.Logite.Core;
-using Restless.Logite.Database.Core;
+﻿using Restless.Logite.Database.Core;
 using Restless.Logite.Database.Tables;
-using Restless.Logite.Resources;
 using Restless.Toolkit.Controls;
-using Restless.Toolkit.Mvvm.Collections;
 using System;
-using System.ComponentModel;
 using System.Data;
 
-namespace Restless.Logite.ViewModel
+namespace Restless.Logite.ViewModel.Domain
 {
     /// <summary>
     /// Provides the logic that is used to display stats for a specified domain.
@@ -16,6 +12,7 @@ namespace Restless.Logite.ViewModel
     public class DomainViewModel : ApplicationViewModel
     {
         #region Private
+        private string domainStatus;
         #endregion
 
         /************************************************************************/
@@ -25,6 +22,36 @@ namespace Restless.Logite.ViewModel
         /// Gets the domain object for this domain view.
         /// </summary>
         public DomainRow Domain
+        {
+            get;
+        }
+
+        public string DomainStatus
+        {
+            get => domainStatus;
+            private set => SetProperty(ref domainStatus, value);
+        }
+
+        /// <summary>
+        /// Gets the method controller.
+        /// </summary>
+        public MethodController Method
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Gets the status controller.
+        /// </summary>
+        public StatusController Status
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Gets the log entry controller
+        /// </summary>
+        public LogEntryController LogEntry
         {
             get;
         }
@@ -41,22 +68,31 @@ namespace Restless.Logite.ViewModel
             Domain = domain ?? throw new ArgumentNullException(nameof(domain));
             DisplayName = Domain.DisplayName;
 
-            //Commands.Add("ConfigureDomains", RunConfigureDomainsCommand);
-            //Commands.Add("ConfigureLogDirectory", RunConfigureLogDirectoryCommand);
-            //Commands.Add("ConfigureDatabaseDirectory", RunConfigureDatabaseDirectoryCommand);
+            Method = new MethodController(Domain);
+            Status = new StatusController(Domain);
+            LogEntry = new LogEntryController(Domain);
+            UpdateDomainStatus();
         }
         #endregion
 
         /************************************************************************/
 
         #region Protected Methods
+        protected override void OnActivated()
+        {
+            Method.Activate();
+            Status.Activate();
+            LogEntry.Activate();
+            UpdateDomainStatus();
+        }
         #endregion
 
         /************************************************************************/
 
         #region Private methods
-        private void RunConfigureDomainsCommand(object parm)
+        private void UpdateDomainStatus()
         {
+            DomainStatus = $"{Domain.LogEntryCount} log entries";
         }
         #endregion
     }
