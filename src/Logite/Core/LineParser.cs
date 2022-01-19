@@ -41,11 +41,14 @@ namespace Restless.Logite.Core
         /// Parses a single log line
         /// </summary>
         /// <param name="line">The line to parse</param>
+        /// <param name="domainId">The domain id</param>
+        /// <param name="importFileId">The import file id</param>
+        /// <param name="importFileLineNumber">The import file line number</param>
         /// <returns>An <see cref="LogEntry"/> object</returns>
-        public static LogEntry ParseLine(string line)
+        public static LogEntry ParseLine(string line, long domainId, long importFileId, long importFileLineNumber)
         {
             Match match = Regex.Match(line, RegexExpression);
-            LogEntry parsedLine = new()
+            LogEntry parsedLine = new(domainId, importFileId, importFileLineNumber)
             {
                 RemoteAddress = match.Groups["ip"].Value,
                 Status = long.Parse(match.Groups["status"].Value),

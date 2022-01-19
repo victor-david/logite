@@ -19,12 +19,27 @@ namespace Restless.Logite.Database.Core
 
         #region Properties
         /// <summary>
-        /// Gets or set the domain id for this log entry
+        /// Gets the domain id for this log entry
         /// </summary>
         public long DomainId
         {
             get;
-            set;
+        }
+
+        /// <summary>
+        /// Gets or sets the import file id for this entry.
+        /// </summary>
+        public long ImportFileId
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Gets or sets the import file line number for this entry.
+        /// </summary>
+        public long ImportFileLineNumber
+        {
+            get;
         }
 
         /// <summary>
@@ -134,8 +149,17 @@ namespace Restless.Logite.Database.Core
         /************************************************************************/
 
         #region Constructor
-        public LogEntry()
+        /// <summary>
+        /// Creates a new instance of the <see cref="LogEntry"/> class.
+        /// </summary>
+        /// <param name="domainId">Domain id of this entry.</param>
+        /// <param name="importFileId">The import file id</param>
+        /// <param name="importFileLineNumber">The import file line number</param>
+        public LogEntry(long domainId, long importFileId, long importFileLineNumber)
         {
+            DomainId = domainId;
+            ImportFileId = importFileId;
+            ImportFileLineNumber = importFileLineNumber;
             HttpVersion = HttpVersionZero;
         }
         #endregion

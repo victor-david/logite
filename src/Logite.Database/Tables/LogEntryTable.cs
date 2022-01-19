@@ -66,6 +66,15 @@ namespace Restless.Logite.Database.Tables
                 public const string HttpVersion = "http";
 
                 /// <summary>
+                /// The id of the import file.
+                /// </summary>
+                public const string ImportFileId = "importid";
+
+                /// <summary>
+                /// The line number of the import file.
+                /// </summary>
+                public const string ImportLineNumber = "importline";
+                /// <summary>
                 /// Id of the domain
                 /// </summary>
                 public const string DomainId = "domainid";
@@ -136,6 +145,8 @@ namespace Restless.Logite.Database.Tables
                 { Defs.Columns.BytesSent, ColumnType.Integer, false, false, 0L },
                 { Defs.Columns.AttackLength, ColumnType.Integer, false, false, 0L },
                 { Defs.Columns.HttpVersion, ColumnType.Text },
+                { Defs.Columns.ImportFileId, ColumnType.Integer, false, false, 0L, IndexType.Index },
+                { Defs.Columns.ImportLineNumber, ColumnType.Integer },
                 { Defs.Columns.DomainId, ColumnType.Integer, false, false, DomainTable.Defs.Values.DomainZeroId, IndexType.Index },
                 { Defs.Columns.MethodId, ColumnType.Integer, false, false, MethodTable.Defs.Values.MethodZeroId, IndexType.Index },
                 { Defs.Columns.RequestId, ColumnType.Integer, false, false, RequestTable.Defs.Values.RequestZeroId, IndexType.Index },
@@ -158,6 +169,8 @@ namespace Restless.Logite.Database.Tables
             row[Defs.Columns.BytesSent] = entry.BytesSent;
             row[Defs.Columns.AttackLength] = entry.AttackLength;
             row[Defs.Columns.HttpVersion] = entry.HttpVersion;
+            row[Defs.Columns.ImportFileId] = entry.ImportFileId;
+            row[Defs.Columns.ImportLineNumber] = entry.ImportFileLineNumber;
             row[Defs.Columns.DomainId] = entry.DomainId;
             row[Defs.Columns.MethodId] = methodId;
             row[Defs.Columns.RequestId] = requestId;

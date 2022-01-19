@@ -109,9 +109,11 @@ namespace Restless.Logite.ViewModel
         {
             try
             {
+                ImportFileTable importTable = DatabaseController.Instance.GetTable<ImportFileTable>();
+
                 ApplicationTableBase[] tables = 
                 {
-                    DatabaseController.Instance.GetTable<ImportFileTable>(),
+                    importTable,
                     DatabaseController.Instance.GetTable<LogEntryTable>(),
                     DatabaseController.Instance.GetTable<RefererTable>(),
                     DatabaseController.Instance.GetTable<RequestTable>(),
@@ -126,11 +128,13 @@ namespace Restless.Logite.ViewModel
                     foreach (LogFile logFile in LogFiles.Where(lf => lf.Status == LogFile.StatusReady))
                     {
                         string[] lines = System.IO.File.ReadAllLines(logFile.Path);
+                        ImportFileRow import = importTable.Create(logFile.DisplayName, logFile.DomainId, lines.LongLength);
+                        long lineNumber = 0;
                         foreach (string line in lines)
                         {
-                            LogEntry entry = LineParser.ParseLine(line);
-                            entry.DomainId = logFile.DomainId;
+                            LogEntry entry = LineParser.ParseLine(line, logFile.DomainId, import.Id, lineNumber);
                             LogEntryProcessor.Process(entry);
+                            lineNumber++;
                         }
 
                         processed.Add(logFile);
@@ -146,6 +150,8 @@ namespace Restless.Logite.ViewModel
                         table.Save(transaction);
                     }
                 }, tables);
+
+                Refresh();
             }
             catch (Exception ex)
             {
