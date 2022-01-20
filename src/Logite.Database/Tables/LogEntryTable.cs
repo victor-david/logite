@@ -1,14 +1,10 @@
 ﻿using Restless.Logite.Database.Core;
 using Restless.Toolkit.Core.Database.SQLite;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Diagnostics;
-using System.Text;
 
 namespace Restless.Logite.Database.Tables
 {
-    public class LogEntryTable : Core.ApplicationTableBase
+    public class LogEntryTable : DemandDomainTable
     {
         #region Public properties
         /// <summary>
@@ -29,12 +25,7 @@ namespace Restless.Logite.Database.Tables
                 /// <summary>
                 /// The name of the id column. This is the table's primary key.
                 /// </summary>
-                public const string Id = DefaultPrimaryKeyName;
-
-                ///// <summary>
-                ///// The remote address for the log entry.
-                ///// </summary>
-                //public const string RemoteAddress = "remoteaddress";
+                public const string Id = IdColumnName;
 
                 /// <summary>
                 /// The remote user.
@@ -79,7 +70,7 @@ namespace Restless.Logite.Database.Tables
                 /// <summary>
                 /// Id of the domain
                 /// </summary>
-                public const string DomainId = "domainid";
+                public const string DomainId = DomainIdColumnName;
 
                 /// <summary>
                 /// Id of the ip address entry
@@ -150,13 +141,6 @@ namespace Restless.Logite.Database.Tables
         /************************************************************************/
 
         #region Public methods
-        /// <summary>
-        /// Loads the data from the database into the Data collection for this table.
-        /// </summary>
-        public override void Load()
-        {
-            Load(null, $"{Defs.Columns.Id} DESC");
-        }
         #endregion
 
         /************************************************************************/
@@ -171,7 +155,6 @@ namespace Restless.Logite.Database.Tables
             return new ColumnDefinitionCollection()
             {
                 { Defs.Columns.Id, ColumnType.Integer, true },
-                //{ Defs.Columns.RemoteAddress, ColumnType.Text, false, false, null, IndexType.Index},
                 { Defs.Columns.RemoteUser, ColumnType.Text, false, true },
                 { Defs.Columns.Timestamp, ColumnType.Timestamp, false, false, null, IndexType.Index },
                 { Defs.Columns.Status, ColumnType.Integer, false, false, 0L, IndexType.Index },
@@ -183,9 +166,9 @@ namespace Restless.Logite.Database.Tables
                 { Defs.Columns.DomainId, ColumnType.Integer, false, false, DomainTable.Defs.Values.DomainZeroId, IndexType.Index },
                 { Defs.Columns.IpAddressId, ColumnType.Integer, false, false, 0L, IndexType.Index },
                 { Defs.Columns.MethodId, ColumnType.Integer, false, false, MethodTable.Defs.Values.MethodZeroId, IndexType.Index },
-                { Defs.Columns.RequestId, ColumnType.Integer, false, false, RequestTable.Defs.Values.RequestZeroId, IndexType.Index },
-                { Defs.Columns.RefererId, ColumnType.Integer, false, false, RefererTable.Defs.Values.RefererZeroId, IndexType.Index },
-                { Defs.Columns.UserAgentId, ColumnType.Integer, false, false, UserAgentTable.Defs.Values.UserAgentZeroId, IndexType.Index }
+                { Defs.Columns.RequestId, ColumnType.Integer, false, false, null, IndexType.Index },
+                { Defs.Columns.RefererId, ColumnType.Integer, false, false, null, IndexType.Index },
+                { Defs.Columns.UserAgentId, ColumnType.Integer, false, false, null, IndexType.Index }
             };
         }
 
@@ -204,7 +187,6 @@ namespace Restless.Logite.Database.Tables
         internal void Insert(LogEntry entry, long ipAddressId, long methodId, long requestId, long refererId, long agentId)
         {
             DataRow row = NewRow();
-            //row[Defs.Columns.RemoteAddress] = entry.RemoteAddress;
             row[Defs.Columns.RemoteUser] = entry.RemoteUser;
             row[Defs.Columns.Timestamp] = entry.RequestTime;
             row[Defs.Columns.Status] = entry.Status;
@@ -220,6 +202,7 @@ namespace Restless.Logite.Database.Tables
             row[Defs.Columns.RefererId] = refererId;
             row[Defs.Columns.UserAgentId] = agentId;
             Rows.Add(row);
+            Save();
         }
         #endregion
     }

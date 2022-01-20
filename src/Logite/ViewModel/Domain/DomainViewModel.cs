@@ -84,6 +84,7 @@ namespace Restless.Logite.ViewModel.Domain
         #region Protected Methods
         protected override void OnActivated()
         {
+            DemandDomainController.Instance.Load(Domain.Id);
             Method.Activate();
             //Status.Activate();
             LogEntry.Activate();

@@ -1,11 +1,11 @@
-﻿using Restless.Toolkit.Core.Database.SQLite;
-using System.Collections.Generic;
+﻿using Restless.Logite.Database.Core;
+using Restless.Toolkit.Core.Database.SQLite;
+using System;
 using System.Data;
-using System.Diagnostics;
 
 namespace Restless.Logite.Database.Tables
 {
-    public class IpAddressTable : Core.ApplicationTableBase
+    public class IpAddressTable : DemandDomainTable
     {
         #region Public properties
         /// <summary>
@@ -26,7 +26,12 @@ namespace Restless.Logite.Database.Tables
                 /// <summary>
                 /// The name of the id column. This is the table's primary key.
                 /// </summary>
-                public const string Id = DefaultPrimaryKeyName;
+                public const string Id = IdColumnName;
+
+                /// <summary>
+                /// Id of domain.
+                /// </summary>
+                public const string DomainId = DomainIdColumnName;
 
                 /// <summary>
                 /// The request.
@@ -55,22 +60,6 @@ namespace Restless.Logite.Database.Tables
                 /// </summary>
                 public const string ToLogEntry = "IpToLogEntry";
             }
-
-            /// <summary>
-            /// Provides static values.
-            /// </summary>
-            public static class Values
-            {
-                /// <summary>
-                /// The id for the "No ip address" entry.
-                /// </summary>
-                public const long IpAddressZeroId = 0;
-
-                /// <summary>
-                /// The name for the "No ip address" entry.
-                /// </summary>
-                public const string IpAddressZeroName = "--";
-            }
         }
         #endregion
 
@@ -88,13 +77,6 @@ namespace Restless.Logite.Database.Tables
         /************************************************************************/
 
         #region Public methods
-        /// <summary>
-        /// Loads the data from the database into the Data collection for this table.
-        /// </summary>
-        public override void Load()
-        {
-            Load(null, Defs.Columns.Id);
-        }
         #endregion
 
         /************************************************************************/
@@ -109,27 +91,9 @@ namespace Restless.Logite.Database.Tables
             return new ColumnDefinitionCollection()
             {
                 { Defs.Columns.Id, ColumnType.Integer, true },
+                { Defs.Columns.DomainId, ColumnType.Integer, false, false, DomainTable.Defs.Values.DomainZeroId, IndexType.Index },
                 { Defs.Columns.IpAddress, ColumnType.Text },
             };
-        }
-
-        /// <summary>
-        /// Gets a list of column names to use in subsequent initial insert operations.
-        /// These are used only when the table is empty, i.e. upon first creation.
-        /// </summary>
-        /// <returns>A list of column names</returns>
-        protected override List<string> GetPopulateColumnList()
-        {
-            return new List<string>() { Defs.Columns.Id, Defs.Columns.IpAddress };
-        }
-
-        /// <summary>
-        /// Provides an enumerable that returns values for each row to be populated.
-        /// </summary>
-        /// <returns>An IEnumerable</returns>
-        protected override IEnumerable<object[]> EnumeratePopulateValues()
-        {
-            yield return new object[] { Defs.Values.IpAddressZeroId, Defs.Values.IpAddressZeroName };
         }
 
         /// <inheritdoc/>
@@ -152,28 +116,29 @@ namespace Restless.Logite.Database.Tables
         /// <summary>
         /// Inserts an ip address record if it doesn't yet exist.
         /// </summary>
-        /// <param name="ipAddress">The ip address</param>
+        /// <param name="entry">The log entry</param>
         /// <returns>The newly inserted id, or the existing id</returns>
-        internal long InsertIf(string ipAddress)
+        internal long InsertIf(LogEntry entry)
         {
-            if (!string.IsNullOrEmpty(ipAddress))
+            /* RemoteAddress should never be empty */
+            if (string.IsNullOrEmpty(entry.RemoteAddress))
             {
-                DataRow row = GetUniqueRow(Select($"{Defs.Columns.IpAddress}='{ipAddress}'"));
-                if (row != null)
-                {
-                    return (long)row[Defs.Columns.Id];
-                }
+                throw new ArgumentNullException(nameof(entry.RemoteAddress));
+            }
 
-                row = NewRow();
-                row[Defs.Columns.IpAddress] = ipAddress;
-                Rows.Add(row);
-                Save();
+            DataRow row = GetUniqueRow(Select($"{Defs.Columns.IpAddress}='{entry.RemoteAddress}' AND {Defs.Columns.DomainId}={entry.DomainId}"));
+            if (row != null)
+            {
                 return (long)row[Defs.Columns.Id];
             }
 
-            return Defs.Values.IpAddressZeroId;
+            row = NewRow();
+            row[Defs.Columns.DomainId] = entry.DomainId;
+            row[Defs.Columns.IpAddress] = entry.RemoteAddress;
+            Rows.Add(row);
+            Save();
+            return (long)row[Defs.Columns.Id];
         }
         #endregion
-
     }
 }

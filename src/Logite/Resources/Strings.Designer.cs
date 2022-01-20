@@ -61,6 +61,15 @@ namespace Restless.Logite.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Domain.
+        /// </summary>
+        public static string HeaderDomain {
+            get {
+                return ResourceManager.GetString("HeaderDomain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Domains.
         /// </summary>
         public static string HeaderDomainView {
@@ -129,6 +138,24 @@ namespace Restless.Logite.Resources {
         public static string MenuItemClearData {
             get {
                 return ResourceManager.GetString("MenuItemClearData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Charts.
+        /// </summary>
+        public static string MenuItemDomainCharts {
+            get {
+                return ResourceManager.GetString("MenuItemDomainCharts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Overview.
+        /// </summary>
+        public static string MenuItemDomainOverview {
+            get {
+                return ResourceManager.GetString("MenuItemDomainOverview", resourceCulture);
             }
         }
         

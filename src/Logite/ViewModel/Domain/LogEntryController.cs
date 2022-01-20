@@ -13,7 +13,7 @@ namespace Restless.Logite.ViewModel.Domain
 
         public LogEntryController(DomainRow domain): base(domain)
         {
-            Columns.Create("Id", LogEntryTable.Defs.Columns.DomainId).MakeFixedWidth(FixedWidth.W032);
+            Columns.Create("Id", LogEntryTable.Defs.Columns.Id).MakeFixedWidth(FixedWidth.W052);
             Columns.Create("Timestamp", LogEntryTable.Defs.Columns.Timestamp).MakeDate(Config.LogDisplayFormat).MakeFixedWidth(FixedWidth.W136);
             Columns.Create("Ip", LogEntryTable.Defs.Columns.Calculated.IpAddress).MakeFixedWidth(FixedWidth.W096);
             Columns.Create("Method", LogEntryTable.Defs.Columns.Calculated.Method).MakeFixedWidth(FixedWidth.W076);
@@ -68,7 +68,7 @@ namespace Restless.Logite.ViewModel.Domain
 
         protected override int OnDataRowCompare(DataRow item1, DataRow item2)
         {
-            return DataRowCompareLong(item2, item1, LogEntryTable.Defs.Columns.Id);
+            return DataRowCompareDateTime(item2, item1, LogEntryTable.Defs.Columns.Timestamp);
         }
 
         private bool EvaluateFilters(DataRow item)

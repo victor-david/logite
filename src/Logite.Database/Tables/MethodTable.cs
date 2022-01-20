@@ -58,11 +58,6 @@ namespace Restless.Logite.Database.Tables
                 /// The name of the relation that relates the <see cref="MethodTable"/> to the <see cref="LogEntryTable"/>.
                 /// </summary>
                 public const string ToLogEntry = "MethodToLogEntry";
-
-                /// <summary>
-                /// The name of the relation that relates the <see cref="MethodTable"/> to the <see cref="DomainMethodTable"/>.
-                /// </summary>
-                public const string ToDomainMethod = "MethodToDomainMethod";
             }
 
             /// <summary>
@@ -186,7 +181,6 @@ namespace Restless.Logite.Database.Tables
         protected override void SetDataRelations()
         {
             CreateParentChildRelation<LogEntryTable>(Defs.Relations.ToLogEntry, Defs.Columns.Id, LogEntryTable.Defs.Columns.MethodId);
-            CreateParentChildRelation<DomainMethodTable>(Defs.Relations.ToDomainMethod, Defs.Columns.Id, DomainMethodTable.Defs.Columns.MethodId);
         }
 
         /// <inheritdoc/>
@@ -196,12 +190,5 @@ namespace Restless.Logite.Database.Tables
             CreateExpressionColumn<long>(Defs.Columns.Calculated.UsageCount, expr);
         }
         #endregion
-
-        /************************************************************************/
-
-        #region Internal methods
-
-        #endregion
-
     }
 }

@@ -128,7 +128,6 @@ namespace Restless.Logite.ViewModel
                     DatabaseController.Instance.GetTable<RefererTable>(),
                     DatabaseController.Instance.GetTable<RequestTable>(),
                     DatabaseController.Instance.GetTable<UserAgentTable>(),
-                    DatabaseController.Instance.GetTable<DomainMethodTable>()
                 };
 
                 DatabaseController.Instance.Transaction.ExecuteTransaction((transaction) =>
@@ -138,6 +137,7 @@ namespace Restless.Logite.ViewModel
 
                     foreach (ImportFile logFile in ImportFiles.Where(lf => lf.Status == ImportFile.StatusReady))
                     {
+                        DemandDomainController.Instance.Load(logFile.DomainId);
                         string[] lines = System.IO.File.ReadAllLines(logFile.Path);
                         ImportFileRow import = importTable.Create(logFile.DisplayName, logFile.DomainId, lines.LongLength);
                         long lineNumber = 0;
@@ -155,8 +155,6 @@ namespace Restless.Logite.ViewModel
                     {
                         ImportFiles.Remove(logFile);
                     }
-
-                    DatabaseController.Instance.GetTable<DomainMethodTable>().UpdateUsage();
 
                     foreach (ApplicationTableBase table in tables)
                     {

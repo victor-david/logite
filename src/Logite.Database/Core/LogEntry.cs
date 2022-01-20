@@ -10,9 +10,31 @@ namespace Restless.Logite.Database.Core
     public class LogEntry
     {
         #region Private
-        private string referer;
-        private string userAgent;
         private const string HttpVersionZero = "0.0";
+        #endregion
+
+        /************************************************************************/
+
+        #region Constants
+        /// <summary>
+        /// Used when a request, referer, or user agent is empty.
+        /// </summary>
+        public const string EmptyEntryPlaceholder = "--";
+
+        /// <summary>
+        /// Used when a request is a byte attack.
+        /// </summary>
+        public const string RequestAttackName = "Byte Attack";
+
+        /// <summary>
+        /// The name for an attack referer.
+        /// </summary>
+        public const string RefererAttackName = "Referer attack";
+
+        /// <summary>
+        /// The name for an attack user agent.
+        /// </summary>
+        public const string UserAgentAttackName = "User Agent attack";
         #endregion
 
         /************************************************************************/
@@ -128,21 +150,23 @@ namespace Restless.Logite.Database.Core
         }
 
         /// <summary>
-        /// Gets or sets the referer.
+        /// Gets the referer.
+        /// To set, call <see cref="SetReferer(string)"/>
         /// </summary>
         public string Referer
         {
-            get => referer;
-            set => SetCleanValue(ref referer, value, RefererTable.Defs.Values.RefererAttackName);
+            get;
+            private set;
         }
 
         /// <summary>
-        /// Gets or sets the user agent.
+        /// Gets the user agent.
+        /// To set, call <see cref="SetUserAgent(string)"/>
         /// </summary>
         public string UserAgent
         {
-            get => userAgent;
-            set => SetCleanValue(ref userAgent, value, UserAgentTable.Defs.Values.UserAgentAttackName);
+            get;
+            private set;
         }
         #endregion
 
@@ -161,6 +185,7 @@ namespace Restless.Logite.Database.Core
             ImportFileId = importFileId;
             ImportFileLineNumber = importFileLineNumber;
             HttpVersion = HttpVersionZero;
+            Request = Referer = UserAgent = EmptyEntryPlaceholder;
         }
         #endregion
 
@@ -205,7 +230,7 @@ namespace Restless.Logite.Database.Core
                 if (string.IsNullOrEmpty(Method) || request.Contains(@"\x"))
                 {
                     AttackLength = request.Length;
-                    request = RequestTable.Defs.Values.ByteAttackRequest;
+                    request = RequestAttackName;
                 }
                 else
                 {
@@ -222,6 +247,28 @@ namespace Restless.Logite.Database.Core
                 }
                 Request = Uri.UnescapeDataString(request);
             }
+            else
+            {
+                Request = EmptyEntryPlaceholder;
+            }
+        }
+
+        /// <summary>
+        /// Sets the referer.
+        /// </summary>
+        /// <param name="value"></param>
+        public void SetReferer(string value)
+        {
+            Referer = GetCleanValue(value, RefererAttackName);
+        }
+
+        /// <summary>
+        /// Sets the user agent.
+        /// </summary>
+        /// <param name="value"></param>
+        public void SetUserAgent(string value)
+        {
+            UserAgent = GetCleanValue(value, UserAgentAttackName);
         }
 
         /// <summary>
@@ -237,19 +284,13 @@ namespace Restless.Logite.Database.Core
         /************************************************************************/
 
         #region Private methods
-        private void SetCleanValue(ref string target, string value, string attackName)
+        private string GetCleanValue(string value, string attackName)
         {
-            if (!string.IsNullOrEmpty(value) && value != "-")
+            if (string.IsNullOrEmpty(value) || value == "-")
             {
-                if (value.Contains(@"\x"))
-                {
-                    target = attackName;
-                }
-                else
-                {
-                    target = value;
-                }
+                return EmptyEntryPlaceholder;
             }
+            return value.Contains(@"\x") ? attackName : value;
         }
         #endregion
     }

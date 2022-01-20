@@ -5,12 +5,15 @@ using System.Data;
 
 namespace Restless.Logite.ViewModel.Domain
 {
-    public class MethodController : DomainController<DomainMethodTable>
+    /// <summary>
+    /// Display http methods (GET, POST, etc)
+    /// </summary>
+    public class MethodController : DomainController<MethodTable>
     {
         public MethodController(DomainRow domain) : base(domain)
         {
-            Columns.Create("Method", DomainMethodTable.Defs.Columns.Calculated.Method);
-            Columns.Create("Count", DomainMethodTable.Defs.Columns.UsageCount).MakeFixedWidth(FixedWidth.W096);
+            Columns.Create("Method", MethodTable.Defs.Columns.Method);
+            Columns.Create("Count", MethodTable.Defs.Columns.Calculated.UsageCount).MakeFixedWidth(FixedWidth.W096);
         }
 
         protected override void OnActivated()
@@ -19,18 +22,10 @@ namespace Restless.Logite.ViewModel.Domain
             Refresh();
         }
 
-        protected override bool OnDataRowFilter(DataRow item)
-        {
-            return 
-                Domain != null &&
-                (long)item[DomainMethodTable.Defs.Columns.DomainId] == Domain.Id;
-        }
-
         protected override void OnSelectedItemChanged()
         {
-            long id = (SelectedDataRow != null) ? (long)SelectedDataRow[DomainMethodTable.Defs.Columns.MethodId] : -1;
+            long id = (SelectedDataRow != null) ? (long)SelectedDataRow[MethodTable.Defs.Columns.Id] : -1;
             OnSelectedItemChanged(id);
-           
         }
     }
 }

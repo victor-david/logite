@@ -1,4 +1,5 @@
-﻿using Restless.Toolkit.Core.Database.SQLite;
+﻿using Restless.Logite.Database.Core;
+using Restless.Toolkit.Core.Database.SQLite;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -6,7 +7,7 @@ using System.Text;
 
 namespace Restless.Logite.Database.Tables
 {
-    public class UserAgentTable : Core.ApplicationTableBase
+    public class UserAgentTable : DemandDomainTable
     {
         #region Public properties
         /// <summary>
@@ -27,7 +28,12 @@ namespace Restless.Logite.Database.Tables
                 /// <summary>
                 /// The name of the id column. This is the table's primary key.
                 /// </summary>
-                public const string Id = DefaultPrimaryKeyName;
+                public const string Id = IdColumnName;
+
+                /// <summary>
+                /// Id of the domain.
+                /// </summary>
+                public const string DomainId = DomainIdColumnName;
 
                 /// <summary>
                 /// The user agent string
@@ -56,27 +62,6 @@ namespace Restless.Logite.Database.Tables
                 /// </summary>
                 public const string ToLogEntry = "AgentToLogEntry";
             }
-
-            /// <summary>
-            /// Provides static values.
-            /// </summary>
-            public static class Values
-            {
-                /// <summary>
-                /// The id for the "No user agent" entry.
-                /// </summary>
-                public const long UserAgentZeroId = 0;
-
-                /// <summary>
-                /// The name for the "No user agent" entry.
-                /// </summary>
-                public const string UserAgentZeroName = "--";
-
-                /// <summary>
-                /// The name for an attack user agent.
-                /// </summary>
-                public const string UserAgentAttackName = "User Agent attack";
-            }
         }
         #endregion
 
@@ -94,13 +79,6 @@ namespace Restless.Logite.Database.Tables
         /************************************************************************/
 
         #region Public methods
-        /// <summary>
-        /// Loads the data from the database into the Data collection for this table.
-        /// </summary>
-        public override void Load()
-        {
-            Load(null, Defs.Columns.Id);
-        }
         #endregion
 
         /************************************************************************/
@@ -115,27 +93,9 @@ namespace Restless.Logite.Database.Tables
             return new ColumnDefinitionCollection()
             {
                 { Defs.Columns.Id, ColumnType.Integer, true },
+                { Defs.Columns.DomainId, ColumnType.Integer, false, false, DomainTable.Defs.Values.DomainZeroId, IndexType.Index },
                 { Defs.Columns.Agent, ColumnType.Text}
             };
-        }
-
-        /// <summary>
-        /// Gets a list of column names to use in subsequent initial insert operations.
-        /// These are used only when the table is empty, i.e. upon first creation.
-        /// </summary>
-        /// <returns>A list of column names</returns>
-        protected override List<string> GetPopulateColumnList()
-        {
-            return new List<string>() { Defs.Columns.Id, Defs.Columns.Agent };
-        }
-
-        /// <summary>
-        /// Provides an enumerable that returns values for each row to be populated.
-        /// </summary>
-        /// <returns>An IEnumerable</returns>
-        protected override IEnumerable<object[]> EnumeratePopulateValues()
-        {
-            yield return new object[] { Defs.Values.UserAgentZeroId, Defs.Values.UserAgentZeroName };
         }
 
         /// <inheritdoc/>
@@ -158,25 +118,30 @@ namespace Restless.Logite.Database.Tables
         /// <summary>
         /// Inserts a user agent record if it doesn't yet exist.
         /// </summary>
-        /// <param name="agent">The agent</param>
+        /// <param name="entry">The agent</param>
         /// <returns>The newly inserted id, or the existing id</returns>
-        internal long InsertIf(string agent)
+        internal long InsertIf(LogEntry entry)
         {
-            if (!string.IsNullOrEmpty(agent))
+            /* Agent should never be empty. If it comes from the logs as empty (which is possible),
+             * it gets set to LogEntry.EmptyEntryPlaceholder in the LogEntry.SetUserAgent(value)
+             */
+            if (string.IsNullOrEmpty(entry.UserAgent))
             {
-                DataRow row = GetUniqueRow(Select($"{Defs.Columns.Agent}='{agent}'"));
-                if (row != null)
-                {
-                    return (long)row[Defs.Columns.Id];
-                }
+                throw new ArgumentNullException(nameof(entry.UserAgent));
+            }
 
-                row = NewRow();
-                row[Defs.Columns.Agent] = agent;
-                Rows.Add(row);
-                Save();
+            DataRow row = GetUniqueRow(Select($"{Defs.Columns.Agent}='{entry.UserAgent}' AND {Defs.Columns.DomainId}={entry.DomainId}"));
+            if (row != null)
+            {
                 return (long)row[Defs.Columns.Id];
             }
-            return Defs.Values.UserAgentZeroId;
+
+            row = NewRow();
+            row[Defs.Columns.DomainId] = entry.DomainId;
+            row[Defs.Columns.Agent] = entry.UserAgent;
+            Rows.Add(row);
+            Save();
+            return (long)row[Defs.Columns.Id];
         }
         #endregion
     }

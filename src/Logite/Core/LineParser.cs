@@ -1,15 +1,10 @@
 ﻿using Restless.Logite.Database.Core;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace Restless.Logite.Core
 {
     /// <summary>
-    /// 
+    /// Provides static method to parse a single log line.
     /// </summary>
     public static class LineParser
     {
@@ -48,17 +43,18 @@ namespace Restless.Logite.Core
         public static LogEntry ParseLine(string line, long domainId, long importFileId, long importFileLineNumber)
         {
             Match match = Regex.Match(line, RegexExpression);
-            LogEntry parsedLine = new(domainId, importFileId, importFileLineNumber)
+            LogEntry logEntry = new(domainId, importFileId, importFileLineNumber)
             {
                 RemoteAddress = match.Groups["ip"].Value,
                 Status = long.Parse(match.Groups["status"].Value),
                 BytesSent = long.Parse(match.Groups["bytes"].Value),
-                Referer = match.Groups["referer"].Value,
-                UserAgent = match.Groups["agent"].Value
             };
-            parsedLine.SetRequestTime(match.Groups["date"].Value, Config.Instance.LogLineDateFormat, Config.Instance.LogLineCulture);
-            parsedLine.SetRequest(match.Groups["request"].Value);
-            return parsedLine;
+            logEntry.SetRequestTime(match.Groups["date"].Value, Config.Instance.LogLineDateFormat, Config.Instance.LogLineCulture);
+            logEntry.SetRequest(match.Groups["request"].Value);
+            logEntry.SetReferer(match.Groups["referer"].Value);
+            logEntry.SetUserAgent(match.Groups["agent"].Value);
+
+            return logEntry;
         }
     }
 }
