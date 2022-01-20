@@ -73,7 +73,8 @@ namespace Restless.Logite.ViewModel.Domain
             Status = new StatusController(Domain);
             LogEntry = new LogEntryController(Domain);
 
-            Method.SelectedItemChanged += (s, id) => LogEntry.UpdateFilter(LogEntryTable.Defs.Columns.MethodId, id); 
+            Method.SelectedItemChanged += (s, id) => LogEntry.UpdateFilter(LogEntryTable.Defs.Columns.MethodId, id);
+            Status.SelectedItemChanged += (s, id) => LogEntry.UpdateFilter(LogEntryTable.Defs.Columns.Status, id);
 
             UpdateDomainStatus();
         }
@@ -86,7 +87,7 @@ namespace Restless.Logite.ViewModel.Domain
         {
             DemandDomainController.Instance.Load(Domain.Id);
             Method.Activate();
-            //Status.Activate();
+            Status.Activate();
             LogEntry.Activate();
             UpdateDomainStatus();
         }
@@ -94,6 +95,7 @@ namespace Restless.Logite.ViewModel.Domain
         protected override void OnDeactivated()
         {
             Method.Deactivate();
+            Status.Deactivate();
             LogEntry.Deactivate();
         }
         #endregion

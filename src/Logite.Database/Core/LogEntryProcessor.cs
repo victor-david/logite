@@ -11,6 +11,7 @@ namespace Restless.Logite.Database.Core
         private static LogEntryTable logEntryTable = null;
         private static IpAddressTable ipAddressTable = null;
         private static MethodTable methodTable = null;
+        private static StatusTable statusTable = null;
         private static RefererTable refererTable = null;
         private static RequestTable requestTable = null;
         private static UserAgentTable agentTable = null;
@@ -24,6 +25,7 @@ namespace Restless.Logite.Database.Core
             logEntryTable = DatabaseController.Instance.GetTable<LogEntryTable>();
             ipAddressTable = DatabaseController.Instance.GetTable<IpAddressTable>();
             methodTable = DatabaseController.Instance.GetTable<MethodTable>();
+            statusTable = DatabaseController.Instance.GetTable<StatusTable>();
             refererTable = DatabaseController.Instance.GetTable<RefererTable>();
             requestTable = DatabaseController.Instance.GetTable<RequestTable>();
             agentTable = DatabaseController.Instance.GetTable<UserAgentTable>();
@@ -43,6 +45,7 @@ namespace Restless.Logite.Database.Core
                 long requestId = requestTable.InsertIf(entry);
                 long refererId = refererTable.InsertIf(entry);
                 long agentId = agentTable.InsertIf(entry);
+                _ =  statusTable.InsertIf(entry);
                 logEntryTable.Insert(entry, ipAddressId, methodId, requestId, refererId, agentId);
             }
         }

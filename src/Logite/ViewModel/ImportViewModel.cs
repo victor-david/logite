@@ -127,6 +127,7 @@ namespace Restless.Logite.ViewModel
                     DatabaseController.Instance.GetTable<IpAddressTable>(),
                     DatabaseController.Instance.GetTable<RefererTable>(),
                     DatabaseController.Instance.GetTable<RequestTable>(),
+                    DatabaseController.Instance.GetTable<StatusTable>(),
                     DatabaseController.Instance.GetTable<UserAgentTable>(),
                 };
 

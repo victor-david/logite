@@ -22,6 +22,16 @@ namespace Restless.Logite.ViewModel.Domain
             Refresh();
         }
 
+        protected override bool OnDataRowFilter(DataRow item)
+        {
+            return (long)item[MethodTable.Defs.Columns.Calculated.UsageCount] > 0;
+        }
+
+        protected override int OnDataRowCompare(DataRow item1, DataRow item2)
+        {
+            return DataRowCompareLong(item1, item2, MethodTable.Defs.Columns.Id);
+        }
+
         protected override void OnSelectedItemChanged()
         {
             long id = (SelectedDataRow != null) ? (long)SelectedDataRow[MethodTable.Defs.Columns.Id] : -1;

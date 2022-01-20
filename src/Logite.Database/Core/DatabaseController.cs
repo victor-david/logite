@@ -130,6 +130,7 @@ namespace Restless.Logite.Database.Core
                 CreateAndRegisterTable<MethodTable>();
                 CreateAndRegisterTable<RefererTable>();
                 CreateAndRegisterTable<RequestTable>();
+                CreateAndRegisterTable<StatusTable>();
                 CreateAndRegisterTable<UserAgentTable>();
                 TableRegistrationComplete(MainAppSchemaName);
                 MainDatabaseAlias = alias;
