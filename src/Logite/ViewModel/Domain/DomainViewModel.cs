@@ -3,6 +3,7 @@ using Restless.Logite.Database.Tables;
 using Restless.Toolkit.Controls;
 using System;
 using System.Data;
+using System.Diagnostics;
 
 namespace Restless.Logite.ViewModel.Domain
 {
@@ -71,6 +72,9 @@ namespace Restless.Logite.ViewModel.Domain
             Method = new MethodController(Domain);
             Status = new StatusController(Domain);
             LogEntry = new LogEntryController(Domain);
+
+            Method.SelectedItemChanged += (s, id) => LogEntry.UpdateFilter(LogEntryTable.Defs.Columns.MethodId, id); 
+
             UpdateDomainStatus();
         }
         #endregion
@@ -81,9 +85,15 @@ namespace Restless.Logite.ViewModel.Domain
         protected override void OnActivated()
         {
             Method.Activate();
-            Status.Activate();
+            //Status.Activate();
             LogEntry.Activate();
             UpdateDomainStatus();
+        }
+
+        protected override void OnDeactivated()
+        {
+            Method.Deactivate();
+            LogEntry.Deactivate();
         }
         #endregion
 

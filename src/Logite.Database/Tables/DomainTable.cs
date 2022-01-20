@@ -72,6 +72,11 @@ namespace Restless.Logite.Database.Tables
                 /// The name of the relation that relates the <see cref="DomainTable"/> to the <see cref="LogEntryTable"/>.
                 /// </summary>
                 public const string ToLogEntry = "DomainToLogEntry";
+
+                /// <summary>
+                /// The name of the relation that relates the <see cref="DomainTable"/> to the <see cref="DomainMethodTable"/>.
+                /// </summary>
+                public const string ToDomainMethod = "DomainToDomainMethod";
             }
 
             /// <summary>
@@ -197,6 +202,7 @@ namespace Restless.Logite.Database.Tables
         {
             CreateParentChildRelation<ImportFileTable>(Defs.Relations.ToImportFile, Defs.Columns.Id, ImportFileTable.Defs.Columns.DomainId);
             CreateParentChildRelation<LogEntryTable>(Defs.Relations.ToLogEntry, Defs.Columns.Id, LogEntryTable.Defs.Columns.DomainId);
+            CreateParentChildRelation<DomainMethodTable>(Defs.Relations.ToDomainMethod, Defs.Columns.Id, DomainMethodTable.Defs.Columns.DomainId);
         }
 
         /// <inheritdoc/>

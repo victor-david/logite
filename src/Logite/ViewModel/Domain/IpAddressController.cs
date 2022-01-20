@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Restless.Logite.ViewModel.Domain
 {
-    public class StatusController //: DomainController
+    public class IpAddressController //: DomainController
     {
-        public StatusController(DomainRow domain): base()
+        public IpAddressController(DomainRow domain): base()
         {
 
         }

@@ -25,6 +25,10 @@
                 <vw:Status/>
             </Border>
 
+            <Border Grid.Column="2">
+                <vw:IpAddress/>
+            </Border>
+
             <Border Grid.Row="1" Grid.ColumnSpan="3">
                 <vw:LogEntry/>
             </Border>
