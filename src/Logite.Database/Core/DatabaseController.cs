@@ -127,6 +127,7 @@ namespace Restless.Logite.Database.Core
                 CreateAndRegisterTable<DomainMethodTable>();
                 CreateAndRegisterTable<LogEntryTable>();
                 CreateAndRegisterTable<ImportFileTable>();
+                CreateAndRegisterTable<IpAddressTable>();
                 CreateAndRegisterTable<MethodTable>();
                 CreateAndRegisterTable<RefererTable>();
                 CreateAndRegisterTable<RequestTable>();

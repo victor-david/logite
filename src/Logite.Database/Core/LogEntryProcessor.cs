@@ -9,6 +9,7 @@ namespace Restless.Logite.Database.Core
     public static class LogEntryProcessor
     {
         private static LogEntryTable logEntryTable = null;
+        private static IpAddressTable ipAddressTable = null;
         private static MethodTable methodTable = null;
         private static RefererTable refererTable = null;
         private static RequestTable requestTable = null;
@@ -21,6 +22,7 @@ namespace Restless.Logite.Database.Core
         public static void Init()
         {
             logEntryTable = DatabaseController.Instance.GetTable<LogEntryTable>();
+            ipAddressTable = DatabaseController.Instance.GetTable<IpAddressTable>();
             methodTable = DatabaseController.Instance.GetTable<MethodTable>();
             refererTable = DatabaseController.Instance.GetTable<RefererTable>();
             requestTable = DatabaseController.Instance.GetTable<RequestTable>();
@@ -36,11 +38,12 @@ namespace Restless.Logite.Database.Core
         {
             if (isInitialized)
             {
+                long ipAddressId = ipAddressTable.InsertIf(entry.RemoteAddress);
                 long methodId = methodTable.GetMethodId(entry.Method);
                 long requestId = requestTable.InsertIf(entry.Request);
                 long refererId = refererTable.InsertIf(entry.Referer);
                 long agentId = agentTable.InsertIf(entry.UserAgent);
-                logEntryTable.Insert(entry, methodId, requestId, refererId, agentId);
+                logEntryTable.Insert(entry, ipAddressId, methodId, requestId, refererId, agentId);
             }
         }
     }

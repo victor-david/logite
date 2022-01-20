@@ -15,7 +15,7 @@ namespace Restless.Logite.ViewModel.Domain
         {
             Columns.Create("Id", LogEntryTable.Defs.Columns.DomainId).MakeFixedWidth(FixedWidth.W032);
             Columns.Create("Timestamp", LogEntryTable.Defs.Columns.Timestamp).MakeDate(Config.LogDisplayFormat).MakeFixedWidth(FixedWidth.W136);
-            Columns.Create("Ip", LogEntryTable.Defs.Columns.RemoteAddress).MakeFixedWidth(FixedWidth.W096);
+            Columns.Create("Ip", LogEntryTable.Defs.Columns.Calculated.IpAddress).MakeFixedWidth(FixedWidth.W096);
             Columns.Create("Method", LogEntryTable.Defs.Columns.Calculated.Method).MakeFixedWidth(FixedWidth.W076);
             Columns.Create("Request", LogEntryTable.Defs.Columns.Calculated.Request);
             Columns.Create("Status", LogEntryTable.Defs.Columns.Status).MakeFixedWidth(FixedWidth.W052);

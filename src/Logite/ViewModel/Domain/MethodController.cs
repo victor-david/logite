@@ -1,12 +1,7 @@
-﻿using Restless.Logite.Database.Core;
+﻿using Restless.Logite.Core;
 using Restless.Logite.Database.Tables;
-using System;
-using System.Collections.Generic;
+using Restless.Toolkit.Controls;
 using System.Data;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Restless.Logite.ViewModel.Domain
 {
@@ -15,7 +10,7 @@ namespace Restless.Logite.ViewModel.Domain
         public MethodController(DomainRow domain) : base(domain)
         {
             Columns.Create("Method", DomainMethodTable.Defs.Columns.Calculated.Method);
-            Columns.Create("Count", DomainMethodTable.Defs.Columns.UsageCount);
+            Columns.Create("Count", DomainMethodTable.Defs.Columns.UsageCount).MakeFixedWidth(FixedWidth.W096);
         }
 
         protected override void OnActivated()

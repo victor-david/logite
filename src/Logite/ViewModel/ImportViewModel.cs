@@ -124,9 +124,11 @@ namespace Restless.Logite.ViewModel
                 {
                     importTable,
                     DatabaseController.Instance.GetTable<LogEntryTable>(),
+                    DatabaseController.Instance.GetTable<IpAddressTable>(),
                     DatabaseController.Instance.GetTable<RefererTable>(),
                     DatabaseController.Instance.GetTable<RequestTable>(),
-                    DatabaseController.Instance.GetTable<UserAgentTable>()
+                    DatabaseController.Instance.GetTable<UserAgentTable>(),
+                    DatabaseController.Instance.GetTable<DomainMethodTable>()
                 };
 
                 DatabaseController.Instance.Transaction.ExecuteTransaction((transaction) =>
@@ -153,6 +155,8 @@ namespace Restless.Logite.ViewModel
                     {
                         ImportFiles.Remove(logFile);
                     }
+
+                    DatabaseController.Instance.GetTable<DomainMethodTable>().UpdateUsage();
 
                     foreach (ApplicationTableBase table in tables)
                     {

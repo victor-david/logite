@@ -31,10 +31,10 @@ namespace Restless.Logite.Database.Tables
                 /// </summary>
                 public const string Id = DefaultPrimaryKeyName;
 
-                /// <summary>
-                /// The remote address for the log entry.
-                /// </summary>
-                public const string RemoteAddress = "remoteaddress";
+                ///// <summary>
+                ///// The remote address for the log entry.
+                ///// </summary>
+                //public const string RemoteAddress = "remoteaddress";
 
                 /// <summary>
                 /// The remote user.
@@ -75,10 +75,16 @@ namespace Restless.Logite.Database.Tables
                 /// The line number of the import file.
                 /// </summary>
                 public const string ImportLineNumber = "importline";
+
                 /// <summary>
                 /// Id of the domain
                 /// </summary>
                 public const string DomainId = "domainid";
+
+                /// <summary>
+                /// Id of the ip address entry
+                /// </summary>
+                public const string IpAddressId = "ipaddressid";
 
                 /// <summary>
                 /// Id of the method
@@ -106,7 +112,12 @@ namespace Restless.Logite.Database.Tables
                 public class Calculated
                 {
                     /// <summary>
-                    /// Method.
+                    /// Ip Address
+                    /// </summary>
+                    public const string IpAddress = "CalcIpAddress";
+
+                    /// <summary>
+                    /// Method
                     /// </summary>
                     public const string Method = "CalcMethod";
 
@@ -160,7 +171,7 @@ namespace Restless.Logite.Database.Tables
             return new ColumnDefinitionCollection()
             {
                 { Defs.Columns.Id, ColumnType.Integer, true },
-                { Defs.Columns.RemoteAddress, ColumnType.Text, false, false, null, IndexType.Index},
+                //{ Defs.Columns.RemoteAddress, ColumnType.Text, false, false, null, IndexType.Index},
                 { Defs.Columns.RemoteUser, ColumnType.Text, false, true },
                 { Defs.Columns.Timestamp, ColumnType.Timestamp, false, false, null, IndexType.Index },
                 { Defs.Columns.Status, ColumnType.Integer, false, false, 0L, IndexType.Index },
@@ -170,6 +181,7 @@ namespace Restless.Logite.Database.Tables
                 { Defs.Columns.ImportFileId, ColumnType.Integer, false, false, 0L, IndexType.Index },
                 { Defs.Columns.ImportLineNumber, ColumnType.Integer },
                 { Defs.Columns.DomainId, ColumnType.Integer, false, false, DomainTable.Defs.Values.DomainZeroId, IndexType.Index },
+                { Defs.Columns.IpAddressId, ColumnType.Integer, false, false, 0L, IndexType.Index },
                 { Defs.Columns.MethodId, ColumnType.Integer, false, false, MethodTable.Defs.Values.MethodZeroId, IndexType.Index },
                 { Defs.Columns.RequestId, ColumnType.Integer, false, false, RequestTable.Defs.Values.RequestZeroId, IndexType.Index },
                 { Defs.Columns.RefererId, ColumnType.Integer, false, false, RefererTable.Defs.Values.RefererZeroId, IndexType.Index },
@@ -179,6 +191,7 @@ namespace Restless.Logite.Database.Tables
 
         protected override void UseDataRelations()
         {
+            CreateChildToParentColumn(Defs.Columns.Calculated.IpAddress, IpAddressTable.Defs.Relations.ToLogEntry, IpAddressTable.Defs.Columns.IpAddress);
             CreateChildToParentColumn(Defs.Columns.Calculated.Method, MethodTable.Defs.Relations.ToLogEntry, MethodTable.Defs.Columns.Method);
             CreateChildToParentColumn(Defs.Columns.Calculated.Request, RequestTable.Defs.Relations.ToLogEntry, RequestTable.Defs.Columns.Request);
             CreateChildToParentColumn(Defs.Columns.Calculated.Referer, RefererTable.Defs.Relations.ToLogEntry, RefererTable.Defs.Columns.Referer);
@@ -188,10 +201,10 @@ namespace Restless.Logite.Database.Tables
         /************************************************************************/
 
         #region Internal methods
-        internal void Insert(LogEntry entry, long methodId, long requestId, long refererId, long agentId)
+        internal void Insert(LogEntry entry, long ipAddressId, long methodId, long requestId, long refererId, long agentId)
         {
             DataRow row = NewRow();
-            row[Defs.Columns.RemoteAddress] = entry.RemoteAddress;
+            //row[Defs.Columns.RemoteAddress] = entry.RemoteAddress;
             row[Defs.Columns.RemoteUser] = entry.RemoteUser;
             row[Defs.Columns.Timestamp] = entry.RequestTime;
             row[Defs.Columns.Status] = entry.Status;
@@ -201,6 +214,7 @@ namespace Restless.Logite.Database.Tables
             row[Defs.Columns.ImportFileId] = entry.ImportFileId;
             row[Defs.Columns.ImportLineNumber] = entry.ImportFileLineNumber;
             row[Defs.Columns.DomainId] = entry.DomainId;
+            row[Defs.Columns.IpAddressId] = ipAddressId;
             row[Defs.Columns.MethodId] = methodId;
             row[Defs.Columns.RequestId] = requestId;
             row[Defs.Columns.RefererId] = refererId;

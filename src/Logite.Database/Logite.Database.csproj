@@ -24,13 +24,4 @@
     <PackageReference Include="Restless.Toolkit.Core" Version="2.5.4" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Compile Update="Tables\DomainTable.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="Tables\MethodTable.cs">
-      <SubType>Component</SubType>
-    </Compile>
-  </ItemGroup>
-
 </Project>
