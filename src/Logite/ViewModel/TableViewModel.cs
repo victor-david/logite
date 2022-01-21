@@ -103,15 +103,21 @@ namespace Restless.Logite.ViewModel
             Children = new TableChildRelationController(this);
             Unique = new TableConstraintController<UniqueConstraint>(this);
             Foreign = new TableConstraintController<ForeignKeyConstraint>(this);
-
-            Table.LoadTableData();
-            ListView.Refresh();
         }
         #endregion
 
         /************************************************************************/
 
         #region Protected Methods
+        /// <summary>
+        /// When activated establishes the table data
+        /// </summary>
+        protected override void OnActivated()
+        {
+            Table.LoadTableData();
+            Refresh();
+        }
+
         /// <summary>
         /// Compares two specified <see cref="DataRow"/> objects.
         /// </summary>
