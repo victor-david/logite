@@ -1,9 +1,5 @@
-﻿using Restless.Logite.Core;
-using Restless.Logite.Database.Tables;
-using Restless.Logite.Resources;
-using Restless.Toolkit.Controls;
+﻿using Restless.Logite.Database.Tables;
 using Restless.Toolkit.Mvvm;
-using System.Collections.ObjectModel;
 
 namespace Restless.Logite.Core
 {
@@ -13,7 +9,6 @@ namespace Restless.Logite.Core
     public class ImportFile : ObservableObject
     {
         #region Private
-        private string domain;
         private string status;
         #endregion
 
@@ -23,7 +18,6 @@ namespace Restless.Logite.Core
         public const string StatusReady = "Ready";
         public const string StatusImported = "Imported";
         public const string StatusIneligible = "Ineligible";
-        //public const long UninitializedDomaindId = -1;
 
         /// <summary>
         /// Gets the full path to the file
@@ -50,24 +44,6 @@ namespace Restless.Logite.Core
             set;
         }
 
-        ///// <summary>
-        ///// Gets or sets the domain id associated with this file.
-        ///// </summary>
-        //public long DomainId
-        //{
-        //    get;
-        //    set;
-        //}
-
-        ///// <summary>
-        ///// Gets or sets the domain display name
-        ///// </summary>
-        //public string Domain
-        //{
-        //    get => domain;
-        //    set => SetProperty(ref domain, value);
-        //}
-
         /// <summary>
         /// Gets or sets the file status
         /// </summary>
@@ -89,7 +65,6 @@ namespace Restless.Logite.Core
         {
             Path = path;
             FileName = System.IO.Path.GetFileName(path);
-            //DomainId = UninitializedDomaindId;
         }
         #endregion
 
