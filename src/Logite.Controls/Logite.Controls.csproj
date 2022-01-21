@@ -7,8 +7,8 @@
     <AssemblyName>Logite.Controls</AssemblyName>
     <RootNamespace>Restless.Logite.Controls</RootNamespace>
     <Description>Provides custom controls for the Logite application.</Description>
-    <PackageProjectUrl>https://github.com/victor-david/concerto</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/victor-david/concerto</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/victor-david/logite</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/victor-david/logite</RepositoryUrl>
     <Authors>Restless Animal Development</Authors>
     <Company>Restless Animal Development</Company>
     <Version>1.0.0</Version>

@@ -9,6 +9,8 @@
     <Product>Logite</Product>
     <Copyright>2022 Restless Animal Development</Copyright>
     <RootNamespace>Restless.Logite</RootNamespace>
+    <PackageProjectUrl>https://github.com/victor-david/logite</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/victor-david/logite</RepositoryUrl>    
     <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
     <ApplicationIcon>App.ico</ApplicationIcon>    
   </PropertyGroup>
