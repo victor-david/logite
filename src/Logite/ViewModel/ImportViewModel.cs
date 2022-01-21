@@ -137,7 +137,7 @@ namespace Restless.Logite.ViewModel
 
                     foreach (ImportFile logFile in ImportFiles.Where(lf => lf.Status == ImportFile.StatusReady))
                     {
-                        DemandDomainController.Instance.Load(logFile.Domain);
+                        //DemandDomainController.Instance.Load(logFile.Domain);
                         string[] lines = System.IO.File.ReadAllLines(logFile.Path);
                         ImportFileRow import = importTable.Create(logFile.FileName, logFile.Domain.Id, lines.LongLength);
                         long lineNumber = 0;

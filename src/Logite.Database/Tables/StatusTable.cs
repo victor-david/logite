@@ -1,13 +1,11 @@
 ﻿using Restless.Logite.Database.Core;
 using Restless.Toolkit.Core.Database.SQLite;
-using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Text;
 
 namespace Restless.Logite.Database.Tables
 {
-    public class StatusTable : Core.ApplicationTableBase // DemandDomainTable
+    public class StatusTable : Core.ApplicationTableBase
     {
         #region Public properties
         /// <summary>
@@ -29,11 +27,6 @@ namespace Restless.Logite.Database.Tables
                 /// The name of the id column. This is the table's primary key.
                 /// </summary>
                 public const string Id = DefaultPrimaryKeyName;
-
-                ///// <summary>
-                ///// Id of the domain.
-                ///// </summary>
-                //public const string DomainId = "domain";
 
                 /// <summary>
                 /// The request status, 200, 404, etc.
@@ -97,7 +90,6 @@ namespace Restless.Logite.Database.Tables
             return new ColumnDefinitionCollection()
             {
                 { Defs.Columns.Id, ColumnType.Integer, true },
-                //{ Defs.Columns.DomainId, ColumnType.Integer, false, false, DomainTable.Defs.Values.DomainZeroId, IndexType.Index },
                 { Defs.Columns.Status, ColumnType.Integer },
             };
         }
@@ -158,7 +150,6 @@ namespace Restless.Logite.Database.Tables
             }
 
             row = NewRow();
-            //row[Defs.Columns.DomainId] = entry.DomainId;
             row[Defs.Columns.Status] = entry.Status;
             Rows.Add(row);
             Save();

@@ -1,11 +1,17 @@
 ﻿using Restless.Logite.Database.Core;
 using Restless.Toolkit.Core.Database.SQLite;
 using System.Data;
+using System.Text;
 
 namespace Restless.Logite.Database.Tables
 {
     public class LogEntryTable : DemandDomainTable
     {
+        private IdCollection ipId;
+        private IdCollection requestId;
+        private IdCollection refererId;
+        private IdCollection agentId;
+
         #region Public properties
         /// <summary>
         /// Provides static definitions for table properties such as column names and relation names.
@@ -25,7 +31,7 @@ namespace Restless.Logite.Database.Tables
                 /// <summary>
                 /// The name of the id column. This is the table's primary key.
                 /// </summary>
-                public const string Id = IdColumnName;
+                public const string Id = DefaultPrimaryKeyName;
 
                 /// <summary>
                 /// The remote user.
@@ -70,7 +76,7 @@ namespace Restless.Logite.Database.Tables
                 /// <summary>
                 /// Id of the domain
                 /// </summary>
-                public const string DomainId = DomainIdColumnName;
+                public const string DomainId = "domainid";
 
                 /// <summary>
                 /// Id of the ip address entry
@@ -135,12 +141,22 @@ namespace Restless.Logite.Database.Tables
         /// </summary>
         public LogEntryTable() : base(Defs.TableName)
         {
+            ipId = new IdCollection();
+            requestId = new IdCollection();
+            refererId = new IdCollection();
+            agentId = new IdCollection();
         }
         #endregion
 
         /************************************************************************/
 
         #region Public methods
+        public void LoadDomain(DomainRow domain)
+        {
+            DataSet.EnforceConstraints = false;
+            LoadDomainPrivate(domain);
+            DataSet.EnforceConstraints = true;
+        }
         #endregion
 
         /************************************************************************/
@@ -179,11 +195,6 @@ namespace Restless.Logite.Database.Tables
             CreateChildToParentColumn(Defs.Columns.Calculated.Request, RequestTable.Defs.Relations.ToLogEntry, RequestTable.Defs.Columns.Request);
             CreateChildToParentColumn(Defs.Columns.Calculated.Referer, RefererTable.Defs.Relations.ToLogEntry, RefererTable.Defs.Columns.Referer);
         }
-
-        protected override string GetAdditonalLoadWhere(DomainRow domain)
-        {
-            return $"{Defs.Columns.Timestamp} > date('now','-2 day')";
-        }
         #endregion
 
         /************************************************************************/
@@ -191,23 +202,72 @@ namespace Restless.Logite.Database.Tables
         #region Internal methods
         internal void Insert(LogEntry entry, long ipAddressId, long methodId, long requestId, long refererId, long agentId)
         {
-            DataRow row = NewRow();
-            row[Defs.Columns.RemoteUser] = entry.RemoteUser;
-            row[Defs.Columns.Timestamp] = entry.RequestTime;
-            row[Defs.Columns.Status] = entry.Status;
-            row[Defs.Columns.BytesSent] = entry.BytesSent;
-            row[Defs.Columns.AttackLength] = entry.AttackLength;
-            row[Defs.Columns.HttpVersion] = entry.HttpVersion;
-            row[Defs.Columns.ImportFileId] = entry.ImportFileId;
-            row[Defs.Columns.ImportLineNumber] = entry.ImportFileLineNumber;
-            row[Defs.Columns.DomainId] = entry.DomainId;
-            row[Defs.Columns.IpAddressId] = ipAddressId;
-            row[Defs.Columns.MethodId] = methodId;
-            row[Defs.Columns.RequestId] = requestId;
-            row[Defs.Columns.RefererId] = refererId;
-            row[Defs.Columns.UserAgentId] = agentId;
-            Rows.Add(row);
-            Save();
+            StringBuilder sql = new StringBuilder($"insert into {Namespace}.{TableName} (", 512);
+            if (!string.IsNullOrEmpty(entry.RemoteUser))
+            {
+                sql.Append($"{Defs.Columns.RemoteUser},");
+            }
+            sql.Append($"{Defs.Columns.Timestamp},");
+            sql.Append($"{Defs.Columns.Status},");
+            sql.Append($"{Defs.Columns.BytesSent},");
+            sql.Append($"{Defs.Columns.AttackLength},");
+            sql.Append($"{Defs.Columns.HttpVersion},");
+            sql.Append($"{Defs.Columns.ImportFileId},");
+            sql.Append($"{Defs.Columns.ImportLineNumber},");
+            sql.Append($"{Defs.Columns.DomainId},");
+            sql.Append($"{Defs.Columns.IpAddressId},");
+            sql.Append($"{Defs.Columns.MethodId},");
+            sql.Append($"{Defs.Columns.RequestId},");
+            sql.Append($"{Defs.Columns.RefererId},");
+            sql.Append($"{Defs.Columns.UserAgentId}) ");
+            sql.Append("values (");
+            if (!string.IsNullOrEmpty(entry.RemoteUser))
+            {
+                sql.Append($"'{entry.RemoteUser}'");
+            }
+            // 2022-01-20 01:16:52
+            sql.Append($"'{entry.RequestTime:yyyy-MM-dd hh:mm:ss}',");
+            sql.Append($"{entry.Status},");
+            sql.Append($"{entry.BytesSent},");
+            sql.Append($"{entry.AttackLength},");
+            sql.Append($"'{entry.HttpVersion}',");
+            sql.Append($"{entry.ImportFileId},");
+            sql.Append($"{entry.ImportFileLineNumber},");
+            sql.Append($"{entry.DomainId},");
+            sql.Append($"{ipAddressId},");
+            sql.Append($"{methodId},");
+            sql.Append($"{requestId},");
+            sql.Append($"{refererId},");
+            sql.Append($"{agentId})");
+            Controller.Execution.NonQuery(sql.ToString());
+        }
+        #endregion
+
+        /************************************************************************/
+
+        #region Private methods
+        private void LoadDomainPrivate(DomainRow domain)
+        {
+            Clear();
+            ipId.Clear();
+            requestId.Clear();
+            refererId.Clear();
+            agentId.Clear();
+
+            string sql = $"SELECT * FROM {Namespace}.{TableName} WHERE {Defs.Columns.DomainId}={domain.Id} AND  {Defs.Columns.Timestamp} > date('now','-{domain.PastDays} day')";
+            Load(Controller.Execution.Query(sql));
+
+            foreach (DataRow row in Rows)
+            {
+                ipId.Add((long)row[Defs.Columns.IpAddressId]);
+                requestId.Add((long)row[Defs.Columns.RequestId]);
+                refererId.Add((long)row[Defs.Columns.RefererId]);
+                agentId.Add((long)row[Defs.Columns.UserAgentId]);
+            }
+            Controller.GetTable<IpAddressTable>().Load(ipId);
+            Controller.GetTable<RequestTable>().Load(requestId);
+            Controller.GetTable<RefererTable>().Load(refererId);
+            Controller.GetTable<UserAgentTable>().Load(agentId);
         }
         #endregion
     }

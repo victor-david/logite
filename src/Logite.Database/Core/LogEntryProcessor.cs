@@ -40,11 +40,11 @@ namespace Restless.Logite.Database.Core
         {
             if (isInitialized)
             {
-                long ipAddressId = ipAddressTable.InsertIf(entry);
+                long ipAddressId = ipAddressTable.InsertEntryIf(entry);
                 long methodId = methodTable.GetMethodId(entry.Method);
-                long requestId = requestTable.InsertIf(entry);
-                long refererId = refererTable.InsertIf(entry);
-                long agentId = agentTable.InsertIf(entry);
+                long requestId = requestTable.InsertEntryIf(entry);
+                long refererId = refererTable.InsertEntryIf(entry);
+                long agentId = agentTable.InsertEntryIf(entry);
                 _ =  statusTable.InsertIf(entry);
                 logEntryTable.Insert(entry, ipAddressId, methodId, requestId, refererId, agentId);
             }

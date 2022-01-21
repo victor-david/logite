@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Restless.Logite.Database.Core;
+using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Text;
@@ -6,24 +7,11 @@ using System.Text;
 namespace Restless.Logite.Database.Tables
 {
     /// <summary>
-    /// Represents a table that has a domain id and is loaded upon demand for the specified domain
+    /// Represents a table that is loaded upon demand for the specified domain.
+    /// Tables that derive from this class use direct execution for various operations.
     /// </summary>
     public abstract class DemandDomainTable : Core.ApplicationTableBase
     {
-        #region Public fields
-        /// <summary>
-        /// The name of the unique id column. Derived classes must use this name.
-        /// </summary>
-        public const string IdColumnName = DefaultPrimaryKeyName;
-
-        /// <summary>
-        /// The name of the domain id column. Derived classes must use this name.
-        /// </summary>
-        public const string DomainIdColumnName = "domainid";
-        #endregion
-
-        /************************************************************************/
-
         #region Constructor
         /// <summary>
         /// Initializes a new instance of the <see cref="DemandDomainTable"/> class.
@@ -45,45 +33,72 @@ namespace Restless.Logite.Database.Tables
         /// </remarks>
         public override void Load()
         {
-            Load("0=1", IdColumnName);
+            Load("0=1", PrimaryKeyName);
         }
         #endregion
 
         /************************************************************************/
 
+        #region Protected methods
         /// <summary>
-        /// Gets an additional where condition that is applied with AND
+        /// Selects an id value using direct execution.
         /// </summary>
-        /// <param name="domain"></param>
-        /// <returns>The condition</returns>
-        /// <remarks>
-        /// The base class return 1=1. Override for other logic.
-        /// </remarks>
-        protected virtual string GetAdditonalLoadWhere(DomainRow domain)
+        /// <param name="columnName">The field name</param>
+        /// <param name="columnValue">The file value</param>
+        /// <returns>The id, or -1 if not found.</returns>
+        protected long SelectScalarId(string columnName, string columnValue)
         {
-            return "1=1";
+            string sql = $"select {PrimaryKeyName} from {Namespace}.{TableName} where {columnName}='{columnValue}'";
+            object result = Controller.Execution.Scalar(sql);
+            if (result is long id)
+            {
+                return id;
+            }
+            return -1;
         }
 
-        #region Internal methods
         /// <summary>
-        /// Loads data according to the specified domain id.
+        /// Inserts a row using direct execution
         /// </summary>
-        /// <param name="domain">The domain</param>
-        internal void Load(DomainRow domain)
+        /// <param name="columnName">The column name</param>
+        /// <param name="columnValue">The column value</param>
+        /// <returns>The id of the newly inserted row</returns>
+        /// <exception cref="Exception">After insertion, the id could not be retreived</exception>
+        protected long InsertScalarId(string columnName, string columnValue)
+        {
+            string sql = $"insert into {Namespace}.{TableName} ({columnName}) values('{columnValue}')";
+            Controller.Execution.NonQuery(sql);
+            long id = SelectScalarId(columnName, columnValue);
+            if (id == -1)
+            {
+                throw new Exception($"{TableName}. Could not retrieve the id");
+            }
+            return id;
+        }
+        #endregion
+
+        /************************************************************************/
+
+        #region Internal methods
+        internal void Load(IdCollection ids)
         {
             Clear();
-            string sql = $"SELECT * FROM {Namespace}.{TableName} WHERE {DomainIdColumnName}={domain.Id} AND " + GetAdditonalLoadWhere(domain);
-            //if (TableName == LogEntryTable.Defs.TableName)
-            //{
-            //    sql += $" AND timestamp > date('now','-2 day')";
-            //    // date('now','-10 day');
-            //}
+            string sql = $"SELECT * FROM {Namespace}.{TableName} WHERE {PrimaryKeyName} IN ({ids})";
+            Load(Controller.Execution.Query(sql));
+        }
 
-            using (var selectCommand = new SQLiteCommand(Controller.Connection))
-            {
-                selectCommand.CommandText = sql;
-                Load(selectCommand.ExecuteReader());
-            }
+        /// <summary>
+        /// Inserts an entry if it doesn't exist.
+        /// </summary>
+        /// <param name="entry">The entry</param>
+        /// <returns>The newly inserted id, or the existing id</returns>
+        /// <remarks>
+        /// Derived classes must override this method if they need this functionality.
+        /// The base method throws a NotImplementedException.
+        /// </remarks>
+        internal virtual long InsertEntryIf(LogEntry entry)
+        {
+            throw new NotImplementedException();
         }
         #endregion
     }
