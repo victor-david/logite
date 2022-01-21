@@ -117,6 +117,48 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="CaptionView" xml:space="preserve">
+    <value>View</value>
+  </data>
+  <data name="FilterAll" xml:space="preserve">
+    <value>All</value>
+  </data>
+  <data name="FilterDays003" xml:space="preserve">
+    <value>3 days</value>
+  </data>
+  <data name="FilterDays007" xml:space="preserve">
+    <value>7 days</value>
+  </data>
+  <data name="FilterDays014" xml:space="preserve">
+    <value>14 days</value>
+  </data>
+  <data name="FilterDays030" xml:space="preserve">
+    <value>30 days</value>
+  </data>
+  <data name="FilterDays060" xml:space="preserve">
+    <value>60 days</value>
+  </data>
+  <data name="FilterDays090" xml:space="preserve">
+    <value>90 days</value>
+  </data>
+  <data name="FilterDays120" xml:space="preserve">
+    <value>120 days</value>
+  </data>
+  <data name="FilterDays180" xml:space="preserve">
+    <value>180 days</value>
+  </data>
+  <data name="FilterYears1" xml:space="preserve">
+    <value>One year</value>
+  </data>
+  <data name="FilterYears2" xml:space="preserve">
+    <value>Two years</value>
+  </data>
+  <data name="FilterYears3" xml:space="preserve">
+    <value>Three years</value>
+  </data>
+  <data name="FilterYears4" xml:space="preserve">
+    <value>Four years</value>
+  </data>
   <data name="HeaderDomain" xml:space="preserve">
     <value>Domain</value>
   </data>

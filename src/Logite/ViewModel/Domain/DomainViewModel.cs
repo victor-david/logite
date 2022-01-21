@@ -1,7 +1,10 @@
-﻿using Restless.Logite.Database.Core;
+﻿using Restless.Logite.Core;
+using Restless.Logite.Database.Core;
 using Restless.Logite.Database.Tables;
+using Restless.Logite.Resources;
 using Restless.Toolkit.Controls;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 
@@ -64,6 +67,14 @@ namespace Restless.Logite.ViewModel.Domain
         {
             get;
         }
+
+        /// <summary>
+        /// Gets the filter controller
+        /// </summary>
+        public FilterController Filter
+        {
+            get;
+        }
         #endregion
 
         /************************************************************************/
@@ -82,6 +93,25 @@ namespace Restless.Logite.ViewModel.Domain
             Ip = new IpAddressController(Domain);
             LogEntry = new LogEntryController(Domain);
 
+            Filter = new FilterController()
+            {
+                TitlePreface = Strings.CaptionView,
+                DateTimeColumnName = LogEntryTable.Defs.Columns.Timestamp,
+                TextSearchColumnNames = new string[]
+                {
+                    LogEntryTable.Defs.Columns.Calculated.Request
+                }
+            };
+
+            Filter.SetSelectedTimeFilter((TimeFilter)Domain.PastDays);
+
+            Filter.FilterChanged += (s, e) =>
+            {
+                //Refresh();
+                Domain.PastDays = (long)e.Item.Filter;
+                Domain.Table.Save();
+            };
+
             Method.SelectedItemChanged += (s, id) => LogEntry.UpdateFilter(LogEntryTable.Defs.Columns.MethodId, id);
             Status.SelectedItemChanged += (s, id) => LogEntry.UpdateFilter(LogEntryTable.Defs.Columns.Status, id);
             Ip.SelectedItemChanged += (s, id) => LogEntry.UpdateFilter(LogEntryTable.Defs.Columns.IpAddressId, id);
@@ -95,7 +125,7 @@ namespace Restless.Logite.ViewModel.Domain
         #region Protected Methods
         protected override void OnActivated()
         {
-            DemandDomainController.Instance.Load(Domain.Id);
+            DemandDomainController.Instance.Load(Domain);
             Method.Activate();
             Status.Activate();
             Ip.Activate();
@@ -109,7 +139,6 @@ namespace Restless.Logite.ViewModel.Domain
             Method.Deactivate();
             Status.Deactivate();
             Ip.Deactivate();
-
         }
         #endregion
 

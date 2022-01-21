@@ -61,6 +61,132 @@ namespace Restless.Logite.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to View.
+        /// </summary>
+        public static string CaptionView {
+            get {
+                return ResourceManager.GetString("CaptionView", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All.
+        /// </summary>
+        public static string FilterAll {
+            get {
+                return ResourceManager.GetString("FilterAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 3 days.
+        /// </summary>
+        public static string FilterDays003 {
+            get {
+                return ResourceManager.GetString("FilterDays003", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 7 days.
+        /// </summary>
+        public static string FilterDays007 {
+            get {
+                return ResourceManager.GetString("FilterDays007", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 14 days.
+        /// </summary>
+        public static string FilterDays014 {
+            get {
+                return ResourceManager.GetString("FilterDays014", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 30 days.
+        /// </summary>
+        public static string FilterDays030 {
+            get {
+                return ResourceManager.GetString("FilterDays030", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 60 days.
+        /// </summary>
+        public static string FilterDays060 {
+            get {
+                return ResourceManager.GetString("FilterDays060", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 90 days.
+        /// </summary>
+        public static string FilterDays090 {
+            get {
+                return ResourceManager.GetString("FilterDays090", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 120 days.
+        /// </summary>
+        public static string FilterDays120 {
+            get {
+                return ResourceManager.GetString("FilterDays120", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 180 days.
+        /// </summary>
+        public static string FilterDays180 {
+            get {
+                return ResourceManager.GetString("FilterDays180", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to One year.
+        /// </summary>
+        public static string FilterYears1 {
+            get {
+                return ResourceManager.GetString("FilterYears1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Two years.
+        /// </summary>
+        public static string FilterYears2 {
+            get {
+                return ResourceManager.GetString("FilterYears2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Three years.
+        /// </summary>
+        public static string FilterYears3 {
+            get {
+                return ResourceManager.GetString("FilterYears3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Four years.
+        /// </summary>
+        public static string FilterYears4 {
+            get {
+                return ResourceManager.GetString("FilterYears4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Domain.
         /// </summary>
         public static string HeaderDomain {

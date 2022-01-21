@@ -1,0 +1,98 @@
+﻿<ResourceDictionary 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:con="clr-namespace:Restless.Logite.Controls">
+    
+    <Style x:Key="DefaultDropDownButtonItemContainerStyle" TargetType="ListBoxItem">
+        <Setter Property="Margin" Value="0"/>
+        <Setter Property="Padding" Value="6"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+    </Style>
+
+    <ControlTemplate x:Key="DropDownButtonControlTemplate" TargetType="con:DropDownButton">
+        <Grid>
+            <Border
+                x:Name="MainBorder"
+                CornerRadius="{TemplateBinding CornerRadius}"
+                Background="{TemplateBinding Background}"
+                BorderBrush="{TemplateBinding BorderBrush}"
+                BorderThickness="{TemplateBinding BorderThickness}">
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <ContentPresenter
+                        Margin="{TemplateBinding Padding}"
+                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+
+                    <Path
+                        Grid.Column="1"
+                        Margin="4,0"
+                        Stretch="Uniform"
+                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                        Fill="{TemplateBinding ChevronBrush}"
+                        Data="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" />
+                </Grid>
+                
+            </Border>
+
+            <Popup 
+                x:Name="Pop"
+                IsOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource Mode=TemplatedParent}}"
+                Placement="Bottom"
+                AllowsTransparency="True"
+                PopupAnimation="Fade"
+                VerticalOffset="-1"
+                StaysOpen="False"
+                Width="{TemplateBinding DropDownWidth}"
+                MinWidth="{TemplateBinding ActualWidth}">
+
+                <ListBox
+                    Margin="0,0,4,4"
+                    Background="{TemplateBinding DropDownBackground}"
+                    ItemsSource="{TemplateBinding ItemsSource}"
+                    SelectedItem="{Binding SelectedItem, RelativeSource={RelativeSource Mode=TemplatedParent}}"
+                    DisplayMemberPath="{TemplateBinding DisplayMemberPath}"
+                    ItemContainerStyle="{TemplateBinding ItemContainerStyle}"
+                    ItemContainerStyleSelector="{TemplateBinding ItemContainerStyleSelector}"
+                    ItemTemplate="{TemplateBinding ItemTemplate}"
+                    ItemTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                    FontSize="{TemplateBinding FontSize}"
+                    Foreground="{TemplateBinding Foreground}"
+                    Effect="{TemplateBinding DropDownEffect}">
+                </ListBox>
+            </Popup>
+        </Grid>
+
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsDropDownOpen" Value="True">
+                <Setter Property="Opacity" Value="0.65"/>
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="MainBorder" Property="Background" Value="{Binding RolloverBrush, RelativeSource={RelativeSource Mode=TemplatedParent}}"/>
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Opacity" Value="0.25"/>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <Style TargetType="con:DropDownButton">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="RolloverBrush" Value="Transparent"/>
+        <Setter Property="Padding" Value="3"/>
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Template" Value="{StaticResource DropDownButtonControlTemplate}"/>
+        <Setter Property="ItemContainerStyle" Value="{StaticResource DefaultDropDownButtonItemContainerStyle}"/>
+        <Setter Property="Margin" Value="0"/>
+    </Style>
+
+</ResourceDictionary>

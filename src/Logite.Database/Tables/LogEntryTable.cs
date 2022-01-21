@@ -179,6 +179,11 @@ namespace Restless.Logite.Database.Tables
             CreateChildToParentColumn(Defs.Columns.Calculated.Request, RequestTable.Defs.Relations.ToLogEntry, RequestTable.Defs.Columns.Request);
             CreateChildToParentColumn(Defs.Columns.Calculated.Referer, RefererTable.Defs.Relations.ToLogEntry, RefererTable.Defs.Columns.Referer);
         }
+
+        protected override string GetAdditonalLoadWhere(DomainRow domain)
+        {
+            return $"{Defs.Columns.Timestamp} > date('now','-2 day')";
+        }
         #endregion
 
         /************************************************************************/

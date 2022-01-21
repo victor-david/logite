@@ -4,6 +4,7 @@
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/Logite.Controls;component/Themes/Generic/MainNavigator.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/Logite.Controls;component/Themes/Generic/DropDownButton.xaml"/>
     </ResourceDictionary.MergedDictionaries>
     
 </ResourceDictionary>

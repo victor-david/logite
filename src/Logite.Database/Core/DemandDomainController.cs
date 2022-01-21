@@ -41,8 +41,8 @@ namespace Restless.Logite.Database.Core
         /// <summary>
         /// Loads data according to the specified domain id.
         /// </summary>
-        /// <param name="domainId"></param>
-        public void Load(long domainId)
+        /// <param name="domain">The domain</param>
+        public void Load(DomainRow domain)
         {
             /* Due to foreign keys, must clear in reverse order */
             for (int idx = tables.Count - 1; idx >= 0; idx--)
@@ -53,7 +53,7 @@ namespace Restless.Logite.Database.Core
             /* Load in order  */
             for (int idx = 0; idx < tables.Count; idx++)
             {
-                tables[idx].Load(domainId);
+                tables[idx].Load(domain);
             }
         }
         #endregion

@@ -49,7 +49,7 @@ namespace Restless.Logite.ViewModel
 
             ImportFiles = new ObservableCollection<ImportFile>();
             ImportFileColumns = new DataGridColumnCollection();
-            ImportFileColumns.Create("File", nameof(ImportFile.DisplayName));
+            ImportFileColumns.Create("File", nameof(ImportFile.FileName));
             ImportFileColumns.Create("Domain", nameof(ImportFile.Domain)).MakeFixedWidth(FixedWidth.W096);
             ImportFileColumns.Create("Status", nameof(ImportFile.Status)).MakeFixedWidth(FixedWidth.W136);
 
@@ -93,10 +93,9 @@ namespace Restless.Logite.ViewModel
         {
             foreach(DomainRow domain in DatabaseController.Instance.GetTable<DomainTable>().EnumerateAll())
             {
-                if (importFile.DisplayName.StartsWith(domain.Preface, StringComparison.InvariantCulture))
+                if (importFile.FileName.StartsWith(domain.Preface, StringComparison.InvariantCulture))
                 {
-                    importFile.DomainId = domain.Id;
-                    importFile.Domain = domain.DisplayName;
+                    importFile.Domain = domain;
                     return;
                 }
             }
@@ -104,14 +103,14 @@ namespace Restless.Logite.ViewModel
 
         private void SetImportFileStatus(ImportFile importFile)
         {
-            if (importFile.DomainId == ImportFile.UninitializedDomaindId)
+            if (importFile.Domain == null)
             {
                 importFile.Status = ImportFile.StatusIneligible;
                 return;
             }
 
-            ImportFileRow logFileRow = DatabaseController.Instance.GetTable<ImportFileTable>().GetSingleRecord(importFile.DomainId, importFile.DisplayName);
-            importFile.Status = logFileRow == null ? ImportFile.StatusReady : ImportFile.StatusImported;
+            ImportFileRow importFileRow = DatabaseController.Instance.GetTable<ImportFileTable>().GetSingleRecord(importFile.Domain.Id, importFile.FileName);
+            importFile.Status = importFileRow == null ? ImportFile.StatusReady : ImportFile.StatusImported;
         }
 
         private void RunImportCommand(object parm)
@@ -138,13 +137,13 @@ namespace Restless.Logite.ViewModel
 
                     foreach (ImportFile logFile in ImportFiles.Where(lf => lf.Status == ImportFile.StatusReady))
                     {
-                        DemandDomainController.Instance.Load(logFile.DomainId);
+                        DemandDomainController.Instance.Load(logFile.Domain);
                         string[] lines = System.IO.File.ReadAllLines(logFile.Path);
-                        ImportFileRow import = importTable.Create(logFile.DisplayName, logFile.DomainId, lines.LongLength);
+                        ImportFileRow import = importTable.Create(logFile.FileName, logFile.Domain.Id, lines.LongLength);
                         long lineNumber = 0;
                         foreach (string line in lines)
                         {
-                            LogEntry entry = LineParser.ParseLine(line, logFile.DomainId, import.Id, lineNumber);
+                            LogEntry entry = LineParser.ParseLine(line, logFile.Domain.Id, import.Id, lineNumber);
                             LogEntryProcessor.Process(entry);
                             lineNumber++;
                         }

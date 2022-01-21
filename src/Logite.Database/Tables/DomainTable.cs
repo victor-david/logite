@@ -42,9 +42,9 @@ namespace Restless.Logite.Database.Tables
                 public const string Preface = "preface";
 
                 /// <summary>
-                /// Date / time record created.
+                /// The number of past days for reporting on this domain
                 /// </summary>
-                public const string Created = "created";
+                public const string PastDays = "pastdays";
 
                 /// <summary>
                 /// Provides static column names for columns that are calculated from other values.
@@ -103,6 +103,11 @@ namespace Restless.Logite.Database.Tables
                 /// The display preface when adding a new domain
                 /// </summary>
                 public const string NewDomainPreface = "xxx.access";
+
+                /// <summary>
+                /// Number of past days default.
+                /// </summary>
+                public const long DefaultPastDays = 30;
             }
         }
         #endregion
@@ -138,9 +143,9 @@ namespace Restless.Logite.Database.Tables
             var obj = new DomainRow(NewRow())
             {
                 DisplayName = Defs.Values.NewDomainDisplayName,
-                Preface = Defs.Values.NewDomainPreface
+                Preface = Defs.Values.NewDomainPreface,
+                PastDays = Defs.Values.DefaultPastDays
             };
-            obj.Row[Defs.Columns.Created] = DateTime.UtcNow;
             Rows.Add(obj.Row);
             Save();
             return obj;
@@ -188,7 +193,7 @@ namespace Restless.Logite.Database.Tables
                 { Defs.Columns.Id, ColumnType.Integer, true },
                 { Defs.Columns.DisplayName, ColumnType.Text, false, false},
                 { Defs.Columns.Preface, ColumnType.Text, false, false },
-                { Defs.Columns.Created, ColumnType.Timestamp },
+                { Defs.Columns.PastDays, ColumnType.Integer, false, false, Defs.Values.DefaultPastDays },
             };
         }
 
@@ -213,7 +218,7 @@ namespace Restless.Logite.Database.Tables
         /// <returns>A list of column names</returns>
         protected override List<string> GetPopulateColumnList()
         {
-            return new List<string>() { Defs.Columns.Id, Defs.Columns.DisplayName, Defs.Columns.Preface, Defs.Columns.Created };
+            return new List<string>() { Defs.Columns.Id, Defs.Columns.DisplayName, Defs.Columns.Preface, Defs.Columns.PastDays };
         }
 
         /// <summary>
@@ -222,12 +227,12 @@ namespace Restless.Logite.Database.Tables
         /// <returns>An IEnumerable</returns>
         protected override IEnumerable<object[]> EnumeratePopulateValues()
         {
-            yield return new object[] { Defs.Values.DomainZeroId, Defs.Values.DomainZeroDisplayName, Defs.Values.DomainZeroPreface, DateTime.UtcNow };
+            yield return new object[] { Defs.Values.DomainZeroId, Defs.Values.DomainZeroDisplayName, Defs.Values.DomainZeroPreface, Defs.Values.DefaultPastDays };
 #if DEBUG
-            yield return new object[] { Defs.Values.DomainZeroId + 1, "Public", "public", DateTime.UtcNow };
-            yield return new object[] { Defs.Values.DomainZeroId + 2, "User", "user", DateTime.UtcNow };
-            yield return new object[] { Defs.Values.DomainZeroId + 3, "Kong", "kong", DateTime.UtcNow };
-            yield return new object[] { Defs.Values.DomainZeroId + 4, "Service", "service", DateTime.UtcNow };
+            yield return new object[] { Defs.Values.DomainZeroId + 1, "Public", "public", Defs.Values.DefaultPastDays };
+            yield return new object[] { Defs.Values.DomainZeroId + 2, "User", "user", Defs.Values.DefaultPastDays };
+            yield return new object[] { Defs.Values.DomainZeroId + 3, "Kong", "kong", Defs.Values.DefaultPastDays };
+            yield return new object[] { Defs.Values.DomainZeroId + 4, "Service", "service", Defs.Values.DefaultPastDays };
 
 #endif
         }

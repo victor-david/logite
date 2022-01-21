@@ -1,0 +1,32 @@
+﻿<ToolBarTray
+    x:Class="Restless.Logite.View.Domain.MainToolBar"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:tk="http://schemas.restless.toolkit.com/2021"
+    xmlns:con="clr-namespace:Restless.Logite.Controls;assembly=Logite.Controls"
+    xmlns:vm="clr-namespace:Restless.Logite.ViewModel.Domain" d:DataContext="{d:DesignInstance Type=vm:DomainViewModel}"
+    xmlns:r="clr-namespace:Restless.Logite.Resources"
+    mc:Ignorable="d" 
+    d:DesignHeight="450" d:DesignWidth="800">
+    <ToolBar>
+        <TextBlock>
+             <Run Text="{x:Static r:Strings.HeaderDomain}"/>
+             <Run Style="{StaticResource RunHighlightStyle}" Text="{Binding DisplayName, Mode=OneTime}"/>
+        </TextBlock>
+        <Separator/>
+        <TextBlock Text="{Binding DomainStatus}"/>
+        
+        <Separator/>
+
+        <con:DropDownButton
+            MinWidth="132"
+            CloseOnSelection="True"
+            Content="{Binding Filter.Title}"
+            SelectedItem="{Binding Filter.SelectedTimeFilter}"
+            ItemsSource="{Binding Filter.TimeFilters}"
+            DisplayMemberPath="Name"/>
+
+    </ToolBar>
+</ToolBarTray>

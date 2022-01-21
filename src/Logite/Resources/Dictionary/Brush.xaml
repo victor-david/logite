@@ -25,7 +25,9 @@
     <SolidColorBrush x:Key="TitleBarBorderBrush" Color="LightGray"/>
     <SolidColorBrush x:Key="TitleBarButtonBrush" Color="DarkGreen"/>
 
+    <SolidColorBrush x:Key="StandardIconBrush" Color="#606060"/>
     <SolidColorBrush x:Key="NavigatorIconBrush" Color="DarkGray"/>
+    
     
     <!-- Defines the color used to highlight grid rows and list box items -->
     <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#FF84C7D6"/>

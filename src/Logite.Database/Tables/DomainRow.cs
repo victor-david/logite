@@ -38,19 +38,20 @@ namespace Restless.Logite.Database.Tables
         }
 
         /// <summary>
+        /// Gets or sets the number of past days for reporting on this domain
+        /// </summary>
+        public long PastDays
+        {
+            get => GetInt64(Columns.PastDays);
+            set => SetValue(Columns.PastDays, value);
+        }
+
+        /// <summary>
         /// Gets the count of log entries for this domain.
         /// </summary>
         public long LogEntryCount
         {
             get => GetInt64(Columns.Calculated.LogEntryCount);
-        }
-
-        /// <summary>
-        /// Gets the date / time record created.
-        /// </summary>
-        public DateTime Created
-        {
-            get => GetDateTime(Columns.Created);
         }
         #endregion
 

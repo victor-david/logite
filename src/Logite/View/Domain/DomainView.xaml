@@ -11,25 +11,12 @@
     mc:Ignorable="d"
     d:DesignWidth="860" d:DesignHeight="400">
 
-    <!--<HeaderedContentControl Header="{Binding DisplayName, Mode=OneTime}" Tag="{Binding DomainStatus}">-->
     <Grid tk:Property.ColumnWidths="*,*,**" tk:Property.RowHeights="Auto,*,2*" Style="{StaticResource DataEntryPanelStyle}">
         <Grid.Resources>
             <Style TargetType="Border" BasedOn="{StaticResource SubContentBorderStyle}"/>
         </Grid.Resources>
-
-        <ToolBarTray Grid.ColumnSpan="3">
-            <ToolBar>
-                <TextBlock>
-                    <Run Text="{x:Static r:Strings.HeaderDomain}"/>
-                    <Run Style="{StaticResource RunHighlightStyle}" Text="{Binding DisplayName, Mode=OneTime}"/>
-                </TextBlock>
-                <Separator/>
-                <TextBlock Text="{Binding DomainStatus}"/>
-                <Separator/>
-                <RadioButton Content="{x:Static r:Strings.MenuItemDomainOverview}" IsChecked="True" Width="92"/>
-                <RadioButton Content="{x:Static r:Strings.MenuItemDomainCharts}" Width="92"/>
-            </ToolBar>
-        </ToolBarTray>
+        
+        <vw:MainToolBar Grid.ColumnSpan="3"/>
 
         <Border Grid.Row="1">
             <vw:Method/>
@@ -48,5 +35,5 @@
         </Border>
 
     </Grid>
-    <!--</HeaderedContentControl>-->
+
 </UserControl>

@@ -51,15 +51,33 @@ namespace Restless.Logite.Database.Tables
 
         /************************************************************************/
 
+        /// <summary>
+        /// Gets an additional where condition that is applied with AND
+        /// </summary>
+        /// <param name="domain"></param>
+        /// <returns>The condition</returns>
+        /// <remarks>
+        /// The base class return 1=1. Override for other logic.
+        /// </remarks>
+        protected virtual string GetAdditonalLoadWhere(DomainRow domain)
+        {
+            return "1=1";
+        }
+
         #region Internal methods
         /// <summary>
         /// Loads data according to the specified domain id.
         /// </summary>
-        /// <param name="domainId">The domain id</param>
-        internal void Load(long domainId)
+        /// <param name="domain">The domain</param>
+        internal void Load(DomainRow domain)
         {
             Clear();
-            string sql = $"SELECT * FROM {Namespace}.{TableName} WHERE {DomainIdColumnName}={domainId}";
+            string sql = $"SELECT * FROM {Namespace}.{TableName} WHERE {DomainIdColumnName}={domain.Id} AND " + GetAdditonalLoadWhere(domain);
+            //if (TableName == LogEntryTable.Defs.TableName)
+            //{
+            //    sql += $" AND timestamp > date('now','-2 day')";
+            //    // date('now','-10 day');
+            //}
 
             using (var selectCommand = new SQLiteCommand(Controller.Connection))
             {

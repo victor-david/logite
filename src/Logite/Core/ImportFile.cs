@@ -1,4 +1,5 @@
 ﻿using Restless.Logite.Core;
+using Restless.Logite.Database.Tables;
 using Restless.Logite.Resources;
 using Restless.Toolkit.Controls;
 using Restless.Toolkit.Mvvm;
@@ -22,7 +23,7 @@ namespace Restless.Logite.Core
         public const string StatusReady = "Ready";
         public const string StatusImported = "Imported";
         public const string StatusIneligible = "Ineligible";
-        public const long UninitializedDomaindId = -1;
+        //public const long UninitializedDomaindId = -1;
 
         /// <summary>
         /// Gets the full path to the file
@@ -35,28 +36,37 @@ namespace Restless.Logite.Core
         /// <summary>
         /// Gets the display name (file only, without path)
         /// </summary>
-        public string DisplayName
+        public string FileName
         {
             get;
         }
 
         /// <summary>
-        /// Gets or sets the domain id associated with this file.
+        /// Gets or sets the domain associated with this import file.
         /// </summary>
-        public long DomainId
+        public DomainRow Domain
         {
             get;
             set;
         }
 
-        /// <summary>
-        /// Gets or sets the domain display name
-        /// </summary>
-        public string Domain
-        {
-            get => domain;
-            set => SetProperty(ref domain, value);
-        }
+        ///// <summary>
+        ///// Gets or sets the domain id associated with this file.
+        ///// </summary>
+        //public long DomainId
+        //{
+        //    get;
+        //    set;
+        //}
+
+        ///// <summary>
+        ///// Gets or sets the domain display name
+        ///// </summary>
+        //public string Domain
+        //{
+        //    get => domain;
+        //    set => SetProperty(ref domain, value);
+        //}
 
         /// <summary>
         /// Gets or sets the file status
@@ -78,14 +88,14 @@ namespace Restless.Logite.Core
         public ImportFile(string path)
         {
             Path = path;
-            DisplayName = System.IO.Path.GetFileName(path);
-            DomainId = UninitializedDomaindId;
+            FileName = System.IO.Path.GetFileName(path);
+            //DomainId = UninitializedDomaindId;
         }
         #endregion
 
         public override string ToString()
         {
-            return $"{DisplayName}, Domain id: {DomainId}";
+            return $"{FileName}, Domain id: {Domain?.Id}";
         }
     }
 }
