@@ -9,8 +9,17 @@ namespace Restless.Logite.ViewModel.Domain
 {
     public class LogEntryController : DomainController<LogEntryTable>
     {
+        #region Private
         private Dictionary<string, long> filters;
+        #endregion
 
+        /************************************************************************/
+
+        #region Constructor
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LogEntryController"/> class.
+        /// </summary>
+        /// <param name="domain">The domain</param>
         public LogEntryController(DomainRow domain): base(domain)
         {
             Columns.Create("Id", LogEntryTable.Defs.Columns.Id).MakeFixedWidth(FixedWidth.W052);
@@ -22,7 +31,16 @@ namespace Restless.Logite.ViewModel.Domain
             Columns.Create("Bytes", LogEntryTable.Defs.Columns.BytesSent).MakeFixedWidth(FixedWidth.W052);
             filters = new Dictionary<string, long>();
         }
+        #endregion
 
+        /************************************************************************/
+
+        #region Public methods
+        /// <summary>
+        /// Updates the log entry filter
+        /// </summary>
+        /// <param name="propertyName">The name of the (long) property to filter on</param>
+        /// <param name="value">The value</param>
         public void UpdateFilter(string propertyName, long value)
         {
             if (value != -1)
@@ -45,17 +63,16 @@ namespace Restless.Logite.ViewModel.Domain
             }
             Refresh();
         }
+        #endregion
 
+        /************************************************************************/
+
+        #region Protected methods
 
         protected override void OnActivated()
         {
             Refresh();
         }
-
-        protected override void OnDeactivated()
-        {
-        }
-
 
         protected override bool OnDataRowFilter(DataRow item)
         {
@@ -70,7 +87,11 @@ namespace Restless.Logite.ViewModel.Domain
         {
             return DataRowCompareDateTime(item2, item1, LogEntryTable.Defs.Columns.Timestamp);
         }
+        #endregion
 
+        /************************************************************************/
+
+        #region Private methods
         private bool EvaluateFilters(DataRow item)
         {
             bool result = true;
@@ -80,5 +101,6 @@ namespace Restless.Logite.ViewModel.Domain
             }
             return result;
         }
+        #endregion
     }
 }

@@ -10,17 +10,21 @@ namespace Restless.Logite.ViewModel.Domain
     /// </summary>
     public class MethodController : DomainController<MethodTable>
     {
+        #region Constructor
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MethodController"/> class.
+        /// </summary>
+        /// <param name="domain">The domain</param>
         public MethodController(DomainRow domain) : base(domain)
         {
             Columns.Create("Method", MethodTable.Defs.Columns.Method);
             Columns.Create("Count", MethodTable.Defs.Columns.Calculated.UsageCount).MakeFixedWidth(FixedWidth.W096);
         }
+        #endregion
 
-        protected override void OnActivated()
-        {
-            SelectedItem = null;
-            Refresh();
-        }
+        /************************************************************************/
+
+        #region Protected methods
 
         protected override bool OnDataRowFilter(DataRow item)
         {
@@ -37,5 +41,6 @@ namespace Restless.Logite.ViewModel.Domain
             long id = (SelectedDataRow != null) ? (long)SelectedDataRow[MethodTable.Defs.Columns.Id] : -1;
             OnSelectedItemChanged(id);
         }
+        #endregion
     }
 }

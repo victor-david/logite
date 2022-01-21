@@ -1,28 +1,25 @@
-﻿using Restless.Logite.Core;
-using Restless.Logite.Database.Tables;
-using Restless.Toolkit.Controls;
-using System;
-using System.Collections.Generic;
+﻿using Restless.Logite.Database.Tables;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Restless.Logite.ViewModel.Domain
 {
     public class StatusController : DomainController<StatusTable>
     {
+        #region Constructor
+        /// <summary>
+        /// Initializes a new instance of the <see cref="StatusController"/> class.
+        /// </summary>
+        /// <param name="domain">The domain</param>
         public StatusController(DomainRow domain): base(domain)
         {
             Columns.Create("Status", StatusTable.Defs.Columns.Status); //.MakeFixedWidth(FixedWidth.W052);
             Columns.Create("Count", StatusTable.Defs.Columns.Calculated.UsageCount); //.MakeFixedWidth(FixedWidth.W052);
         }
+        #endregion
 
-        protected override void OnActivated()
-        {
-            SelectedItem = null;
-            Refresh();
-        }
+        /************************************************************************/
+
+        #region Protected methods
 
         protected override bool OnDataRowFilter(DataRow item)
         {
@@ -39,5 +36,6 @@ namespace Restless.Logite.ViewModel.Domain
             long id = (SelectedDataRow != null) ? (long)SelectedDataRow[StatusTable.Defs.Columns.Status] : -1;
             OnSelectedItemChanged(id);
         }
+        #endregion
     }
 }

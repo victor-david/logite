@@ -50,6 +50,14 @@ namespace Restless.Logite.ViewModel.Domain
         }
 
         /// <summary>
+        /// Gets the ip address controller.
+        /// </summary>
+        public IpAddressController Ip
+        {
+            get;
+        }
+
+        /// <summary>
         /// Gets the log entry controller
         /// </summary>
         public LogEntryController LogEntry
@@ -71,10 +79,12 @@ namespace Restless.Logite.ViewModel.Domain
 
             Method = new MethodController(Domain);
             Status = new StatusController(Domain);
+            Ip = new IpAddressController(Domain);
             LogEntry = new LogEntryController(Domain);
 
             Method.SelectedItemChanged += (s, id) => LogEntry.UpdateFilter(LogEntryTable.Defs.Columns.MethodId, id);
             Status.SelectedItemChanged += (s, id) => LogEntry.UpdateFilter(LogEntryTable.Defs.Columns.Status, id);
+            Ip.SelectedItemChanged += (s, id) => LogEntry.UpdateFilter(LogEntryTable.Defs.Columns.IpAddressId, id);
 
             UpdateDomainStatus();
         }
@@ -88,15 +98,18 @@ namespace Restless.Logite.ViewModel.Domain
             DemandDomainController.Instance.Load(Domain.Id);
             Method.Activate();
             Status.Activate();
+            Ip.Activate();
             LogEntry.Activate();
             UpdateDomainStatus();
         }
 
         protected override void OnDeactivated()
         {
+            LogEntry.Deactivate();
             Method.Deactivate();
             Status.Deactivate();
-            LogEntry.Deactivate();
+            Ip.Deactivate();
+
         }
         #endregion
 
