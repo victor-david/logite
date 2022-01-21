@@ -10,6 +10,14 @@
         /// </summary>
         All = 0,
         /// <summary>
+        /// Within the last day
+        /// </summary>
+        Days001 = 1,
+        /// <summary>
+        /// Within the last 2 days
+        /// </summary>
+        Days002 = 2,
+        /// <summary>
         /// Within the last 3 days
         /// </summary>
         Days003 = 3,

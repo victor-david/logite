@@ -3,6 +3,7 @@ using Restless.Toolkit.Controls;
 using Restless.Toolkit.Core.Database.SQLite;
 using Restless.Toolkit.Mvvm;
 using System;
+using System.ComponentModel;
 using System.Data;
 using System.Windows.Data;
 
@@ -41,6 +42,14 @@ namespace Restless.Logite.ViewModel.Domain
         /************************************************************************/
 
         #region Protected methods
+        protected override void OnDataViewListChanged(ListChangedEventArgs e)
+        {
+            if (e.ListChangedType == ListChangedType.Reset)
+            {
+                Refresh();
+            }
+        }
+
         /// <summary>
         /// Called when activated
         /// </summary>

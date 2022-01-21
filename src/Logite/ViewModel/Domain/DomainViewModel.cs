@@ -107,9 +107,9 @@ namespace Restless.Logite.ViewModel.Domain
 
             Filter.FilterChanged += (s, e) =>
             {
-                //Refresh();
                 Domain.PastDays = (long)e.Item.Filter;
                 Domain.Table.Save();
+                OnActivated();
             };
 
             Method.SelectedItemChanged += (s, id) => LogEntry.UpdateFilter(LogEntryTable.Defs.Columns.MethodId, id);
@@ -125,7 +125,8 @@ namespace Restless.Logite.ViewModel.Domain
         #region Protected Methods
         protected override void OnActivated()
         {
-            DemandDomainController.Instance.Load(Domain);
+            DatabaseController.Instance.GetTable<LogEntryTable>().LoadDomain(Domain);
+            LogEntry.Activate();
             Method.Activate();
             Status.Activate();
             Ip.Activate();

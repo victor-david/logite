@@ -123,6 +123,12 @@
   <data name="FilterAll" xml:space="preserve">
     <value>All</value>
   </data>
+  <data name="FilterDays001" xml:space="preserve">
+    <value>1 day</value>
+  </data>
+  <data name="FilterDays002" xml:space="preserve">
+    <value>2 days</value>
+  </data>
   <data name="FilterDays003" xml:space="preserve">
     <value>3 days</value>
   </data>

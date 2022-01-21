@@ -28,12 +28,7 @@ namespace Restless.Logite.Database.Tables
                 /// <summary>
                 /// The name of the id column. This is the table's primary key.
                 /// </summary>
-                public const string Id = IdColumnName;
-
-                /// <summary>
-                /// Id of the domain.
-                /// </summary>
-                public const string DomainId = DomainIdColumnName;
+                public const string Id = DefaultPrimaryKeyName;
 
                 /// <summary>
                 /// The referer.
@@ -93,7 +88,6 @@ namespace Restless.Logite.Database.Tables
             return new ColumnDefinitionCollection()
             {
                 { Defs.Columns.Id, ColumnType.Integer, true },
-                { Defs.Columns.DomainId, ColumnType.Integer, false, false, DomainTable.Defs.Values.DomainZeroId, IndexType.Index },
                 { Defs.Columns.Referer, ColumnType.Text},
             };
         }
@@ -116,32 +110,14 @@ namespace Restless.Logite.Database.Tables
 
         #region Internal methods
         /// <summary>
-        /// Inserts a referer record if it doesn't yet exist.
+        /// Inserts an entry if it doesn't exist.
         /// </summary>
-        /// <param name="referer">The request</param>
+        /// <param name="entry">The log entry</param>
         /// <returns>The newly inserted id, or the existing id</returns>
-        internal long InsertIf(LogEntry entry)
+        internal override long InsertEntryIf(LogEntry entry)
         {
-            /* Referer should never be empty. If it comes from the logs as empty (which is possible),
-             * it gets set to LogEntry.EmptyEntryPlaceholder in the LogEntry.SetReferer(value)
-             */
-            if (string.IsNullOrEmpty(entry.Referer))
-            {
-                throw new ArgumentNullException(nameof(entry.Referer));
-            }
-
-            DataRow row = GetUniqueRow(Select($"{Defs.Columns.Referer}='{entry.Referer}' AND {Defs.Columns.DomainId}={entry.DomainId}"));
-            if (row != null)
-            {
-                return (long)row[Defs.Columns.Id];
-            }
-
-            row = NewRow();
-            row[Defs.Columns.DomainId] = entry.DomainId;
-            row[Defs.Columns.Referer] = entry.Referer;
-            Rows.Add(row);
-            Save();
-            return (long)row[Defs.Columns.Id];
+            long id = SelectScalarId(Defs.Columns.Referer, entry.Referer);
+            return id != -1 ? id : InsertScalarId(Defs.Columns.Referer, entry.Referer);
         }
         #endregion
     }

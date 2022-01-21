@@ -26,12 +26,7 @@ namespace Restless.Logite.Database.Tables
                 /// <summary>
                 /// The name of the id column. This is the table's primary key.
                 /// </summary>
-                public const string Id = IdColumnName;
-
-                /// <summary>
-                /// Id of domain.
-                /// </summary>
-                public const string DomainId = DomainIdColumnName;
+                public const string Id = DefaultPrimaryKeyName;
 
                 /// <summary>
                 /// The request.
@@ -91,7 +86,6 @@ namespace Restless.Logite.Database.Tables
             return new ColumnDefinitionCollection()
             {
                 { Defs.Columns.Id, ColumnType.Integer, true },
-                { Defs.Columns.DomainId, ColumnType.Integer, false, false, DomainTable.Defs.Values.DomainZeroId, IndexType.Index },
                 { Defs.Columns.IpAddress, ColumnType.Text },
             };
         }
@@ -114,30 +108,14 @@ namespace Restless.Logite.Database.Tables
 
         #region Internal methods
         /// <summary>
-        /// Inserts an ip address record if it doesn't yet exist.
+        /// Inserts an entry if it doesn't exist.
         /// </summary>
         /// <param name="entry">The log entry</param>
         /// <returns>The newly inserted id, or the existing id</returns>
-        internal long InsertIf(LogEntry entry)
+        internal override long InsertEntryIf(LogEntry entry)
         {
-            /* RemoteAddress should never be empty */
-            if (string.IsNullOrEmpty(entry.RemoteAddress))
-            {
-                throw new ArgumentNullException(nameof(entry.RemoteAddress));
-            }
-
-            DataRow row = GetUniqueRow(Select($"{Defs.Columns.IpAddress}='{entry.RemoteAddress}' AND {Defs.Columns.DomainId}={entry.DomainId}"));
-            if (row != null)
-            {
-                return (long)row[Defs.Columns.Id];
-            }
-
-            row = NewRow();
-            row[Defs.Columns.DomainId] = entry.DomainId;
-            row[Defs.Columns.IpAddress] = entry.RemoteAddress;
-            Rows.Add(row);
-            Save();
-            return (long)row[Defs.Columns.Id];
+            long id = SelectScalarId(Defs.Columns.IpAddress, entry.RemoteAddress);
+            return id != -1 ? id : InsertScalarId(Defs.Columns.IpAddress, entry.RemoteAddress);
         }
         #endregion
     }

@@ -133,7 +133,7 @@ namespace Restless.Logite.Core
 
                 public const string LogCulture = "en-us";
 
-                public const string DisplayDate = "yyyy-MMM-dd HH:mm";
+                public const string DisplayDate = "yyyy-MMM-dd HH:mm:ss";
             }
         }
 

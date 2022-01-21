@@ -127,6 +127,8 @@ namespace Restless.Logite.Core
 
             TimeFilters = new List<TimeFilterItem>()
             {
+                new TimeFilterItem(Strings.FilterDays001, TimeFilter.Days001),
+                new TimeFilterItem(Strings.FilterDays002, TimeFilter.Days002),
                 new TimeFilterItem(Strings.FilterDays003, TimeFilter.Days003),
                 new TimeFilterItem(Strings.FilterDays007, TimeFilter.Days007),
                 new TimeFilterItem(Strings.FilterDays014, TimeFilter.Days014),
@@ -199,6 +201,8 @@ namespace Restless.Logite.Core
             return selectedTimeFilter != null && selectedTimeFilter.Filter switch
             {
                 TimeFilter.All => true,
+                TimeFilter.Days001 => IsPresetDateIncluded(item, -1),
+                TimeFilter.Days002 => IsPresetDateIncluded(item, -2),
                 TimeFilter.Days003 => IsPresetDateIncluded(item, -3),
                 TimeFilter.Days007 => IsPresetDateIncluded(item, -7),
                 TimeFilter.Days014 => IsPresetDateIncluded(item, -14),
