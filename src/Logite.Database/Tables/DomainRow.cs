@@ -51,7 +51,8 @@ namespace Restless.Logite.Database.Tables
         /// </summary>
         public long LogEntryCount
         {
-            get => GetInt64(Columns.Calculated.LogEntryCount);
+            get => GetInt64(Columns.LogEntryCount);
+            internal set => SetValue(Columns.LogEntryCount, value);
         }
         #endregion
 

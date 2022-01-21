@@ -162,6 +162,8 @@ namespace Restless.Logite.ViewModel
                     }
                 }, tables);
 
+                DatabaseController.Instance.GetTable<DomainTable>().UpdateLogEntryCount();
+
                 Refresh();
             }
             catch (Exception ex)

@@ -47,14 +47,16 @@ namespace Restless.Logite.Database.Tables
                 public const string PastDays = "pastdays";
 
                 /// <summary>
-                /// Provides static column names for columns that are calculated from other values.
+                /// The total number of log entries for this domain
                 /// </summary>
+                public const string LogEntryCount = "logentrycount";
+
                 public class Calculated
                 {
                     /// <summary>
-                    /// Number of log entries.
+                    /// Number of import files for this domain.
                     /// </summary>
-                    public const string LogEntryCount = "CalcLogEntryCount";
+                    public const string ImportFileCount = "CalcImportCount";
                 }
             }
 
@@ -67,11 +69,6 @@ namespace Restless.Logite.Database.Tables
                 /// The name of the relation that relates the <see cref="DomainTable"/> to the <see cref="ImportFileTable"/>.
                 /// </summary>
                 public const string ToImportFile = "DomainToImportFile";
-
-                /// <summary>
-                /// The name of the relation that relates the <see cref="DomainTable"/> to the <see cref="LogEntryTable"/>.
-                /// </summary>
-                public const string ToLogEntry = "DomainToLogEntry";
             }
 
             /// <summary>
@@ -144,7 +141,8 @@ namespace Restless.Logite.Database.Tables
             {
                 DisplayName = Defs.Values.NewDomainDisplayName,
                 Preface = Defs.Values.NewDomainPreface,
-                PastDays = Defs.Values.DefaultPastDays
+                PastDays = Defs.Values.DefaultPastDays,
+                LogEntryCount = 0
             };
             Rows.Add(obj.Row);
             Save();
@@ -164,6 +162,18 @@ namespace Restless.Logite.Database.Tables
                 return new DomainRow(rows[0]);
             }
             return null;
+        }
+
+        /// <summary>
+        /// Updates the log entry count for each domain.
+        /// </summary>
+        public void UpdateLogEntryCount()
+        {
+            foreach (DomainRow domain in EnumerateAll())
+            {
+                domain.LogEntryCount = GetLogEntryCount(domain);
+            }
+            Save();
         }
         #endregion
 
@@ -194,6 +204,7 @@ namespace Restless.Logite.Database.Tables
                 { Defs.Columns.DisplayName, ColumnType.Text, false, false},
                 { Defs.Columns.Preface, ColumnType.Text, false, false },
                 { Defs.Columns.PastDays, ColumnType.Integer, false, false, Defs.Values.DefaultPastDays },
+                { Defs.Columns.LogEntryCount, ColumnType.Integer, false, false, 0L }
             };
         }
 
@@ -201,14 +212,13 @@ namespace Restless.Logite.Database.Tables
         protected override void SetDataRelations()
         {
             CreateParentChildRelation<ImportFileTable>(Defs.Relations.ToImportFile, Defs.Columns.Id, ImportFileTable.Defs.Columns.DomainId);
-            CreateParentChildRelation<LogEntryTable>(Defs.Relations.ToLogEntry, Defs.Columns.Id, LogEntryTable.Defs.Columns.DomainId);
         }
 
         /// <inheritdoc/>
         protected override void UseDataRelations()
         {
-            string expr = string.Format("Count(Child({0}).{1})", Defs.Relations.ToLogEntry, LogEntryTable.Defs.Columns.Id);
-            CreateExpressionColumn<long>(Defs.Columns.Calculated.LogEntryCount, expr);
+            string expr = string.Format("Count(Child({0}).{1})", Defs.Relations.ToImportFile, ImportFileTable.Defs.Columns.Id);
+            CreateExpressionColumn<long>(Defs.Columns.Calculated.ImportFileCount, expr);
         }
 
         /// <summary>
@@ -233,8 +243,18 @@ namespace Restless.Logite.Database.Tables
             yield return new object[] { Defs.Values.DomainZeroId + 2, "User", "user", Defs.Values.DefaultPastDays };
             yield return new object[] { Defs.Values.DomainZeroId + 3, "Kong", "kong", Defs.Values.DefaultPastDays };
             yield return new object[] { Defs.Values.DomainZeroId + 4, "Service", "service", Defs.Values.DefaultPastDays };
-
 #endif
+        }
+        #endregion
+
+        /************************************************************************/
+
+        #region Private methods
+        private long GetLogEntryCount(DomainRow domain)
+        {
+            string sql = $"select count(*) from {Namespace}.{LogEntryTable.Defs.TableName} where {LogEntryTable.Defs.Columns.DomainId}={domain.Id}";
+            object result = Controller.Execution.Scalar(sql);
+            return (long)result;
         }
         #endregion
     }
