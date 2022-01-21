@@ -79,6 +79,24 @@ namespace Restless.Logite.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 1 day.
+        /// </summary>
+        public static string FilterDays001 {
+            get {
+                return ResourceManager.GetString("FilterDays001", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 2 days.
+        /// </summary>
+        public static string FilterDays002 {
+            get {
+                return ResourceManager.GetString("FilterDays002", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 3 days.
         /// </summary>
         public static string FilterDays003 {
