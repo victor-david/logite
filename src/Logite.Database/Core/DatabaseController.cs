@@ -122,6 +122,7 @@ namespace Restless.Logite.Database.Core
 
             Attach(MainAppSchemaName, fullFileName, () =>
             {
+                CreateAndRegisterTable<AttackTable>();
                 CreateAndRegisterTable<ConfigTable>();
                 CreateAndRegisterTable<DomainTable>();
                 CreateAndRegisterTable<LogEntryTable>();
