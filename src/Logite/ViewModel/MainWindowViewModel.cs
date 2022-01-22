@@ -4,8 +4,6 @@ using Restless.Logite.Database.Core;
 using Restless.Logite.Database.Tables;
 using Restless.Logite.Resources;
 using Restless.Logite.ViewModel.Domain;
-using System;
-using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
 
@@ -30,6 +28,9 @@ namespace Restless.Logite.ViewModel
         private MainWindowViewModel()
         {
             DisplayName = $"{AppInfo.Assembly.Product} {AppInfo.Assembly.VersionMajor}";
+#if DEBUG
+            InitializeDevelopmentConfig();
+#endif
             Commands.Add("SaveData", p => DatabaseController.Instance.Save());
             Commands.Add("ExitApp", p => Application.Current.MainWindow.Close());
             Commands.Add("ResetWindow", RunResetWindowCommand);
@@ -44,6 +45,7 @@ namespace Restless.Logite.ViewModel
             RegisterStandardNavigatorItems();
             RegisterDomainNavigatorItems();
             StartupNavigation();
+
         }
         #endregion
 
@@ -93,15 +95,6 @@ namespace Restless.Logite.ViewModel
         /************************************************************************/
 
         #region Public methods
-        ///// <summary>
-        ///// Navigates to the specified view model
-        ///// </summary>
-        ///// <typeparam name="T">The view model type</typeparam>
-        //public void NavigateTo<T>() where T : ApplicationViewModel, new()
-        //{
-        //    NavigateTo(typeof(T));
-        //}
-
         /// <summary>
         /// Gets geometry for a navigator item.
         /// </summary>
@@ -111,8 +104,6 @@ namespace Restless.Logite.ViewModel
         {
             return LocalResources.Get<Geometry>(resourceId);
         }
-
-
         #endregion
 
         /************************************************************************/
@@ -136,9 +127,8 @@ namespace Restless.Logite.ViewModel
         #endregion
 
         /************************************************************************/
-
+        
         #region Private methods
-
         private void RegisterStandardNavigatorItems()
         {
             NavigatorItems.Add<StartViewModel>(NavigationGroup.Services, Strings.MenuItemStart, false, GetGeometry(GeometryKeys.ClipboardGeometryKey));
@@ -199,6 +189,54 @@ namespace Restless.Logite.ViewModel
             current?.Activate();
         }
 
+#if DEBUG
+        private const string DevConfigFileName = @"D:\Confidential\Keys\logite.settings.ini";
+        /// <summary>
+        /// Helper method to load ftp and domain configuration after a database reset,
+        /// which occurs frequently during development. Read the values from
+        /// an external file that's not in the respository.
+        /// </summary>
+        private void InitializeDevelopmentConfig()
+        {
+            try
+            {
+                bool initDomain = DatabaseController.Instance.GetTable<DomainTable>().Rows.Count == 1;
+                bool initFtp = string.IsNullOrEmpty(Config.FtpHost);
+
+                if (System.IO.File.Exists(DevConfigFileName) &&  (initDomain || initFtp))
+                {
+                    IniFile ini = new(DevConfigFileName);
+                    if (initFtp)
+                    {
+                        Config.FtpHost = ini.IniReadValue("ftp", "host");
+                        Config.FtpUserName = ini.IniReadValue("ftp", "user");
+                        Config.FtpKeyFile = ini.IniReadValue("ftp", "keyfile");
+                        Config.RemoteLogDirectory = ini.IniReadValue("ftp", "remotedir");
+                        Config.LocalLogDirectory = ini.IniReadValue("ftp", "localdir");
+                    }
+
+                    if (initDomain)
+                    {
+                        AddDomainIf(ini.IniReadValue("domain", "d1name"), ini.IniReadValue("domain", "d1preface"));
+                        AddDomainIf(ini.IniReadValue("domain", "d2name"), ini.IniReadValue("domain", "d2preface"));
+                        AddDomainIf(ini.IniReadValue("domain", "d3name"), ini.IniReadValue("domain", "d3preface"));
+                        AddDomainIf(ini.IniReadValue("domain", "d4name"), ini.IniReadValue("domain", "d4preface"));
+                    }
+                }
+            }
+            catch 
+            { 
+            }
+        }
+
+        private void AddDomainIf(string name, string preface)
+        {
+            if (!string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(preface))
+            {
+                DatabaseController.Instance.GetTable<DomainTable>().Create(name, preface);
+            }
+        }
+#endif
         #endregion
     }
 }
