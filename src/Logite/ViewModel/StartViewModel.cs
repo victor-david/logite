@@ -38,10 +38,10 @@ namespace Restless.Logite.ViewModel
 
         public string LogFileDirectory
         {
-            get => Config.LogFileDirectory;
+            get => Config.LocalLogDirectory;
             private set
             {
-                Config.LogFileDirectory = value;
+                Config.LocalLogDirectory = value;
                 OnPropertyChanged();
             }
         }

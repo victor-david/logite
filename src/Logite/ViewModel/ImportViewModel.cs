@@ -1,6 +1,7 @@
 ﻿using Restless.Logite.Core;
 using Restless.Logite.Database.Core;
 using Restless.Logite.Database.Tables;
+using Restless.Logite.Network;
 using Restless.Logite.Resources;
 using Restless.Toolkit.Controls;
 using System;
@@ -17,6 +18,7 @@ namespace Restless.Logite.ViewModel
     public class ImportViewModel : DataGridViewModel<ImportFileTable>
     {
         #region Private
+        private bool operationInProgress;
         #endregion
 
         /************************************************************************/
@@ -30,6 +32,15 @@ namespace Restless.Logite.ViewModel
         public DataGridColumnCollection ImportFileColumns
         {
             get;
+        }
+
+        /// <summary>
+        /// Gets a value that indicates if ab async operation is in progress
+        /// </summary>
+        public bool OperationInProgress
+        {
+            get => operationInProgress;
+            private set => SetProperty(ref operationInProgress, value);
         }
         #endregion
 
@@ -53,7 +64,8 @@ namespace Restless.Logite.ViewModel
             ImportFileColumns.Create("Domain", nameof(ImportFile.Domain)).MakeFixedWidth(FixedWidth.W096);
             ImportFileColumns.Create("Status", nameof(ImportFile.Status)).MakeFixedWidth(FixedWidth.W136);
 
-            Commands.Add("Import", RunImportCommand);
+            Commands.Add("Download", RunDownloadCommand, (p) => !OperationInProgress);
+            Commands.Add("Import", RunImportCommand, (p) => !OperationInProgress);
         }
         #endregion
 
@@ -77,7 +89,7 @@ namespace Restless.Logite.ViewModel
         private void UpdatePending()
         {
             ImportFiles.Clear();
-            foreach (string file in System.IO.Directory.EnumerateFiles(Config.LogFileDirectory))
+            foreach (string file in System.IO.Directory.EnumerateFiles(Config.LocalLogDirectory))
             {
                 ImportFile importFile = new(file);
                 SetImportFileDomain(importFile);
@@ -111,6 +123,32 @@ namespace Restless.Logite.ViewModel
 
             ImportFileRow importFileRow = DatabaseController.Instance.GetTable<ImportFileTable>().GetSingleRecord(importFile.Domain.Id, importFile.FileName);
             importFile.Status = importFileRow == null ? ImportFile.StatusReady : ImportFile.StatusImported;
+        }
+
+        private async void RunDownloadCommand(object parm)
+        {
+            try
+            {
+                OperationInProgress = true;
+                FtpConnectionConfig config = new FtpConnectionConfig(Config.FtpHost, Config.FtpUserName, Config.FtpKeyFile, Config.RemoteLogDirectory, Config.LocalLogDirectory);
+                FtpClient ftp = new FtpClient(config);
+                await ftp.DownloadLogFilesAsync((file) => IncludeDownloadFile(file));
+            }
+            catch (Exception ex)
+            {
+                MessageWindow.ShowError(ex.Message);
+            }
+            finally
+            {
+                OperationInProgress = false;
+            }
+        }
+
+        private bool IncludeDownloadFile(FtpFile file)
+        {
+            // TODO
+            // return file.Name.StartsWith("user", StringComparison.InvariantCultureIgnoreCase);
+            return false;
         }
 
         private void RunImportCommand(object parm)

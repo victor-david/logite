@@ -33,9 +33,9 @@ namespace Restless.Logite.ViewModel
             Commands.Add("SaveData", p => DatabaseController.Instance.Save());
             Commands.Add("ExitApp", p => Application.Current.MainWindow.Close());
             Commands.Add("ResetWindow", RunResetWindowCommand);
-            Commands.Add("OpenSettings", RunOpenSettingsWindow);
             Commands.Add("OpenAbout", RunOpenAboutWindow);
             Commands.Add("NavigateStart", p => NavigatorItems.Select<StartViewModel>());
+            Commands.Add("NavigateSettings", p => NavigatorItems.Select<SettingsViewModel>());
             Commands.Add("NavigateTable", p => NavigatorItems.Select<TableViewModel>());
             MainNavigationWidth = new GridLength(Config.MainNavigationWidth, GridUnitType.Pixel);
             viewModelCache = new ViewModelCache();
@@ -143,7 +143,7 @@ namespace Restless.Logite.ViewModel
         {
             NavigatorItems.Add<StartViewModel>(NavigationGroup.Services, Strings.MenuItemStart, false, GetGeometry(GeometryKeys.ClipboardGeometryKey));
             NavigatorItems.Add<ImportViewModel>(NavigationGroup.Services, Strings.MenuItemImport, false, GetGeometry(GeometryKeys.FileGeometryKey));
-
+            NavigatorItems.Add<SettingsViewModel>(NavigationGroup.Tools, Strings.MenuItemSettings, false, GetGeometry(GeometryKeys.SettingsGeometryKey));
             NavigatorItems.Add<TableViewModel>(NavigationGroup.Tools, Strings.MenuItemTableInfo, false, GetGeometry(GeometryKeys.DatabaseGeometryKey));
         }
 
@@ -180,11 +180,6 @@ namespace Restless.Logite.ViewModel
             main.Top = (SystemParameters.WorkArea.Height / 2) - (main.Height / 2);
             main.Left = (SystemParameters.WorkArea.Width / 2) - (main.Width / 2);
             main.WindowState = WindowState.Normal;
-        }
-
-        private void RunOpenSettingsWindow(object parm)
-        {
-
         }
 
         private void RunOpenAboutWindow(object parm)

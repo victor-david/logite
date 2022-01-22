@@ -268,15 +268,6 @@ namespace Restless.Logite.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Application options.
-        /// </summary>
-        public static string MenuItemAppOptions {
-            get {
-                return ResourceManager.GetString("MenuItemAppOptions", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Clear data.
         /// </summary>
         public static string MenuItemClearData {
@@ -300,6 +291,15 @@ namespace Restless.Logite.Resources {
         public static string MenuItemDomainOverview {
             get {
                 return ResourceManager.GetString("MenuItemDomainOverview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Download.
+        /// </summary>
+        public static string MenuItemDownload {
+            get {
+                return ResourceManager.GetString("MenuItemDownload", resourceCulture);
             }
         }
         
@@ -435,6 +435,60 @@ namespace Restless.Logite.Resources {
         public static string TextAddDomain {
             get {
                 return ResourceManager.GetString("TextAddDomain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ftp.
+        /// </summary>
+        public static string TextFtp {
+            get {
+                return ResourceManager.GetString("TextFtp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Host.
+        /// </summary>
+        public static string TextFtpHost {
+            get {
+                return ResourceManager.GetString("TextFtpHost", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Key file.
+        /// </summary>
+        public static string TextFtpKeyFile {
+            get {
+                return ResourceManager.GetString("TextFtpKeyFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Local log directory.
+        /// </summary>
+        public static string TextFtpLocalDirectory {
+            get {
+                return ResourceManager.GetString("TextFtpLocalDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remote log directory.
+        /// </summary>
+        public static string TextFtpRemoteDirectory {
+            get {
+                return ResourceManager.GetString("TextFtpRemoteDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User.
+        /// </summary>
+        public static string TextFtpUser {
+            get {
+                return ResourceManager.GetString("TextFtpUser", resourceCulture);
             }
         }
         
