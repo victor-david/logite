@@ -1,13 +1,16 @@
 ﻿using Restless.Logite.Core;
 using Restless.Logite.Database.Core;
 using Restless.Logite.Database.Tables;
+using Restless.Logite.Network;
 using Restless.Logite.Resources;
 using Restless.Toolkit.Controls;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
+using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Restless.Logite.ViewModel
 {
@@ -17,6 +20,7 @@ namespace Restless.Logite.ViewModel
     public class ImportViewModel : DataGridViewModel<ImportFileTable>
     {
         #region Private
+        private bool operationInProgress;
         #endregion
 
         /************************************************************************/
@@ -30,6 +34,15 @@ namespace Restless.Logite.ViewModel
         public DataGridColumnCollection ImportFileColumns
         {
             get;
+        }
+
+        /// <summary>
+        /// Gets a value that indicates if ab async operation is in progress
+        /// </summary>
+        public bool OperationInProgress
+        {
+            get => operationInProgress;
+            private set => SetProperty(ref operationInProgress, value);
         }
         #endregion
 
@@ -53,7 +66,8 @@ namespace Restless.Logite.ViewModel
             ImportFileColumns.Create("Domain", nameof(ImportFile.Domain)).MakeFixedWidth(FixedWidth.W096);
             ImportFileColumns.Create("Status", nameof(ImportFile.Status)).MakeFixedWidth(FixedWidth.W136);
 
-            Commands.Add("Import", RunImportCommand);
+            Commands.Add("Download", RunDownloadCommand, (p) => !OperationInProgress);
+            Commands.Add("Import", RunImportCommand, (p) => !OperationInProgress);
         }
         #endregion
 
@@ -77,10 +91,11 @@ namespace Restless.Logite.ViewModel
         private void UpdatePending()
         {
             ImportFiles.Clear();
-            foreach (string file in System.IO.Directory.EnumerateFiles(Config.LogFileDirectory))
+            foreach (string file in System.IO.Directory.EnumerateFiles(Config.LocalLogDirectory))
             {
                 ImportFile importFile = new(file);
-                SetImportFileDomain(importFile);
+                importFile.Domain = GetRelatedDomain(importFile.FileName);
+
                 SetImportFileStatus(importFile);
                 if (importFile.Status != ImportFile.StatusImported)
                 {
@@ -89,16 +104,16 @@ namespace Restless.Logite.ViewModel
             }
         }
 
-        private void SetImportFileDomain(ImportFile importFile)
+        private DomainRow GetRelatedDomain(string fileName)
         {
             foreach(DomainRow domain in DatabaseController.Instance.GetTable<DomainTable>().EnumerateAll())
             {
-                if (importFile.FileName.StartsWith(domain.Preface, StringComparison.InvariantCulture))
+                if (fileName.StartsWith(domain.Preface, StringComparison.InvariantCulture))
                 {
-                    importFile.Domain = domain;
-                    return;
+                    return domain;
                 }
             }
+            return null;
         }
 
         private void SetImportFileStatus(ImportFile importFile)
@@ -111,6 +126,41 @@ namespace Restless.Logite.ViewModel
 
             ImportFileRow importFileRow = DatabaseController.Instance.GetTable<ImportFileTable>().GetSingleRecord(importFile.Domain.Id, importFile.FileName);
             importFile.Status = importFileRow == null ? ImportFile.StatusReady : ImportFile.StatusImported;
+        }
+
+        private async void RunDownloadCommand(object parm)
+        {
+            try
+            {
+                OperationInProgress = true;
+                FtpConnectionConfig config = new FtpConnectionConfig(Config.FtpHost, Config.FtpUserName, Config.FtpKeyFile, Config.RemoteLogDirectory, Config.LocalLogDirectory);
+                FtpClient ftp = new FtpClient(config);
+                await ftp.DownloadLogFilesAsync((file) => IncludeDownloadFile(file));
+                UpdatePending();
+            }
+            catch (Exception ex)
+            {
+                MessageWindow.ShowError(ex.Message);
+            }
+            finally
+            {
+                OperationInProgress = false;
+            }
+        }
+
+        private bool IncludeDownloadFile(FtpFile file)
+        {
+            string localFile = Path.Combine(Config.LocalLogDirectory, file.Name);
+            if (File.Exists(localFile) && !Config.OverwriteLogFiles)
+            {
+                return false;
+            }
+
+            DomainRow domain = GetRelatedDomain(file.Name);
+            /* file is eligible if:
+             * it has a related domain and 
+             * the file name matches the regular expression (if one exists) */
+            return domain != null && (string.IsNullOrEmpty(Config.LogFileRegex) || Regex.IsMatch(file.Name, Config.LogFileRegex));
         }
 
         private void RunImportCommand(object parm)
@@ -137,7 +187,6 @@ namespace Restless.Logite.ViewModel
 
                     foreach (ImportFile logFile in ImportFiles.Where(lf => lf.Status == ImportFile.StatusReady))
                     {
-                        //DemandDomainController.Instance.Load(logFile.Domain);
                         string[] lines = System.IO.File.ReadAllLines(logFile.Path);
                         ImportFileRow import = importTable.Create(logFile.FileName, logFile.Domain.Id, lines.LongLength);
                         long lineNumber = 0;

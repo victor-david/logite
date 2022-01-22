@@ -186,9 +186,6 @@
   <data name="MenuItemAddDomain" xml:space="preserve">
     <value>Add</value>
   </data>
-  <data name="MenuItemAppOptions" xml:space="preserve">
-    <value>Application options</value>
-  </data>
   <data name="MenuItemClearData" xml:space="preserve">
     <value>Clear data</value>
   </data>
@@ -197,6 +194,9 @@
   </data>
   <data name="MenuItemDomainOverview" xml:space="preserve">
     <value>Overview</value>
+  </data>
+  <data name="MenuItemDownload" xml:space="preserve">
+    <value>Download</value>
   </data>
   <data name="MenuItemExit" xml:space="preserve">
     <value>Exit</value>
@@ -242,6 +242,30 @@
   </data>
   <data name="TextAddDomain" xml:space="preserve">
     <value>This will add a new domain entry with default values. Once added, you can edit the values.</value>
+  </data>
+  <data name="TextFtp" xml:space="preserve">
+    <value>Ftp</value>
+  </data>
+  <data name="TextFtpHost" xml:space="preserve">
+    <value>Host</value>
+  </data>
+  <data name="TextFtpKeyFile" xml:space="preserve">
+    <value>Key file</value>
+  </data>
+  <data name="TextFtpLocalDirectory" xml:space="preserve">
+    <value>Local log directory</value>
+  </data>
+  <data name="TextFtpOverwrite" xml:space="preserve">
+    <value>Overwrite existing files</value>
+  </data>
+  <data name="TextFtpRegex" xml:space="preserve">
+    <value>Regular expression</value>
+  </data>
+  <data name="TextFtpRemoteDirectory" xml:space="preserve">
+    <value>Remote log directory</value>
+  </data>
+  <data name="TextFtpUser" xml:space="preserve">
+    <value>User</value>
   </data>
   <data name="ToolTipResetMainWindow" xml:space="preserve">
     <value>Reset the size and position of the main window</value>

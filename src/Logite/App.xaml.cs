@@ -16,7 +16,7 @@ namespace Restless.Logite
             base.OnStartup(e);
             RegistryManager.Initialize();
             DatabaseController.Instance.Init(RegistryManager.DatabaseDirectory);
-            Config.Instance.SetDefaultLogDirectory(RegistryManager.DatabaseDirectory);
+            Config.Instance.SetDefaultLocalLogDirectory(RegistryManager.DatabaseDirectory);
 
             MainWindow main = WindowFactory.Main.Create();
 

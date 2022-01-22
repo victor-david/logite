@@ -137,10 +137,31 @@ namespace Restless.Logite.Database.Tables
         /// <returns>The newly added <see cref="DomainRow"/></returns>
         public DomainRow Create()
         {
+            return Create(Defs.Values.NewDomainDisplayName, Defs.Values.NewDomainPreface);
+        }
+
+        /// <summary>
+        /// Creates a record with the specified name and preface.
+        /// </summary>
+        /// <param name="displayName">The display name</param>
+        /// <param name="preface">The preface</param>
+        /// <returns>The newly added <see cref="DomainRow"/></returns> 
+        public DomainRow Create(string displayName, string preface)
+        {
+            if (string.IsNullOrEmpty(displayName))
+            {
+                throw new ArgumentNullException(nameof(displayName));
+            }
+
+            if (string.IsNullOrEmpty(preface))
+            {
+                throw new ArgumentNullException(nameof(preface));
+            }
+
             var obj = new DomainRow(NewRow())
             {
-                DisplayName = Defs.Values.NewDomainDisplayName,
-                Preface = Defs.Values.NewDomainPreface,
+                DisplayName = displayName,
+                Preface = preface,
                 PastDays = Defs.Values.DefaultPastDays,
                 LogEntryCount = 0
             };
@@ -238,12 +259,6 @@ namespace Restless.Logite.Database.Tables
         protected override IEnumerable<object[]> EnumeratePopulateValues()
         {
             yield return new object[] { Defs.Values.DomainZeroId, Defs.Values.DomainZeroDisplayName, Defs.Values.DomainZeroPreface, Defs.Values.DefaultPastDays };
-#if DEBUG
-            yield return new object[] { Defs.Values.DomainZeroId + 1, "Public", "public", Defs.Values.DefaultPastDays };
-            yield return new object[] { Defs.Values.DomainZeroId + 2, "User", "user", Defs.Values.DefaultPastDays };
-            yield return new object[] { Defs.Values.DomainZeroId + 3, "Kong", "kong", Defs.Values.DefaultPastDays };
-            yield return new object[] { Defs.Values.DomainZeroId + 4, "Service", "service", Defs.Values.DefaultPastDays };
-#endif
         }
         #endregion
 

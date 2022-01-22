@@ -6,12 +6,12 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:r="clr-namespace:Restless.Logite.Resources"
-    xmlns:vm="clr-namespace:Restless.Logite.ViewModel" d:DataContext="{d:DesignInstance Type=vm:FileViewModel}"
+    xmlns:vm="clr-namespace:Restless.Logite.ViewModel" d:DataContext="{d:DesignInstance Type=vm:ImportViewModel}"
     mc:Ignorable="d"
     d:DesignWidth="860" d:DesignHeight="400">
 
     <HeaderedContentControl Header="{Binding DisplayName, Mode=OneTime}">
-        <Grid tk:Property.ColumnWidths="*,*">
+        <Grid tk:Property.ColumnWidths="*,*" tk:Property.IsInverseEnabled="{Binding OperationInProgress}">
             <DockPanel>
                 <Border DockPanel.Dock="Top" Style="{StaticResource SectionHeaderBorderStyle}">
                     <TextBlock Text="Pending Files"/>
@@ -19,7 +19,12 @@
 
                 <ToolBarTray DockPanel.Dock="Top" Margin="{StaticResource SubContentPadding}">
                     <ToolBar>
+                        <Button Command="{Binding Commands[Download]}" Content="{x:Static r:Strings.MenuItemDownload}"/>
+                        <Separator/>
                         <Button Command="{Binding Commands[Import]}" Content="{x:Static r:Strings.MenuItemImport}"/>
+                        
+                        <Separator tk:Property.IsVisible="{Binding OperationInProgress}"/>
+                        <ProgressBar Width="192" Height="20" IsIndeterminate="True" tk:Property.IsVisible="{Binding OperationInProgress}"/>
                     </ToolBar>
                 </ToolBarTray>
 

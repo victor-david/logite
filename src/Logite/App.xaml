@@ -12,6 +12,7 @@
                 <ResourceDictionary Source="Resources/Dictionary/Button.xaml"/>
                 <ResourceDictionary Source="Resources/Dictionary/Checkbox.xaml"/>
                 <ResourceDictionary Source="Resources/Dictionary/DataGrid.xaml"/>
+                <ResourceDictionary Source="Resources/Dictionary/GroupBox.xaml"/>
                 <ResourceDictionary Source="Resources/Dictionary/ListBox.xaml"/>
                 <ResourceDictionary Source="Resources/Dictionary/FlowDocument.xaml"/>
                 <ResourceDictionary Source="Resources/Dictionary/Path.xaml"/>

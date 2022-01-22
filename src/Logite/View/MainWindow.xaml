@@ -21,20 +21,19 @@
     <tk:AppWindow.Menu>
         <Menu>
             <MenuItem Header="{x:Static r:Strings.MenuItemFile}">
-                <MenuItem Header="{x:Static r:Strings.MenuItemSave}" Icon="{StaticResource SavePathIconKey}" Command="{Binding Commands[SaveData]}" />
+                <MenuItem Header="{x:Static r:Strings.MenuItemSave}" Icon="{StaticResource SavePathIconKey}" Command="{Binding Commands[SaveData]}"/>
                 <Separator/>
                 <MenuItem Header="{x:Static r:Strings.MenuItemResetWindow}" Command="{Binding Commands[ResetWindow]}" ToolTip="{x:Static r:Strings.ToolTipResetMainWindow}"/>
                 <Separator/>
-                <MenuItem Header="{x:Static r:Strings.MenuItemExit}" Icon="{StaticResource ExitPathIconKey}" Command="{Binding Commands[ExitApp]}" />
-            </MenuItem>
-            <MenuItem Header="{x:Static r:Strings.MenuItemSettings}">
-                <MenuItem Header="{x:Static r:Strings.MenuItemStart}" Icon="{StaticResource ClipboardPathIconKey}" Command="{Binding Commands[NavigateStart]}" />
-                <MenuItem Header="{x:Static r:Strings.MenuItemAppOptions}" Icon="{StaticResource SettingsPathIconKey}" Command="{Binding Commands[OpenSettings]}" />
+                <MenuItem Header="{x:Static r:Strings.MenuItemExit}" Icon="{StaticResource ExitPathIconKey}" Command="{Binding Commands[ExitApp]}"/>
             </MenuItem>
             <MenuItem Header="{x:Static r:Strings.MenuItemTools}">
+                <MenuItem Header="{x:Static r:Strings.MenuItemSettings}" Icon="{StaticResource SettingsPathIconKey}" Command="{Binding Commands[NavigateSettings]}"/>
                 <MenuItem Header="{x:Static r:Strings.MenuItemTableInfo}" Icon="{StaticResource DatabasePathIconKey}" Command="{Binding Commands[NavigateTable]}"/>
             </MenuItem>
             <MenuItem Header="{x:Static r:Strings.MenuItemHelp}">
+                <MenuItem Header="{x:Static r:Strings.MenuItemStart}" Icon="{StaticResource ClipboardPathIconKey}" Command="{Binding Commands[NavigateStart]}"/>
+                <Separator/>
                 <MenuItem Header="{x:Static r:Strings.MenuItemAbout}" Icon="{StaticResource AppPathIconKey}" Command="{Binding Commands[OpenAbout]}"/>
             </MenuItem>            
         </Menu>

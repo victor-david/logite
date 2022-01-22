@@ -263,15 +263,72 @@ namespace Restless.Logite.Core
 
         /************************************************************************/
 
-        #region Other
+        #region Ftp / Import settings
         /// <summary>
-        /// Gets or sets the root directory where log files are stored.
+        /// Gets or sets the ftp host.
         /// </summary>
-        public string LogFileDirectory
+        public string FtpHost
         {
             get => GetItem(string.Empty);
             set => SetItem(value);
         }
+
+        /// <summary>
+        /// Gets or sets the ftp user name.
+        /// </summary>
+        public string FtpUserName
+        {
+            get => GetItem(string.Empty);
+            set => SetItem(value);
+        }
+
+        /// <summary>
+        /// Gets or sets the full path to the ftp key file.
+        /// </summary>
+        public string FtpKeyFile
+        {
+            get => GetItem(string.Empty);
+            set => SetItem(value);
+        }
+
+        /// <summary>
+        /// Gets or sets the remote log directory.
+        /// </summary>
+        public string RemoteLogDirectory
+        {
+            get => GetItem(string.Empty);
+            set => SetItem(value);
+        }
+
+        /// <summary>
+        /// Gets or sets the root directory where log files are stored.
+        /// </summary>
+        public string LocalLogDirectory
+        {
+            get => GetItem(string.Empty);
+            set => SetItem(value);
+        }
+
+        /// <summary>
+        /// Gets or sets a boolean value that determines if a proposed download file 
+        /// may overwrite an existing file.
+        /// </summary>
+        public bool OverwriteLogFiles
+        {
+            get => GetItem(false);
+            set => SetItem(value);
+        }
+
+        /// <summary>
+        /// Gets or sets a regular expression that is used to determine if a proposed 
+        /// download file is eligible for download
+        /// </summary>
+        public string LogFileRegex
+        {
+            get => GetItem(@"\d{8}$");
+            set => SetItem(value);
+        }
+
         #endregion
 
         /************************************************************************/
@@ -311,19 +368,19 @@ namespace Restless.Logite.Core
         /************************************************************************/
 
         /// <summary>
-        /// Sets the starting value of <see cref="LogFileDirectory"/>.
+        /// Sets the starting value of <see cref="LocalLogDirectory"/>.
         /// If it is already set, this method does nothing.
         /// </summary>
         /// <param name="value">The value to set</param>
-        public void SetDefaultLogDirectory(string value)
+        public void SetDefaultLocalLogDirectory(string value)
         {
             if (value == null || value.Length == 0)
             {
                 throw new ArgumentNullException(nameof(value));
             }
-            if (LogFileDirectory.Length == 0)
+            if (LocalLogDirectory.Length == 0)
             {
-                LogFileDirectory = value;
+                LocalLogDirectory = value;
             }
         }
 

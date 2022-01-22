@@ -27,6 +27,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Logite.Controls\Logite.Controls.csproj" />
     <ProjectReference Include="..\Logite.Database\Logite.Database.csproj" />
+    <ProjectReference Include="..\Logite.Network\Logite.Network.csproj" />
   </ItemGroup>
 
   <ItemGroup>
