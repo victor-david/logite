@@ -15,6 +15,7 @@ namespace Restless.Logite.Database.Core
         private static RefererTable refererTable = null;
         private static RequestTable requestTable = null;
         private static UserAgentTable agentTable = null;
+        private static AttackTable attackTable = null;
         private static bool isInitialized = false;
 
         /// <summary>
@@ -29,6 +30,7 @@ namespace Restless.Logite.Database.Core
             refererTable = DatabaseController.Instance.GetTable<RefererTable>();
             requestTable = DatabaseController.Instance.GetTable<RequestTable>();
             agentTable = DatabaseController.Instance.GetTable<UserAgentTable>();
+            attackTable = DatabaseController.Instance.GetTable<AttackTable>();
             isInitialized = true;
         }
 
@@ -40,13 +42,19 @@ namespace Restless.Logite.Database.Core
         {
             if (isInitialized)
             {
-                long ipAddressId = ipAddressTable.InsertEntryIf(entry);
-                long methodId = methodTable.GetMethodId(entry.Method);
-                long requestId = requestTable.InsertEntryIf(entry);
-                long refererId = refererTable.InsertEntryIf(entry);
-                long agentId = agentTable.InsertEntryIf(entry);
+                LogEntryIds ids = new LogEntryIds()
+                {
+                    IpAddressId = ipAddressTable.InsertEntryIf(entry),
+                    MethodId = methodTable.GetMethodId(entry.Method),
+                    RequestId = requestTable.InsertEntryIf(entry),
+                    RefererId = refererTable.InsertEntryIf(entry),
+                    AgentId = agentTable.InsertEntryIf(entry),
+                    AttackRequestId = attackTable.Insert(entry, AttackVectorType.Request),
+                    AttackRefererId = attackTable.Insert(entry, AttackVectorType.Referer),
+                    AttackAgentId = attackTable.Insert(entry, AttackVectorType.UserAgent),
+                };
                 _ =  statusTable.InsertIf(entry);
-                logEntryTable.Insert(entry, ipAddressId, methodId, requestId, refererId, agentId);
+                logEntryTable.Insert(entry, ids);
             }
         }
     }

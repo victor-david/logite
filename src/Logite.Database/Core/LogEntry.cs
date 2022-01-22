@@ -1,5 +1,6 @@
 ﻿using Restless.Logite.Database.Tables;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 
 namespace Restless.Logite.Database.Core
@@ -20,21 +21,6 @@ namespace Restless.Logite.Database.Core
         /// Used when a request, referer, or user agent is empty.
         /// </summary>
         public const string EmptyEntryPlaceholder = "--";
-
-        /// <summary>
-        /// Used when a request is a byte attack.
-        /// </summary>
-        public const string RequestAttackName = "Byte Attack";
-
-        /// <summary>
-        /// The name for an attack referer.
-        /// </summary>
-        public const string RefererAttackName = "Referer attack";
-
-        /// <summary>
-        /// The name for an attack user agent.
-        /// </summary>
-        public const string UserAgentAttackName = "User Agent attack";
         #endregion
 
         /************************************************************************/
@@ -123,12 +109,11 @@ namespace Restless.Logite.Database.Core
         }
 
         /// <summary>
-        /// When the request is a byte attack, the length of the byte string.
+        /// Gets the attack vector list, empty if no attacks.
         /// </summary>
-        public int AttackLength
+        public List<AttackVector> Attacks
         {
             get;
-            private set;
         }
 
         /// <summary>
@@ -186,6 +171,7 @@ namespace Restless.Logite.Database.Core
             ImportFileLineNumber = importFileLineNumber;
             HttpVersion = HttpVersionZero;
             Request = Referer = UserAgent = EmptyEntryPlaceholder;
+            Attacks = new List<AttackVector>();
         }
         #endregion
 
@@ -227,10 +213,10 @@ namespace Restless.Logite.Database.Core
                 }
 
                 string request = string.IsNullOrEmpty(Method) ? value.Trim() : value.Substring(Method.Length).Trim();
-                if (string.IsNullOrEmpty(Method) || request.Contains(@"\x"))
+                if (string.IsNullOrEmpty(Method) || IsAttackString(request))
                 {
-                    AttackLength = request.Length;
-                    request = RequestAttackName;
+                    Attacks.Add(new AttackVector(AttackVectorType.Request, request));
+                    request = AttackVector.RequestAttackName;
                 }
                 else
                 {
@@ -259,7 +245,15 @@ namespace Restless.Logite.Database.Core
         /// <param name="value"></param>
         public void SetReferer(string value)
         {
-            Referer = GetCleanValue(value, RefererAttackName);
+            if (IsAttackString(value))
+            {
+                Attacks.Add(new AttackVector(AttackVectorType.Referer, value));
+                Referer = AttackVector.RefererAttackName;
+            }
+            else
+            {
+                Referer = GetCleanValue(value);
+            }
         }
 
         /// <summary>
@@ -268,7 +262,15 @@ namespace Restless.Logite.Database.Core
         /// <param name="value"></param>
         public void SetUserAgent(string value)
         {
-            UserAgent = GetCleanValue(value, UserAgentAttackName);
+            if (IsAttackString(value))
+            {
+                Attacks.Add(new AttackVector(AttackVectorType.UserAgent, value));
+                UserAgent = AttackVector.AgentAttackName;
+            }
+            else
+            {
+                UserAgent = GetCleanValue(value);
+            }
         }
 
         /// <summary>
@@ -284,13 +286,20 @@ namespace Restless.Logite.Database.Core
         /************************************************************************/
 
         #region Private methods
-        private string GetCleanValue(string value, string attackName)
+        private bool IsAttackString(string value)
+        {
+            return
+                !string.IsNullOrEmpty(value) &&
+                (value.Contains(@"\x") || value.Contains("'") || value.Contains("\""));
+        }
+
+        private string GetCleanValue(string value)
         {
             if (string.IsNullOrEmpty(value) || value == "-")
             {
                 return EmptyEntryPlaceholder;
             }
-            return value.Contains(@"\x") ? attackName : value;
+            return value;
         }
         #endregion
     }

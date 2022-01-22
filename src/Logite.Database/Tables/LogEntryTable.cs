@@ -54,11 +54,6 @@ namespace Restless.Logite.Database.Tables
                 public const string BytesSent = "bytes";
 
                 /// <summary>
-                /// Length of attack byte string, or zero
-                /// </summary>
-                public const string AttackLength = "attacklength";
-
-                /// <summary>
                 /// The http version, i.e 1.0, 1.1, or 0.0
                 /// </summary>
                 public const string HttpVersion = "http";
@@ -102,6 +97,21 @@ namespace Restless.Logite.Database.Tables
                 /// Id of the user agent
                 /// </summary>
                 public const string UserAgentId = "agentid";
+
+                /// <summary>
+                /// The id of the request attack, or zero
+                /// </summary>
+                public const string AttackIdRequest = "attackidrequest";
+
+                /// <summary>
+                /// The id of the referer attack, or zero
+                /// </summary>
+                public const string AttackIdReferer = "attackidreferer";
+
+                /// <summary>
+                /// The id of the user agent attack, or zero
+                /// </summary>
+                public const string AttackIdAgent = "attackidagent";
 
                 /// <summary>
                 /// Provides static column names for columns that are calculated from other values.
@@ -175,7 +185,6 @@ namespace Restless.Logite.Database.Tables
                 { Defs.Columns.Timestamp, ColumnType.Timestamp, false, false, null, IndexType.Index },
                 { Defs.Columns.Status, ColumnType.Integer, false, false, 0L, IndexType.Index },
                 { Defs.Columns.BytesSent, ColumnType.Integer, false, false, 0L },
-                { Defs.Columns.AttackLength, ColumnType.Integer, false, false, 0L },
                 { Defs.Columns.HttpVersion, ColumnType.Text },
                 { Defs.Columns.ImportFileId, ColumnType.Integer, false, false, 0L, IndexType.Index },
                 { Defs.Columns.ImportLineNumber, ColumnType.Integer },
@@ -184,7 +193,11 @@ namespace Restless.Logite.Database.Tables
                 { Defs.Columns.MethodId, ColumnType.Integer, false, false, MethodTable.Defs.Values.MethodZeroId, IndexType.Index },
                 { Defs.Columns.RequestId, ColumnType.Integer, false, false, null, IndexType.Index },
                 { Defs.Columns.RefererId, ColumnType.Integer, false, false, null, IndexType.Index },
-                { Defs.Columns.UserAgentId, ColumnType.Integer, false, false, null, IndexType.Index }
+                { Defs.Columns.UserAgentId, ColumnType.Integer, false, false, null, IndexType.Index },
+                { Defs.Columns.AttackIdRequest, ColumnType.Integer, false, false, AttackTable.Defs.Values.AttackZeroId, IndexType.Index },
+                { Defs.Columns.AttackIdReferer, ColumnType.Integer, false, false, AttackTable.Defs.Values.AttackZeroId, IndexType.Index },
+                { Defs.Columns.AttackIdAgent, ColumnType.Integer, false, false, AttackTable.Defs.Values.AttackZeroId, IndexType.Index }
+
             };
         }
 
@@ -200,7 +213,7 @@ namespace Restless.Logite.Database.Tables
         /************************************************************************/
 
         #region Internal methods
-        internal void Insert(LogEntry entry, long ipAddressId, long methodId, long requestId, long refererId, long agentId)
+        internal void Insert(LogEntry entry, LogEntryIds ids)
         {
             StringBuilder sql = new StringBuilder($"insert into {Namespace}.{TableName} (", 512);
             if (!string.IsNullOrEmpty(entry.RemoteUser))
@@ -210,7 +223,6 @@ namespace Restless.Logite.Database.Tables
             sql.Append($"{Defs.Columns.Timestamp},");
             sql.Append($"{Defs.Columns.Status},");
             sql.Append($"{Defs.Columns.BytesSent},");
-            sql.Append($"{Defs.Columns.AttackLength},");
             sql.Append($"{Defs.Columns.HttpVersion},");
             sql.Append($"{Defs.Columns.ImportFileId},");
             sql.Append($"{Defs.Columns.ImportLineNumber},");
@@ -219,7 +231,11 @@ namespace Restless.Logite.Database.Tables
             sql.Append($"{Defs.Columns.MethodId},");
             sql.Append($"{Defs.Columns.RequestId},");
             sql.Append($"{Defs.Columns.RefererId},");
-            sql.Append($"{Defs.Columns.UserAgentId}) ");
+            sql.Append($"{Defs.Columns.UserAgentId},");
+            sql.Append($"{Defs.Columns.AttackIdRequest}, ");
+            sql.Append($"{Defs.Columns.AttackIdReferer}, ");
+            sql.Append($"{Defs.Columns.AttackIdAgent}) ");
+
             sql.Append("values (");
             if (!string.IsNullOrEmpty(entry.RemoteUser))
             {
@@ -229,16 +245,20 @@ namespace Restless.Logite.Database.Tables
             sql.Append($"'{entry.RequestTime:yyyy-MM-dd hh:mm:ss}',");
             sql.Append($"{entry.Status},");
             sql.Append($"{entry.BytesSent},");
-            sql.Append($"{entry.AttackLength},");
             sql.Append($"'{entry.HttpVersion}',");
             sql.Append($"{entry.ImportFileId},");
             sql.Append($"{entry.ImportFileLineNumber},");
             sql.Append($"{entry.DomainId},");
-            sql.Append($"{ipAddressId},");
-            sql.Append($"{methodId},");
-            sql.Append($"{requestId},");
-            sql.Append($"{refererId},");
-            sql.Append($"{agentId})");
+            sql.Append($"{ids.IpAddressId},");
+            sql.Append($"{ids.MethodId},");
+            sql.Append($"{ids.RequestId},");
+            sql.Append($"{ids.RefererId},");
+            sql.Append($"{ids.AgentId},");
+            sql.Append($"{ids.AttackRequestId},");
+            sql.Append($"{ids.AttackRefererId},");
+            sql.Append($"{ids.AttackAgentId})");
+
+
             Controller.Execution.NonQuery(sql.ToString());
         }
         #endregion
