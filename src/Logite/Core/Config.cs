@@ -308,6 +308,27 @@ namespace Restless.Logite.Core
             get => GetItem(string.Empty);
             set => SetItem(value);
         }
+
+        /// <summary>
+        /// Gets or sets a boolean value that determines if a proposed download file 
+        /// may overwrite an existing file.
+        /// </summary>
+        public bool OverwriteLogFiles
+        {
+            get => GetItem(false);
+            set => SetItem(value);
+        }
+
+        /// <summary>
+        /// Gets or sets a regular expression that is used to determine if a proposed 
+        /// download file is eligible for download
+        /// </summary>
+        public string LogFileRegex
+        {
+            get => GetItem(@"\d{8}$");
+            set => SetItem(value);
+        }
+
         #endregion
 
         /************************************************************************/

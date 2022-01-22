@@ -255,6 +255,12 @@
   <data name="TextFtpLocalDirectory" xml:space="preserve">
     <value>Local log directory</value>
   </data>
+  <data name="TextFtpOverwrite" xml:space="preserve">
+    <value>Overwrite existing files</value>
+  </data>
+  <data name="TextFtpRegex" xml:space="preserve">
+    <value>Regular expression</value>
+  </data>
   <data name="TextFtpRemoteDirectory" xml:space="preserve">
     <value>Remote log directory</value>
   </data>

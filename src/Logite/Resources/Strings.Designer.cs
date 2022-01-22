@@ -475,6 +475,24 @@ namespace Restless.Logite.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Overwrite existing files.
+        /// </summary>
+        public static string TextFtpOverwrite {
+            get {
+                return ResourceManager.GetString("TextFtpOverwrite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Regular expression.
+        /// </summary>
+        public static string TextFtpRegex {
+            get {
+                return ResourceManager.GetString("TextFtpRegex", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Remote log directory.
         /// </summary>
         public static string TextFtpRemoteDirectory {

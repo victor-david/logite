@@ -30,6 +30,11 @@
                     <TextBlock Text="{x:Static r:Strings.TextFtpLocalDirectory}"/>
                     <TextBox Text="{Binding Config.LocalLogDirectory}"/>
 
+                    <TextBlock Text="{x:Static r:Strings.TextFtpRegex}"/>
+                    <TextBox Text="{Binding Config.LogFileRegex}"/>
+
+                    <CheckBox Margin="0,8" IsChecked="{Binding Config.OverwriteLogFiles}" Content="{x:Static r:Strings.TextFtpOverwrite}"/>
+
                 </StackPanel>
 
             </GroupBox>
