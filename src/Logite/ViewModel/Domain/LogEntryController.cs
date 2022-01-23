@@ -148,10 +148,18 @@ namespace Restless.Logite.ViewModel.Domain
         /************************************************************************/
 
         #region Protected methods
-
-        protected override void OnActivated()
+        /// <summary>
+        /// Called when deactivated.
+        /// </summary>
+        /// <remarks>
+        /// On deactivation, need to set LogEntry to null. It gets set when detail
+        /// is displayed, but when switching to another domain, the log entry table
+        /// is populated on demand and the row represented by LogEntry no longer exists;
+        /// it then throws an exception if it's accessed.
+        /// </remarks>
+        protected override void OnDeactivated()
         {
-            Refresh();
+            LogEntry = null;
         }
 
         protected override bool OnDataRowFilter(DataRow item)
