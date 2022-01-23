@@ -5,7 +5,6 @@ using Restless.Toolkit.Controls;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Diagnostics;
 using System.Windows;
 
 namespace Restless.Logite.ViewModel.Domain
@@ -48,6 +47,7 @@ namespace Restless.Logite.ViewModel.Domain
                 {
                     DetailMinWidth = Config.DetailPanel.DomainMinWidth;
                     DetailWidth = new GridLength(Config.LogEntryDetailWidth, GridUnitType.Pixel);
+                    SynchronizeOnDetailVisible();
                 }
                 else
                 {
@@ -188,6 +188,17 @@ namespace Restless.Logite.ViewModel.Domain
         /************************************************************************/
 
         #region Private methods
+        private void SynchronizeOnDetailVisible()
+        {
+            if (SelectedDataRow != null)
+            {
+                if (LogEntry == null || LogEntry.Row != SelectedDataRow)
+                {
+                    LogEntry = new LogEntryRow(SelectedDataRow);
+                }
+            }
+        }
+
         private bool EvaluateFilters(DataRow item)
         {
             bool result = true;
