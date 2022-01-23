@@ -5,6 +5,7 @@ using Restless.Toolkit.Controls;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Windows;
 
 namespace Restless.Logite.ViewModel.Domain
@@ -152,7 +153,7 @@ namespace Restless.Logite.ViewModel.Domain
         /// Called when deactivated.
         /// </summary>
         /// <remarks>
-        /// On deactivation, need to set LogEntry to null. It gets set when detail
+        /// On deactivation, need to set <see cref="LogEntry"/> to null. It gets set when detail
         /// is displayed, but when switching to another domain, the log entry table
         /// is populated on demand and the row represented by LogEntry no longer exists;
         /// it then throws an exception if it's accessed.
@@ -160,6 +161,18 @@ namespace Restless.Logite.ViewModel.Domain
         protected override void OnDeactivated()
         {
             LogEntry = null;
+        }
+
+        /// <summary>
+        /// Called when updated
+        /// </summary>
+        /// <remarks>
+        /// Set <see cref="LogEntry"/> to null as upon deactivation.
+        /// </remarks>
+        protected override void OnUpdate()
+        {
+            LogEntry = null;
+            base.OnUpdate();
         }
 
         protected override bool OnDataRowFilter(DataRow item)

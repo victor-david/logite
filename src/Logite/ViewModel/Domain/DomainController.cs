@@ -39,22 +39,8 @@ namespace Restless.Logite.ViewModel.Domain
         /************************************************************************/
 
         #region Protected methods
-        protected override void OnDataViewListChanged(ListChangedEventArgs e)
-        {
-            if (e.ListChangedType == ListChangedType.Reset)
-            {
-                Refresh();
-            }
-        }
 
-        /// <summary>
-        /// Called when activated
-        /// </summary>
-        /// <remarks>
-        /// This method sets selected item to null and refreshes.
-        /// Override if you need other logic.
-        /// </remarks>
-        protected override void OnActivated()
+        protected override void OnUpdate()
         {
             SelectedItem = null;
             Refresh();
