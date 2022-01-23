@@ -11,6 +11,7 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace Restless.Logite.ViewModel
 {
@@ -163,13 +164,32 @@ namespace Restless.Logite.ViewModel
             return domain != null && (string.IsNullOrEmpty(Config.LogFileRegex) || Regex.IsMatch(file.Name, Config.LogFileRegex));
         }
 
-        private void RunImportCommand(object parm)
+        private async void RunImportCommand(object parm)
         {
             try
             {
+                OperationInProgress = true;
+                await RunImportAsync();
+                UpdatePending();
+            }
+            catch (Exception ex)
+            {
+                MessageWindow.ShowError(ex.Message);
+            }
+            finally
+            {
+                OperationInProgress = false;
+                Refresh();
+            }
+        }
+
+        private async Task RunImportAsync()
+        {
+            await Task.Run(() =>
+            {
                 ImportFileTable importTable = DatabaseController.Instance.GetTable<ImportFileTable>();
 
-                ApplicationTableBase[] tables = 
+                ApplicationTableBase[] tables =
                 {
                     importTable,
                     DatabaseController.Instance.GetTable<LogEntryTable>(),
@@ -183,7 +203,6 @@ namespace Restless.Logite.ViewModel
                 DatabaseController.Instance.Transaction.ExecuteTransaction((transaction) =>
                 {
                     LogEntryProcessor.Init();
-                    List<ImportFile> processed = new List<ImportFile>();
 
                     foreach (ImportFile logFile in ImportFiles.Where(lf => lf.Status == ImportFile.StatusReady))
                     {
@@ -196,13 +215,6 @@ namespace Restless.Logite.ViewModel
                             LogEntryProcessor.Process(entry);
                             lineNumber++;
                         }
-
-                        processed.Add(logFile);
-                    }
-
-                    foreach (ImportFile logFile in processed)
-                    {
-                        ImportFiles.Remove(logFile);
                     }
 
                     foreach (ApplicationTableBase table in tables)
@@ -212,13 +224,7 @@ namespace Restless.Logite.ViewModel
                 }, tables);
 
                 DatabaseController.Instance.GetTable<DomainTable>().UpdateLogEntryCount();
-
-                Refresh();
-            }
-            catch (Exception ex)
-            {
-                MessageWindow.ShowError(ex.Message);
-            }
+            });
         }
         #endregion
     }
