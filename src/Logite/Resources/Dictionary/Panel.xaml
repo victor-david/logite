@@ -13,10 +13,9 @@
     <Style x:Key="DataEntryPanelDefaultTextBlockStyle" TargetType="TextBlock">
         <Setter Property="Margin" Value="{StaticResource DataEntryPanelDefaultTextBlockMargin}"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
-        <Setter Property="Foreground" Value="{DynamicResource DarkForegroundBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource DarkForegroundBrush}"/>
         <Setter Property="TextWrapping" Value="Wrap"/>
     </Style>
-
 
     <Style x:Key="DataEntryPanelStyle" TargetType="Panel">
         <Style.Resources>

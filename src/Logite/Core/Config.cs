@@ -53,19 +53,19 @@ namespace Restless.Logite.Core
             public const double DomainDefaultWidth = 380;
 
             /// <summary>
-            /// Gets the minumum open width of the alias detail panel.
+            /// Gets the minumum open width of the log entry detail panel.
             /// </summary>
-            public const double AliasMinWidth = 302;
+            public const double LogEntryMinWidth = 292;
 
             /// <summary>
-            /// Gets the maximum open width of the alias detail panel.
+            /// Gets the maximum open width of the log entry detail panel.
             /// </summary>
-            public const double AliasMaxWidth = 426;
+            public const double LogEntryMaxWidth = 496;
 
             /// <summary>
-            /// Gets the default open width of the alias detail panel.
+            /// Gets the default open width of the log entry detail panel.
             /// </summary>
-            public const double AliasDefaultWidth = 380;
+            public const double LogEntryDefaultWidth = 360;
         }
 
         /// <summary>
@@ -215,6 +215,28 @@ namespace Restless.Logite.Core
         public bool NavigateStart
         {
             get => GetItem(true);
+            set => SetItem(value);
+        }
+        #endregion
+
+        /************************************************************************/
+
+        #region Panels
+        /// <summary>
+        /// Gets or sets a boolean value that determines if the log entry detail panel is visible.
+        /// </summary>
+        public bool LogEntryDetailVisible
+        {
+            get => GetItem(false);
+            set => SetItem(value);
+        }
+
+        /// <summary>
+        /// Gets or sets the log entry detail width.
+        /// </summary>
+        public int LogEntryDetailWidth
+        {
+            get => GetItem((int)DetailPanel.LogEntryDefaultWidth);
             set => SetItem(value);
         }
         #endregion

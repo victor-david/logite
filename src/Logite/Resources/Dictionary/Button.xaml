@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary 
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:tk="http://schemas.restless.toolkit.com/2021"
     xmlns:con="clr-namespace:Restless.Logite.Controls;assembly=Logite.Controls" >
 
     <Style x:Key="DefaultDropDownButtonStyle" TargetType="con:DropDownButton">
@@ -13,4 +14,41 @@
     </Style>
 
     <Style TargetType="con:DropDownButton" BasedOn="{StaticResource DefaultDropDownButtonStyle}"/>
+
+    <Style x:Key="ChevronLeftRightToggleButtonStyle" TargetType="ToggleButton">
+        <Setter Property="OverridesDefaultStyle" Value="True"/>
+        <Setter Property="Margin" Value="0,10,10,0"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="Foreground" Value="{StaticResource SystemAccentBrush}"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Border Background="Transparent">
+                        <Grid>
+                            <Path
+                                x:Name="C1"
+                                Style="{StaticResource StandardPathStyle}"
+                                Fill="{TemplateBinding Foreground}"
+                                Data="{StaticResource ChevronLeftGeometryKey}"/>
+
+                            <Path
+                                x:Name="C2"
+                                Style="{StaticResource StandardPathStyle}"
+                                Fill="{TemplateBinding Foreground}"
+                                Data="{StaticResource ChevronRightGeometryKey}"
+                                Visibility="Collapsed"/>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="C1" Property="Visibility" Value="Collapsed"/>
+                            <Setter TargetName="C2" Property="Visibility" Value="Visible"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 </ResourceDictionary>

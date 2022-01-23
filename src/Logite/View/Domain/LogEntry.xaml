@@ -5,17 +5,45 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
     xmlns:tk="http://schemas.restless.toolkit.com/2021"
-    xmlns:vm="clr-namespace:Restless.Logite.ViewModel.Domain" d:DataContext="{d:DesignInstance Type=vm:DomainViewModel}"    
+    xmlns:vm="clr-namespace:Restless.Logite.ViewModel.Domain" d:DataContext="{d:DesignInstance Type=vm:DomainViewModel}"
+    xmlns:vw="clr-namespace:Restless.Logite.View.Domain"
     mc:Ignorable="d" 
     d:DesignHeight="450" d:DesignWidth="800">
-    <DockPanel>
-        <TextBlock DockPanel.Dock="Top" Text="Log Entries"/>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition 
+                MinWidth="{Binding LogEntry.DetailMinWidth}"
+                MaxWidth="{Binding LogEntry.DetailMaxWidth, Mode=OneTime}"
+                Width="{Binding LogEntry.DetailWidth, Mode=TwoWay}"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
 
-        <DataGrid
-            DockPanel.Dock="Top"
-            Style="{StaticResource DataGridCompactStyle}"
-            ItemsSource="{Binding LogEntry.ListView}"
-            tk:DataGridColumns.Columns="{Binding LogEntry.Columns}"/>        
-            
-    </DockPanel>
+        <Border Style="{StaticResource SubContentBorderStyle}">
+            <DockPanel>
+                <TextBlock DockPanel.Dock="Top" Text="Log Entries"/>
+                <DataGrid
+                    Style="{StaticResource DataGridCompactStyle}"
+                    ItemsSource="{Binding LogEntry.ListView}"
+                    SelectedItem="{Binding LogEntry.SelectedItem}"
+                    tk:DataGridColumns.Columns="{Binding LogEntry.Columns}"/>
+            </DockPanel>
+        </Border>
+
+        <!-- Detail splitter -->
+        <GridSplitter Grid.Column="1" Style="{StaticResource VerticalGridSplitterStyle}"/>
+
+        <!-- Log entry detail -->
+        <Border Grid.Column="2" Grid.Row="1" Style="{StaticResource SubContentBorderStyle}" tk:Property.IsVisible="{Binding LogEntry.IsItemSelected}">
+            <vw:LogEntryDetail/>
+        </Border>
+
+        <!-- Toggle visibility of detail panel -->
+        <ToggleButton
+            Grid.Column="3"
+            Grid.Row="1"
+            IsChecked="{Binding LogEntry.IsDetailVisible}"
+            Style="{StaticResource ChevronLeftRightToggleButtonStyle}"/>
+    </Grid>
 </UserControl>

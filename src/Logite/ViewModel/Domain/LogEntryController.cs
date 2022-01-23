@@ -4,13 +4,89 @@ using Restless.Toolkit.Controls;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
+using System.Windows;
 
 namespace Restless.Logite.ViewModel.Domain
 {
-    public class LogEntryController : DomainController<LogEntryTable>
+    public class LogEntryController : DomainController<LogEntryTable>, IDetailPanel
     {
         #region Private
         private Dictionary<string, long> filters;
+        private double detailMinWidth;
+        private GridLength detailWidth;
+        private LogEntryRow logEntry;
+        #endregion
+
+        /************************************************************************/
+
+        #region Properties
+        /// <summary>
+        /// Gets the selected log entry
+        /// </summary>
+        public LogEntryRow LogEntry
+        {
+            get => logEntry;
+            private set => SetProperty(ref logEntry, value);
+        }
+        #endregion
+
+        /************************************************************************/
+
+        #region IDetailPanel
+        /// <summary>
+        /// Gets or sets a value that determines if the detail panel is visible.
+        /// </summary>
+        public bool IsDetailVisible
+        {
+            get => Config.LogEntryDetailVisible;
+            set
+            {
+                Config.LogEntryDetailVisible = value;
+                if (value)
+                {
+                    DetailMinWidth = Config.DetailPanel.DomainMinWidth;
+                    DetailWidth = new GridLength(Config.LogEntryDetailWidth, GridUnitType.Pixel);
+                }
+                else
+                {
+                    DetailMinWidth = 0.0;
+                    DetailWidth = new GridLength(0.0, GridUnitType.Pixel);
+                }
+                OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Gets the minimum width for detail panel.
+        /// </summary>
+        public double DetailMinWidth
+        {
+            get => detailMinWidth;
+            private set => SetProperty(ref detailMinWidth, value);
+        }
+
+        /// <summary>
+        /// Gets the maximum width for detail panel.
+        /// </summary>
+        public double DetailMaxWidth => Config.DetailPanel.LogEntryMaxWidth;
+
+
+        /// <summary>
+        /// Gets or sets the width of the detail panel.
+        /// </summary>
+        public GridLength DetailWidth
+        {
+            get => detailWidth;
+            set
+            {
+                SetProperty(ref detailWidth, value);
+                if (value.Value >= Config.DetailPanel.DomainMinWidth)
+                {
+                    Config.LogEntryDetailWidth = (int)value.Value;
+                }
+            }
+        }
         #endregion
 
         /************************************************************************/
@@ -30,6 +106,7 @@ namespace Restless.Logite.ViewModel.Domain
             Columns.Create("Status", LogEntryTable.Defs.Columns.Status).MakeFixedWidth(FixedWidth.W052);
             Columns.Create("Bytes", LogEntryTable.Defs.Columns.BytesSent).MakeFixedWidth(FixedWidth.W052);
             filters = new Dictionary<string, long>();
+            IsDetailVisible = Config.LogEntryDetailVisible;
         }
         #endregion
 
@@ -86,6 +163,14 @@ namespace Restless.Logite.ViewModel.Domain
         protected override int OnDataRowCompare(DataRow item1, DataRow item2)
         {
             return DataRowCompareDateTime(item2, item1, LogEntryTable.Defs.Columns.Timestamp);
+        }
+
+        protected override void OnSelectedItemChanged()
+        {
+            if (SelectedDataRow != null && IsDetailVisible)
+            {
+                LogEntry = new LogEntryRow(SelectedDataRow);
+            }
         }
         #endregion
 
