@@ -5,6 +5,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
     xmlns:tk="http://schemas.restless.toolkit.com/2021"
+    xmlns:r="clr-namespace:Restless.Logite.Resources"
     xmlns:vm="clr-namespace:Restless.Logite.ViewModel.Domain" d:DataContext="{d:DesignInstance Type=vm:DomainViewModel}"
     xmlns:vw="clr-namespace:Restless.Logite.View.Domain"
     mc:Ignorable="d" 
@@ -22,7 +23,14 @@
 
         <Border Style="{StaticResource SubContentBorderStyle}">
             <DockPanel>
-                <TextBlock DockPanel.Dock="Top" Text="Log Entries"/>
+                <Grid DockPanel.Dock="Top" tk:Property.ColumnWidths="*,*" Margin="0,0,6,0">
+                    <TextBlock Text="{x:Static r:Strings.TextLogEntries}"/>
+                    <TextBlock Grid.Column="1" HorizontalAlignment="Right">
+                        <Run Style="{StaticResource RunHighlightStyle}" Text="{Binding LogEntry.ListView.Count, Mode=OneWay}"/>
+                        <Run Text="{x:Static r:Strings.TextEntries}"/>
+                    </TextBlock>
+                </Grid>
+                
                 <DataGrid
                     Style="{StaticResource DataGridCompactStyle}"
                     ItemsSource="{Binding LogEntry.ListView}"

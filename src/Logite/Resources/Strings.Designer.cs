@@ -448,6 +448,15 @@ namespace Restless.Logite.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Entries.
+        /// </summary>
+        public static string TextEntries {
+            get {
+                return ResourceManager.GetString("TextEntries", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ftp.
         /// </summary>
         public static string TextFtp {
@@ -525,6 +534,15 @@ namespace Restless.Logite.Resources {
         public static string TextIpAddress {
             get {
                 return ResourceManager.GetString("TextIpAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Log Entries.
+        /// </summary>
+        public static string TextLogEntries {
+            get {
+                return ResourceManager.GetString("TextLogEntries", resourceCulture);
             }
         }
         

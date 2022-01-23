@@ -36,8 +36,8 @@
     <!-- Defines the color used to highlight grid rows and list box items -->
     <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#FF84C7D6"/>
     <!-- Enables the selected row to retain a highlight when the data grid / list box loses focus. -->
-    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="LightGray"/>
-
+    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="LightBlue"/>
+    
     <SolidColorBrush x:Key="DataGridAlternationBrush" Color="#E6E6E6" />
 
 </ResourceDictionary>

@@ -20,6 +20,8 @@
 
     <Style x:Key="DataEntryPanelDefaultLinkedTextBlockStyle" TargetType="tk:LinkedTextBlock" BasedOn="{StaticResource DataEntryPanelDefaultTextBlockStyle}">
         <Setter Property="RolloverBrush" Value="{StaticResource LightForegroundBrush}"/>
+        <Setter Property="TextWrapping" Value="NoWrap"/>
+        <Setter Property="HorizontalAlignment" Value="Left"/>
     </Style>
 
     <Style x:Key="DataEntryPanelStyle" TargetType="Panel">
