@@ -38,6 +38,14 @@ namespace Restless.Logite.Database.Tables
         }
 
         /// <summary>
+        /// Gets or sets the display mode.
+        /// </summary>
+        public long DisplayMode
+        {
+            get => GetInt64(Columns.DisplayMode);
+            set => SetValue(Columns.DisplayMode, value);
+        }
+        /// <summary>
         /// Gets or sets the number of past days for reporting on this domain
         /// </summary>
         public long PastDays

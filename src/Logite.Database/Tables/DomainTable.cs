@@ -42,6 +42,11 @@ namespace Restless.Logite.Database.Tables
                 public const string Preface = "preface";
 
                 /// <summary>
+                /// The currently selected display mode
+                /// </summary>
+                public const string DisplayMode = "mode";
+
+                /// <summary>
                 /// The number of past days for reporting on this domain
                 /// </summary>
                 public const string PastDays = "pastdays";
@@ -100,6 +105,16 @@ namespace Restless.Logite.Database.Tables
                 /// The display preface when adding a new domain
                 /// </summary>
                 public const string NewDomainPreface = "xxx.access";
+
+                /// <summary>
+                /// The display mode for data
+                /// </summary>
+                public const long DisplayModeData = 0;
+
+                /// <summary>
+                /// The display mode for chart
+                /// </summary>
+                public const long DisplayModeChart = 1;
 
                 /// <summary>
                 /// Number of past days default.
@@ -162,6 +177,7 @@ namespace Restless.Logite.Database.Tables
             {
                 DisplayName = displayName,
                 Preface = preface,
+                DisplayMode = Defs.Values.DisplayModeData,
                 PastDays = Defs.Values.DefaultPastDays,
                 LogEntryCount = 0
             };
@@ -224,6 +240,7 @@ namespace Restless.Logite.Database.Tables
                 { Defs.Columns.Id, ColumnType.Integer, true },
                 { Defs.Columns.DisplayName, ColumnType.Text, false, false},
                 { Defs.Columns.Preface, ColumnType.Text, false, false },
+                { Defs.Columns.DisplayMode, ColumnType.Integer, false, false, Defs.Values.DisplayModeData },
                 { Defs.Columns.PastDays, ColumnType.Integer, false, false, Defs.Values.DefaultPastDays },
                 { Defs.Columns.LogEntryCount, ColumnType.Integer, false, false, 0L }
             };
