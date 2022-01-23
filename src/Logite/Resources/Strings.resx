@@ -243,6 +243,9 @@
   <data name="TextAddDomain" xml:space="preserve">
     <value>This will add a new domain entry with default values. Once added, you can edit the values.</value>
   </data>
+  <data name="TextClearSelection" xml:space="preserve">
+    <value>Clear selection for this item</value>
+  </data>
   <data name="TextFtp" xml:space="preserve">
     <value>Ftp</value>
   </data>
@@ -266,6 +269,15 @@
   </data>
   <data name="TextFtpUser" xml:space="preserve">
     <value>User</value>
+  </data>
+  <data name="TextIpAddress" xml:space="preserve">
+    <value>Ip Address</value>
+  </data>
+  <data name="TextMethod" xml:space="preserve">
+    <value>Method</value>
+  </data>
+  <data name="TextStatus" xml:space="preserve">
+    <value>Status</value>
   </data>
   <data name="ToolTipResetMainWindow" xml:space="preserve">
     <value>Reset the size and position of the main window</value>

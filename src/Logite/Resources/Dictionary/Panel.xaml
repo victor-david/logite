@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary 
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:tk="http://schemas.restless.toolkit.com/2021"
     xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
     <sys:Double x:Key="DataEntryPanelDefaultControlHeight">28</sys:Double>
@@ -17,9 +18,14 @@
         <Setter Property="TextWrapping" Value="Wrap"/>
     </Style>
 
+    <Style x:Key="DataEntryPanelDefaultLinkedTextBlockStyle" TargetType="tk:LinkedTextBlock" BasedOn="{StaticResource DataEntryPanelDefaultTextBlockStyle}">
+        <Setter Property="RolloverBrush" Value="{StaticResource LightForegroundBrush}"/>
+    </Style>
+
     <Style x:Key="DataEntryPanelStyle" TargetType="Panel">
         <Style.Resources>
             <Style TargetType="TextBlock" BasedOn="{StaticResource DataEntryPanelDefaultTextBlockStyle}"/>
+            <Style TargetType="tk:LinkedTextBlock" BasedOn="{StaticResource DataEntryPanelDefaultLinkedTextBlockStyle}"/>
 
             <Style TargetType="TextBox" BasedOn="{StaticResource DefaultTextBoxStyle}">
                 <Setter Property="Margin" Value="{StaticResource DataEntryPanelDefaultControlMargin}"/>

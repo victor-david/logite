@@ -5,17 +5,23 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:tk="http://schemas.restless.toolkit.com/2021"
+    xmlns:r="clr-namespace:Restless.Logite.Resources"
     xmlns:vm="clr-namespace:Restless.Logite.ViewModel.Domain" d:DataContext="{d:DesignInstance Type=vm:DomainViewModel}"
     mc:Ignorable="d" 
     d:DesignHeight="450" d:DesignWidth="800">
+    
     <DockPanel>
-        <TextBlock DockPanel.Dock="Top" Text="Ip Address"/>
+        <tk:LinkedTextBlock
+            DockPanel.Dock="Top"
+            Text="{x:Static r:Strings.TextIpAddress}"
+            ToolTip="{x:Static r:Strings.TextClearSelection}"
+            Command="{Binding Ip.Commands[ClearSelection]}"/>
         <DataGrid
             DockPanel.Dock="Top"
             Style="{StaticResource DataGridCompactStyle}"
             ItemsSource="{Binding Ip.ListView}"
             SelectedItem="{Binding Ip.SelectedItem}"
             tk:DataGridColumns.Columns="{Binding Ip.Columns}"/>
-
     </DockPanel>
+    
 </UserControl>

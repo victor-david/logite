@@ -1,11 +1,7 @@
 ﻿using Restless.Logite.Database.Tables;
-using Restless.Toolkit.Controls;
 using Restless.Toolkit.Core.Database.SQLite;
-using Restless.Toolkit.Mvvm;
 using System;
 using System.ComponentModel;
-using System.Data;
-using System.Windows.Data;
 
 namespace Restless.Logite.ViewModel.Domain
 {
@@ -36,6 +32,7 @@ namespace Restless.Logite.ViewModel.Domain
         public DomainController(DomainRow domain)
         {
             Domain = domain ?? throw new ArgumentNullException(nameof(domain));
+            Commands.Add("ClearSelection", p => SelectedItem = null);
         }
         #endregion
 

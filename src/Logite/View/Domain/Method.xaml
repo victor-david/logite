@@ -11,14 +11,17 @@
     d:DesignHeight="450" d:DesignWidth="800">
 
     <DockPanel>
-        <TextBlock DockPanel.Dock="Top" Text="Methods"/>
+        <tk:LinkedTextBlock
+            DockPanel.Dock="Top"
+            Text="{x:Static r:Strings.TextMethod}"
+            ToolTip="{x:Static r:Strings.TextClearSelection}"
+            Command="{Binding Method.Commands[ClearSelection]}"/>        
         <DataGrid
             DockPanel.Dock="Top"
             Style="{StaticResource DataGridCompactStyle}"
             ItemsSource="{Binding Method.ListView}"
             SelectedItem="{Binding Method.SelectedItem}"
             tk:DataGridColumns.Columns="{Binding Method.Columns}"/>
-
     </DockPanel>
 
 </UserControl>

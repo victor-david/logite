@@ -439,6 +439,15 @@ namespace Restless.Logite.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Clear selection for this item.
+        /// </summary>
+        public static string TextClearSelection {
+            get {
+                return ResourceManager.GetString("TextClearSelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ftp.
         /// </summary>
         public static string TextFtp {
@@ -507,6 +516,33 @@ namespace Restless.Logite.Resources {
         public static string TextFtpUser {
             get {
                 return ResourceManager.GetString("TextFtpUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ip Address.
+        /// </summary>
+        public static string TextIpAddress {
+            get {
+                return ResourceManager.GetString("TextIpAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Method.
+        /// </summary>
+        public static string TextMethod {
+            get {
+                return ResourceManager.GetString("TextMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Status.
+        /// </summary>
+        public static string TextStatus {
+            get {
+                return ResourceManager.GetString("TextStatus", resourceCulture);
             }
         }
         
