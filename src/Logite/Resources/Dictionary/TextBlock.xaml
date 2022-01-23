@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary 
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:cv="clr-namespace:Restless.Logite.Core.Converters">
 
     <Style x:Key="NavTitleTextBlockStyle" TargetType="TextBlock">
         <Setter Property="Margin" Value="10,0,0,5"/>
@@ -22,5 +23,26 @@
 
     <Style x:Key="RunHighlightStyle" TargetType="Run">
         <Setter Property="Foreground" Value="{StaticResource DarkAlertForegroundBrush}"/>
+    </Style>
+
+    <Style x:Key="StatusTextBlockStyle" TargetType="TextBlock">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding status, Converter={cv:StatusToNormalizedConverter}}" Value="200">
+                <Setter Property="Foreground" Value="{StaticResource Status200Brush}"/>
+            </DataTrigger>
+            
+            <DataTrigger Binding="{Binding status, Converter={cv:StatusToNormalizedConverter}}" Value="300">
+                <Setter Property="Foreground" Value="{StaticResource Status300Brush}"/>
+            </DataTrigger>            
+            
+            <DataTrigger Binding="{Binding status, Converter={cv:StatusToNormalizedConverter}}" Value="400">
+                <Setter Property="Foreground" Value="{StaticResource Status400Brush}"/>
+            </DataTrigger>
+            
+            <DataTrigger Binding="{Binding status, Converter={cv:StatusToNormalizedConverter}}" Value="500">
+                <Setter Property="Foreground" Value="{StaticResource Status500Brush}"/>
+            </DataTrigger>            
+
+        </Style.Triggers>
     </Style>
 </ResourceDictionary>

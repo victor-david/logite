@@ -27,7 +27,11 @@
 
     <SolidColorBrush x:Key="StandardIconBrush" Color="#606060"/>
     <SolidColorBrush x:Key="NavigatorIconBrush" Color="DarkGray"/>
-    
+
+    <SolidColorBrush x:Key="Status200Brush" Color="ForestGreen"/>
+    <SolidColorBrush x:Key="Status300Brush" Color="RoyalBlue"/>
+    <SolidColorBrush x:Key="Status400Brush" Color="Red"/>
+    <SolidColorBrush x:Key="Status500Brush" Color="Firebrick"/>
     
     <!-- Defines the color used to highlight grid rows and list box items -->
     <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#FF84C7D6"/>
@@ -35,6 +39,5 @@
     <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="LightGray"/>
 
     <SolidColorBrush x:Key="DataGridAlternationBrush" Color="#E6E6E6" />
-
 
 </ResourceDictionary>

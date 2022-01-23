@@ -1,5 +1,6 @@
 ﻿using Restless.Logite.Core;
 using Restless.Logite.Database.Tables;
+using Restless.Logite.Resources;
 using Restless.Toolkit.Controls;
 using System;
 using System.Collections.Generic;
@@ -103,7 +104,9 @@ namespace Restless.Logite.ViewModel.Domain
             Columns.Create("Ip", LogEntryTable.Defs.Columns.Calculated.IpAddress).MakeFixedWidth(FixedWidth.W096);
             Columns.Create("Method", LogEntryTable.Defs.Columns.Calculated.Method).MakeFixedWidth(FixedWidth.W076);
             Columns.Create("Request", LogEntryTable.Defs.Columns.Calculated.Request);
-            Columns.Create("Status", LogEntryTable.Defs.Columns.Status).MakeFixedWidth(FixedWidth.W052);
+            Columns.Create("Status", LogEntryTable.Defs.Columns.Status)
+                .AddCellStyle(LocalResources.Styles.StatusTextBlockStyle)
+                .MakeFixedWidth(FixedWidth.W052);
             Columns.Create("Bytes", LogEntryTable.Defs.Columns.BytesSent).MakeFixedWidth(FixedWidth.W052);
             filters = new Dictionary<string, long>();
             IsDetailVisible = Config.LogEntryDetailVisible;

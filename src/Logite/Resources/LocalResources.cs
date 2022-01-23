@@ -27,5 +27,13 @@ namespace Restless.Logite.Resources
         {
             return Get(key) as T;
         }
+
+        public static class Styles
+        {
+            public static Style StatusTextBlockStyle
+            {
+                get => LocalResources.Get<Style>(nameof(StatusTextBlockStyle));
+            }
+        }
     }
 }
