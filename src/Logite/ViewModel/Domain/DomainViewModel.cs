@@ -75,6 +75,14 @@ namespace Restless.Logite.ViewModel.Domain
         {
             get;
         }
+
+        /// <summary>
+        /// Gets the section selector
+        /// </summary>
+        public SectionSelector Sections
+        {
+            get;
+        }
         #endregion
 
         /************************************************************************/
@@ -93,9 +101,15 @@ namespace Restless.Logite.ViewModel.Domain
             Ip = new IpAddressController(Domain);
             LogEntry = new LogEntryController(Domain);
 
+            Sections = new SectionSelector()
+            {
+                TitlePreface = Strings.TextData
+            };
+            InitializeSections();
+
             Filter = new FilterController()
             {
-                TitlePreface = Strings.CaptionView,
+                TitlePreface = Strings.TextView,
                 DateTimeColumnName = LogEntryTable.Defs.Columns.Timestamp,
                 TextSearchColumnNames = new string[]
                 {
@@ -168,6 +182,18 @@ namespace Restless.Logite.ViewModel.Domain
         /************************************************************************/
 
         #region Private methods
+        private void InitializeSections()
+        {
+            Sections.Add(DomainTable.Defs.Values.DisplayModeData, "Raw");
+            Sections.Add(DomainTable.Defs.Values.DisplayModeChart, "Charts");
+            Sections.SetSelectedSection(Domain.DisplayMode);
+            Sections.SectionChanged += (s, e) =>
+            {
+                Domain.DisplayMode = e.Id;
+                Domain.Table.Save();
+            };
+        }
+
         private void UpdateDomainStatus()
         {
             DomainStatus = $"{Domain.LogEntryCount} log entries";

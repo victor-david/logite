@@ -167,6 +167,13 @@ namespace Restless.Logite.Database.Tables
             LoadDomainPrivate(domain);
             DataSet.EnforceConstraints = true;
         }
+
+        public void UnloadDomain()
+        {
+            DataSet.EnforceConstraints = false;
+            UnloadDomainPrivate();
+            DataSet.EnforceConstraints = true;
+        }
         #endregion
 
         /************************************************************************/
@@ -269,10 +276,7 @@ namespace Restless.Logite.Database.Tables
         private void LoadDomainPrivate(DomainRow domain)
         {
             Clear();
-            ipId.Clear();
-            requestId.Clear();
-            refererId.Clear();
-            agentId.Clear();
+            ClearIdCollections();
 
             string sql = $"SELECT * FROM {Namespace}.{TableName} WHERE {Defs.Columns.DomainId}={domain.Id} AND  {Defs.Columns.Timestamp} > date('now','-{domain.PastDays} day')";
             Load(Controller.Execution.Query(sql));
@@ -288,6 +292,24 @@ namespace Restless.Logite.Database.Tables
             Controller.GetTable<RequestTable>().Load(requestId);
             Controller.GetTable<RefererTable>().Load(refererId);
             Controller.GetTable<UserAgentTable>().Load(agentId);
+        }
+
+        private void UnloadDomainPrivate()
+        {
+            Clear();
+            ClearIdCollections();
+            Controller.GetTable<IpAddressTable>().Clear();
+            Controller.GetTable<RequestTable>().Clear();
+            Controller.GetTable<RefererTable>().Clear();
+            Controller.GetTable<UserAgentTable>().Clear();
+        }
+
+        private void ClearIdCollections()
+        {
+            ipId.Clear();
+            requestId.Clear();
+            refererId.Clear();
+            agentId.Clear();
         }
         #endregion
     }

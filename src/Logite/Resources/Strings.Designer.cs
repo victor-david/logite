@@ -61,15 +61,6 @@ namespace Restless.Logite.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to View.
-        /// </summary>
-        public static string CaptionView {
-            get {
-                return ResourceManager.GetString("CaptionView", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to All.
         /// </summary>
         public static string FilterAll {
@@ -448,6 +439,15 @@ namespace Restless.Logite.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Data.
+        /// </summary>
+        public static string TextData {
+            get {
+                return ResourceManager.GetString("TextData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Entries.
         /// </summary>
         public static string TextEntries {
@@ -561,6 +561,15 @@ namespace Restless.Logite.Resources {
         public static string TextStatus {
             get {
                 return ResourceManager.GetString("TextStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View.
+        /// </summary>
+        public static string TextView {
+            get {
+                return ResourceManager.GetString("TextView", resourceCulture);
             }
         }
         

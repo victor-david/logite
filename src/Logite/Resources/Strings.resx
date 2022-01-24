@@ -117,9 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="CaptionView" xml:space="preserve">
-    <value>View</value>
-  </data>
   <data name="FilterAll" xml:space="preserve">
     <value>All</value>
   </data>
@@ -246,6 +243,9 @@
   <data name="TextClearSelection" xml:space="preserve">
     <value>Clear selection for this item</value>
   </data>
+  <data name="TextData" xml:space="preserve">
+    <value>Data</value>
+  </data>
   <data name="TextEntries" xml:space="preserve">
     <value>Entries</value>
   </data>
@@ -284,6 +284,9 @@
   </data>
   <data name="TextStatus" xml:space="preserve">
     <value>Status</value>
+  </data>
+  <data name="TextView" xml:space="preserve">
+    <value>View</value>
   </data>
   <data name="ToolTipResetMainWindow" xml:space="preserve">
     <value>Reset the size and position of the main window</value>
