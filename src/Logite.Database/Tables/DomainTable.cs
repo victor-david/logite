@@ -107,19 +107,30 @@ namespace Restless.Logite.Database.Tables
                 public const string NewDomainPreface = "xxx.access";
 
                 /// <summary>
-                /// The display mode for data
-                /// </summary>
-                public const long DisplayModeData = 0;
-
-                /// <summary>
-                /// The display mode for chart
-                /// </summary>
-                public const long DisplayModeChart = 1;
-
-                /// <summary>
                 /// Number of past days default.
                 /// </summary>
                 public const long DefaultPastDays = 30;
+
+                /// <summary>
+                /// Provides static values for <see cref="Defs.Columns.DisplayMode"/>
+                /// </summary>
+                public static class DisplayMode
+                {
+                    /// <summary>
+                    /// Overview display mode
+                    /// </summary>
+                    public const long Overview = 0;
+
+                    /// <summary>
+                    /// Raw data display mode
+                    /// </summary>
+                    public const long Raw = 1;
+
+                    /// <summary>
+                    /// Chart display mode
+                    /// </summary>
+                    public const long Chart = 2;
+                }
             }
         }
         #endregion
@@ -177,7 +188,7 @@ namespace Restless.Logite.Database.Tables
             {
                 DisplayName = displayName,
                 Preface = preface,
-                DisplayMode = Defs.Values.DisplayModeData,
+                DisplayMode = Defs.Values.DisplayMode.Overview,
                 PastDays = Defs.Values.DefaultPastDays,
                 LogEntryCount = 0
             };
@@ -240,7 +251,7 @@ namespace Restless.Logite.Database.Tables
                 { Defs.Columns.Id, ColumnType.Integer, true },
                 { Defs.Columns.DisplayName, ColumnType.Text, false, false},
                 { Defs.Columns.Preface, ColumnType.Text, false, false },
-                { Defs.Columns.DisplayMode, ColumnType.Integer, false, false, Defs.Values.DisplayModeData },
+                { Defs.Columns.DisplayMode, ColumnType.Integer, false, false, Defs.Values.DisplayMode.Overview },
                 { Defs.Columns.PastDays, ColumnType.Integer, false, false, Defs.Values.DefaultPastDays },
                 { Defs.Columns.LogEntryCount, ColumnType.Integer, false, false, 0L }
             };

@@ -282,6 +282,9 @@
   <data name="TextMethod" xml:space="preserve">
     <value>Method</value>
   </data>
+  <data name="TextPeriod" xml:space="preserve">
+    <value>Period</value>
+  </data>
   <data name="TextStatus" xml:space="preserve">
     <value>Status</value>
   </data>

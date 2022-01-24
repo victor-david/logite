@@ -21,7 +21,8 @@
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
 
-        <Border Style="{StaticResource SubContentBorderStyle}">
+        <!-- Override the default padding so it aligns with the pieces above -->
+        <Border Padding="0,0,6,0">
             <DockPanel>
                 <Grid DockPanel.Dock="Top" tk:Property.ColumnWidths="*,*" Margin="0,0,6,0">
                     <TextBlock Text="{x:Static r:Strings.TextLogEntries}"/>

@@ -109,7 +109,7 @@ namespace Restless.Logite.ViewModel.Domain
 
             Filter = new FilterController()
             {
-                TitlePreface = Strings.TextView,
+                TitlePreface = Strings.TextPeriod,
                 DateTimeColumnName = LogEntryTable.Defs.Columns.Timestamp,
                 TextSearchColumnNames = new string[]
                 {
@@ -158,11 +158,18 @@ namespace Restless.Logite.ViewModel.Domain
 
         protected override void OnUpdate()
         {
-            DatabaseController.Instance.GetTable<LogEntryTable>().LoadDomain(Domain);
-            Method.Update();
-            Status.Update();
-            Ip.Update();
-            LogEntry.Update();
+            DatabaseController.Instance.GetTable<LogEntryTable>().UnloadDomain();
+
+            if (Domain.DisplayMode == DomainTable.Defs.Values.DisplayMode.Raw)
+            {
+                DatabaseController.Instance.GetTable<LogEntryTable>().LoadDomain(Domain);
+                UpdateControllers();
+
+            }
+            else
+            {
+                UpdateControllers();
+            }
         }
 
         /// <summary>
@@ -184,14 +191,24 @@ namespace Restless.Logite.ViewModel.Domain
         #region Private methods
         private void InitializeSections()
         {
-            Sections.Add(DomainTable.Defs.Values.DisplayModeData, "Raw");
-            Sections.Add(DomainTable.Defs.Values.DisplayModeChart, "Charts");
+            Sections.Add(DomainTable.Defs.Values.DisplayMode.Overview, "Overview");
+            Sections.Add(DomainTable.Defs.Values.DisplayMode.Raw, "Raw");
+            Sections.Add(DomainTable.Defs.Values.DisplayMode.Chart, "Charts");
             Sections.SetSelectedSection(Domain.DisplayMode);
             Sections.SectionChanged += (s, e) =>
             {
                 Domain.DisplayMode = e.Id;
-                Domain.Table.Save();
+                OnPropertyChanged(nameof(Domain));
+                Update();
             };
+        }
+
+        private void UpdateControllers()
+        {
+            Method.Update();
+            Status.Update();
+            Ip.Update();
+            LogEntry.Update();
         }
 
         private void UpdateDomainStatus()

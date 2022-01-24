@@ -5,34 +5,33 @@
     xmlns:tk="http://schemas.restless.toolkit.com/2021"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:r="clr-namespace:Restless.Logite.Resources"
     xmlns:vw="clr-namespace:Restless.Logite.View.Domain"
+    xmlns:db="clr-namespace:Restless.Logite.Database.Tables;assembly=Logite.Database"
     xmlns:vm="clr-namespace:Restless.Logite.ViewModel.Domain" d:DataContext="{d:DesignInstance Type=vm:DomainViewModel}"
     mc:Ignorable="d"
     d:DesignWidth="860" d:DesignHeight="400">
+    <Grid tk:Property.RowHeights="Auto,*" Style="{StaticResource DataEntryPanelStyle}">
 
-    <Grid tk:Property.ColumnWidths="*,*,**" tk:Property.RowHeights="Auto,*,2*" Style="{StaticResource DataEntryPanelStyle}">
-        <Grid.Resources>
-            <Style TargetType="Border" BasedOn="{StaticResource SubContentBorderStyle}"/>
-        </Grid.Resources>
+        <vw:MainToolBar/>
+
+        <!-- Display mode overview -->
+        <vw:ModeOverview
+            Grid.Row="1"
+            tk:Property.IsLongVisible="{Binding Domain.DisplayMode}" 
+            tk:Property.IsLongVisibleValue="{x:Static db:DomainTable+Defs+Values+DisplayMode.Overview}"/>
+
+        <!-- Display mode raw -->
+        <vw:ModeRaw
+            Grid.Row="1"
+            tk:Property.ColumnWidths="*,*,*" tk:Property.RowHeights="*,2*"
+            tk:Property.IsLongVisible="{Binding Domain.DisplayMode}" 
+            tk:Property.IsLongVisibleValue="{x:Static db:DomainTable+Defs+Values+DisplayMode.Raw}"/>
         
-        <vw:MainToolBar Grid.ColumnSpan="3"/>
-
-        <Border Grid.Row="1">
-            <vw:Method/>
-        </Border>
-
-        <Border Grid.Column="1" Grid.Row="1">
-            <vw:Status/>
-        </Border>
-
-        <Border Grid.Column="2" Grid.Row="1">
-            <vw:IpAddress/>
-        </Border>
-
-        <Border Grid.Row="2" Grid.ColumnSpan="3">
-            <vw:LogEntry/>
-        </Border>
+        <!-- Display mode chart -->
+        <vw:ModeChart
+            Grid.Row="1"
+            tk:Property.IsLongVisible="{Binding Domain.DisplayMode}" 
+            tk:Property.IsLongVisibleValue="{x:Static db:DomainTable+Defs+Values+DisplayMode.Chart}"/>
 
     </Grid>
 
