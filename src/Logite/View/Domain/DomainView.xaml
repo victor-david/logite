@@ -7,31 +7,28 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vw="clr-namespace:Restless.Logite.View.Domain"
     xmlns:db="clr-namespace:Restless.Logite.Database.Tables;assembly=Logite.Database"
+    xmlns:cv="clr-namespace:Restless.Logite.Core.Converters"
     xmlns:vm="clr-namespace:Restless.Logite.ViewModel.Domain" d:DataContext="{d:DesignInstance Type=vm:DomainViewModel}"
     mc:Ignorable="d"
     d:DesignWidth="860" d:DesignHeight="400">
     <Grid tk:Property.RowHeights="Auto,*" Style="{StaticResource DataEntryPanelStyle}">
 
         <vw:MainToolBar/>
-
+        
         <!-- Display mode overview -->
         <vw:ModeOverview
             Grid.Row="1"
-            tk:Property.IsLongVisible="{Binding Domain.DisplayMode}" 
-            tk:Property.IsLongVisibleValue="{x:Static db:DomainTable+Defs+Values+DisplayMode.Overview}"/>
+            Visibility="{Binding Domain.DisplayMode, Converter={cv:LongToVisibilityConverter}, ConverterParameter={x:Static db:DomainTable+Defs+Values+DisplayMode.Overview}}"/>
 
         <!-- Display mode raw -->
         <vw:ModeRaw
             Grid.Row="1"
-            tk:Property.ColumnWidths="*,*,*" tk:Property.RowHeights="*,2*"
-            tk:Property.IsLongVisible="{Binding Domain.DisplayMode}" 
-            tk:Property.IsLongVisibleValue="{x:Static db:DomainTable+Defs+Values+DisplayMode.Raw}"/>
+            Visibility="{Binding Domain.DisplayMode, Converter={cv:LongToVisibilityConverter}, ConverterParameter={x:Static db:DomainTable+Defs+Values+DisplayMode.Raw}}"/>
         
         <!-- Display mode chart -->
         <vw:ModeChart
             Grid.Row="1"
-            tk:Property.IsLongVisible="{Binding Domain.DisplayMode}" 
-            tk:Property.IsLongVisibleValue="{x:Static db:DomainTable+Defs+Values+DisplayMode.Chart}"/>
+            Visibility="{Binding Domain.DisplayMode, Converter={cv:LongToVisibilityConverter}, ConverterParameter={x:Static db:DomainTable+Defs+Values+DisplayMode.Chart}}"/>
 
     </Grid>
 
