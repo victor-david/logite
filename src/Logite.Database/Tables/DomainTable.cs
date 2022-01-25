@@ -199,7 +199,7 @@ namespace Restless.Logite.Database.Tables
             {
                 DisplayName = displayName,
                 Preface = preface,
-                DisplayMode = Defs.Values.DisplayMode.Overview,
+                DisplayMode = Defs.Values.DisplayMode.Raw,
                 Period = Defs.Values.DefaultPeriod,
                 ChartStatus = Defs.Values.DefaultChartStatus,
                 LogEntryCount = 0
@@ -263,7 +263,7 @@ namespace Restless.Logite.Database.Tables
                 { Defs.Columns.Id, ColumnType.Integer, true },
                 { Defs.Columns.DisplayName, ColumnType.Text, false, false},
                 { Defs.Columns.Preface, ColumnType.Text, false, false },
-                { Defs.Columns.DisplayMode, ColumnType.Integer, false, false, Defs.Values.DisplayMode.Overview },
+                { Defs.Columns.DisplayMode, ColumnType.Integer, false, false, Defs.Values.DisplayMode.Raw },
                 { Defs.Columns.Period, ColumnType.Integer, false, false, Defs.Values.DefaultPeriod },
                 { Defs.Columns.ChartStatus, ColumnType.Integer, false, false, Defs.Values.DefaultChartStatus },
                 { Defs.Columns.LogEntryCount, ColumnType.Integer, false, false, 0L }
