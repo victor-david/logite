@@ -310,7 +310,7 @@ namespace Restless.Logite.Database.Tables
             Clear();
             ClearIdCollections();
 
-            string sql = $"SELECT * FROM {Namespace}.{TableName} WHERE {Defs.Columns.DomainId}={domain.Id} AND  {Defs.Columns.Timestamp} > date('now','-{domain.PastDays} day')";
+            string sql = $"SELECT * FROM {Namespace}.{TableName} WHERE {Defs.Columns.DomainId}={domain.Id} AND  {Defs.Columns.Timestamp} > date('now','-{domain.Period} day')";
             Load(Controller.Execution.Query(sql));
 
             foreach (DataRow row in Rows)
@@ -355,7 +355,7 @@ namespace Restless.Logite.Database.Tables
                 $"{Defs.Columns.IpAddressId},{Defs.Columns.MethodId},{Defs.Columns.RequestId},{Defs.Columns.RefererId},{Defs.Columns.UserAgentId}," +
                 $"{Defs.Columns.AttackIdRequest},{Defs.Columns.AttackIdReferer},{Defs.Columns.AttackIdAgent} " +
                 $"FROM {Namespace}.{TableName} " +
-                $"WHERE {Defs.Columns.DomainId}={domain.Id} AND  {Defs.Columns.Timestamp} > date('now','-{domain.PastDays} day') " +
+                $"WHERE {Defs.Columns.DomainId}={domain.Id} AND  {Defs.Columns.Timestamp} > date('now','-{domain.Period} day') " +
                 $"ORDER BY {Defs.Columns.Timestamp}";
 
             IDataReader reader = Controller.Execution.Query(sql);

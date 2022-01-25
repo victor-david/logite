@@ -123,11 +123,11 @@ namespace Restless.Logite.ViewModel.Domain
                 }
             };
 
-            Filter.SetSelectedTimeFilter((TimeFilter)Domain.PastDays);
+            Filter.SetSelectedTimeFilter((TimeFilter)Domain.Period);
 
             Filter.FilterChanged += (s, e) =>
             {
-                Domain.PastDays = (long)e.Item.Filter;
+                Domain.Period = (long)e.Item.Filter;
                 Domain.Table.Save();
                 Update();
             };
