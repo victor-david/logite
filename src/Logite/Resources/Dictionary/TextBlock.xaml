@@ -45,4 +45,12 @@
 
         </Style.Triggers>
     </Style>
+
+    <Style x:Key="ChartTitleTextBlockStyle" TargetType="TextBlock">
+        <Setter Property="Margin" Value="0,4"/>
+        <Setter Property="Foreground" Value="{StaticResource SystemAccentBrush}"/>
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="FontFamily" Value="Arial"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+    </Style>
 </ResourceDictionary>

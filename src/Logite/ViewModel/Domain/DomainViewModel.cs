@@ -68,6 +68,11 @@ namespace Restless.Logite.ViewModel.Domain
             get;
         }
 
+        public ChartController Chart
+        {
+            get;
+        }
+
         /// <summary>
         /// Gets the filter controller
         /// </summary>
@@ -100,6 +105,7 @@ namespace Restless.Logite.ViewModel.Domain
             Status = new StatusController(Domain);
             Ip = new IpAddressController(Domain);
             LogEntry = new LogEntryController(Domain);
+            Chart = new ChartController(Domain);
 
             Sections = new SectionSelector()
             {
@@ -169,6 +175,7 @@ namespace Restless.Logite.ViewModel.Domain
             else
             {
                 UpdateControllers();
+                Chart.Update();
             }
         }
 
@@ -191,7 +198,6 @@ namespace Restless.Logite.ViewModel.Domain
         #region Private methods
         private void InitializeSections()
         {
-            Sections.Add(DomainTable.Defs.Values.DisplayMode.Overview, "Overview");
             Sections.Add(DomainTable.Defs.Values.DisplayMode.Raw, "Raw");
             Sections.Add(DomainTable.Defs.Values.DisplayMode.Chart, "Charts");
             Sections.SetSelectedSection(Domain.DisplayMode);

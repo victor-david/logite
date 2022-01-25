@@ -5,17 +5,69 @@
     xmlns:tk="http://schemas.restless.toolkit.com/2021"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:rc="clr-namespace:Restless.Controls.Chart;assembly=Restless.Charts"
+    xmlns:r="clr-namespace:Restless.Logite.Resources"
     xmlns:vm="clr-namespace:Restless.Logite.ViewModel.Domain" d:DataContext="{d:DesignInstance Type=vm:DomainViewModel}"
     mc:Ignorable="d"
     d:DesignWidth="860" d:DesignHeight="400">
     <UserControl.Resources>
         <Style TargetType="Border" BasedOn="{StaticResource SubContentBorderStyle}"/>
+        <Style TargetType="rc:ChartContainer">
+            <Setter Property="Margin" Value="10"/>
+            <!--<Setter Property="Background" Value="LightGoldenrodYellow"/>-->
+        </Style>
     </UserControl.Resources>    
 
-    <!-- Display mode chart -->
-    <Grid>
-        <Border>
-            <TextBlock Text="Chart view" FontSize="32"/>
-        </Border>
+    <Grid tk:Property.ColumnWidths="*,*" tk:Property.RowHeights="*,*">
+        <!-- Total traffic chart -->
+        <rc:ChartContainer
+            XAxisTickAlignment="Values"
+            XAxisTickVisibility="Major"
+            YAxisTickVisibility="Major"
+            XAxisTextProvider="{Binding Chart.Traffic.XAxisDateConverter}"
+            YAxisTextProvider="{Binding Chart.Traffic.YAxisConverter}"
+            YAxisTextFormat="N0">
+            <rc:ChartContainer.TopTitle>
+                <TextBlock Style="{StaticResource ChartTitleTextBlockStyle}" Text="{x:Static r:Strings.ChartTitleTotalTraffic}"/>
+            </rc:ChartContainer.TopTitle>
+            <rc:BarChart
+                Data="{Binding Chart.Traffic.Data}"/>
+        </rc:ChartContainer>
+
+        <!--<rc:ChartConnectorGrid Grid.Column="1" tk:Property.ColumnWidths="*,Auto">-->
+            <rc:ChartContainer
+                Grid.Column="1"
+                XAxisTickAlignment="Values"
+                XAxisTickVisibility="Major"
+                YAxisTickVisibility="Major"
+                XAxisTextProvider="{Binding Chart.Status.XAxisDateConverter}"
+                YAxisTextProvider="{Binding Chart.Status.YAxisConverter}"
+                YAxisTextFormat="N0">
+                <rc:ChartContainer.TopTitle>
+                    <TextBlock Style="{StaticResource ChartTitleTextBlockStyle}" Text="{x:Static r:Strings.ChartTitleStatusCodes}"/>
+                </rc:ChartContainer.TopTitle>
+                <rc:LineChart
+                    PointSize="5"
+                    SelectedSeriesIndex="{Binding Chart.Status.SelectedLegendIndex}"
+                    Data="{Binding Chart.Status.Data}"
+                />
+            </rc:ChartContainer>
+
+            <!--<rc:ChartLegend
+                Grid.Column="1"
+                Width="220"
+                VerticalAlignment="Top"
+                HorizontalAlignment="Right"
+                Margin="0,16,4,0"
+                HeaderText="Legend"
+                HeaderTextForeground="Gray"
+                Foreground="DarkGray"
+                Background="LightGoldenrodYellow"
+                BorderBrush="{StaticResource DefaultBorderBrush}"
+                BorderThickness="1"
+                Padding="3"
+                SelectedItem="{Binding Chart.Status.SelectedLegendItem}"/>-->
+        <!--</rc:ChartConnectorGrid>-->
+
     </Grid>
 </UserControl>

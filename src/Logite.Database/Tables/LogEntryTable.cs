@@ -1,5 +1,6 @@
 ﻿using Restless.Logite.Database.Core;
 using Restless.Toolkit.Core.Database.SQLite;
+using System;
 using System.Data;
 using System.Text;
 
@@ -174,6 +175,37 @@ namespace Restless.Logite.Database.Tables
             UnloadDomainPrivate();
             DataSet.EnforceConstraints = true;
         }
+
+        public DataPointCollection<CountDataPoint> GetTotalTrafficData(DomainRow domain)
+        {
+            return GetDateCountCollection<CountDataPoint>(domain, (points, logEntryRecord) => 
+            {
+                points.Add(CountDataPoint.Create(logEntryRecord.Timestamp)).Count++;
+            });
+        }
+
+        public DataPointCollection<StatusDataPoint> GetStatusTrafficData(DomainRow domain, long status)
+        {
+            return GetDateCountCollection<StatusDataPoint>(domain, (points, logEntryRecord) =>
+            {
+                StatusDataPoint point = points.Add(StatusDataPoint.Create(logEntryRecord.Timestamp));
+                switch (logEntryRecord.Status)
+                {
+                    case 200:
+                        point.Count200++;
+                        break;
+                    case 400:
+                        point.Count400++;
+                        break;
+                    case 404:
+                        point.Count404++;
+                        break;
+                    case 444:
+                        point.Count444++;
+                        break;
+                }
+            });
+        }
         #endregion
 
         /************************************************************************/
@@ -310,6 +342,55 @@ namespace Restless.Logite.Database.Tables
             requestId.Clear();
             refererId.Clear();
             agentId.Clear();
+        }
+
+        // private DataPointCollection<T> GetDateCountCollection<T>(DomainRow domain, Predicate<LogEntryRecord> evaluator) where T : DataPoint
+        private DataPointCollection<T> GetDateCountCollection<T>(DomainRow domain, Action<DataPointCollection<T>, LogEntryRecord> processor) where T : DataPoint
+        {
+            DataPointCollection<T> dataPoints = new DataPointCollection<T>();
+
+            string sql =
+                $"SELECT " +
+                $"{Defs.Columns.Id},{Defs.Columns.Timestamp},{Defs.Columns.Status},{Defs.Columns.BytesSent}," +
+                $"{Defs.Columns.IpAddressId},{Defs.Columns.MethodId},{Defs.Columns.RequestId},{Defs.Columns.RefererId},{Defs.Columns.UserAgentId}," +
+                $"{Defs.Columns.AttackIdRequest},{Defs.Columns.AttackIdReferer},{Defs.Columns.AttackIdAgent} " +
+                $"FROM {Namespace}.{TableName} " +
+                $"WHERE {Defs.Columns.DomainId}={domain.Id} AND  {Defs.Columns.Timestamp} > date('now','-{domain.PastDays} day') " +
+                $"ORDER BY {Defs.Columns.Timestamp}";
+
+            IDataReader reader = Controller.Execution.Query(sql);
+
+            while (reader.Read())
+            {
+                LogEntryRecord record =  GetLogEntryRecord(reader);
+                processor(dataPoints, record);
+
+                //if (evaluator(record))
+                //{
+                //    //dataPoints.AddDataPoint(record.Timestamp);
+                //}
+            }
+
+            return dataPoints;
+        }
+
+        private LogEntryRecord GetLogEntryRecord(IDataReader reader)
+        {
+            return new LogEntryRecord()
+            {
+                Id = reader.GetInt64(0),
+                Timestamp = reader.GetDateTime(1),
+                Status = reader.GetInt64(2),
+                BytesSent = reader.GetInt64(3),
+                IpAddressId = reader.GetInt64(4),
+                MethodId = reader.GetInt64(5),
+                RequestId = reader.GetInt64(6),
+                RefererId = reader.GetInt64(7),
+                UserAgentId = reader.GetInt64(8),
+                AttackIdRequest = reader.GetInt64(9),
+                AttackIdReferer = reader.GetInt64(10),
+                AttackIdAgent = reader.GetInt64(11)
+            };
         }
         #endregion
     }

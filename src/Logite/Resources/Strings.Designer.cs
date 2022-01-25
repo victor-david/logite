@@ -61,6 +61,24 @@ namespace Restless.Logite.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Status Codes.
+        /// </summary>
+        public static string ChartTitleStatusCodes {
+            get {
+                return ResourceManager.GetString("ChartTitleStatusCodes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total Traffic.
+        /// </summary>
+        public static string ChartTitleTotalTraffic {
+            get {
+                return ResourceManager.GetString("ChartTitleTotalTraffic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to All.
         /// </summary>
         public static string FilterAll {

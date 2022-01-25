@@ -117,6 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ChartTitleStatusCodes" xml:space="preserve">
+    <value>Status Codes</value>
+  </data>
+  <data name="ChartTitleTotalTraffic" xml:space="preserve">
+    <value>Total Traffic</value>
+  </data>
   <data name="FilterAll" xml:space="preserve">
     <value>All</value>
   </data>
