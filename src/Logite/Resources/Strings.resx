@@ -123,6 +123,9 @@
   <data name="ChartTitleTotalTraffic" xml:space="preserve">
     <value>Total Traffic</value>
   </data>
+  <data name="ChartTitleUniqueIp" xml:space="preserve">
+    <value>Unique Ip Addresses</value>
+  </data>
   <data name="FilterAll" xml:space="preserve">
     <value>All</value>
   </data>

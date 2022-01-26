@@ -79,6 +79,15 @@ namespace Restless.Logite.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unique Ip Addresses.
+        /// </summary>
+        public static string ChartTitleUniqueIp {
+            get {
+                return ResourceManager.GetString("ChartTitleUniqueIp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to All.
         /// </summary>
         public static string FilterAll {

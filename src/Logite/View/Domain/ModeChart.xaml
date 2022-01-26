@@ -15,6 +15,10 @@
         <Style TargetType="Border" BasedOn="{StaticResource SubContentBorderStyle}"/>
         <Style TargetType="rc:ChartContainer">
             <Setter Property="Margin" Value="10,10,10,0"/>
+            <Setter Property="XAxisTickAlignment" Value="Values"/>
+            <Setter Property="XAxisTickVisibility" Value="Major"/>
+            <Setter Property="YAxisTickVisibility" Value="Major"/>
+            <Setter Property="YAxisTextFormat" Value="N0"/>
         </Style>
         <Style TargetType="con:DropDownButton" BasedOn="{StaticResource DefaultDropDownButtonStyle}">
             <Setter Property="Margin" Value="0,0,36,0"/>
@@ -28,12 +32,8 @@
     <Grid tk:Property.ColumnWidths="*,*" tk:Property.RowHeights="*,*">
         <!-- Total traffic chart -->
         <rc:ChartContainer
-            XAxisTickAlignment="Values"
-            XAxisTickVisibility="Major"
-            YAxisTickVisibility="Major"
             XAxisTextProvider="{Binding Chart.Traffic.XAxisDateConverter}"
-            YAxisTextProvider="{Binding Chart.Traffic.YAxisConverter}"
-            YAxisTextFormat="N0">
+            YAxisTextProvider="{Binding Chart.Traffic.YAxisConverter}">
             <rc:ChartContainer.TopTitle>
                 <TextBlock Style="{StaticResource ChartTitleTextBlockStyle}" Text="{x:Static r:Strings.ChartTitleTotalTraffic}"/>
             </rc:ChartContainer.TopTitle>
@@ -41,16 +41,11 @@
                 Data="{Binding Chart.Traffic.Data}"/>
         </rc:ChartContainer>
 
+        <!-- Status code chart and its selector -->
         <Grid Grid.Column="1" tk:Property.RowHeights="*,Auto">
-
             <rc:ChartContainer
-                Grid.Column="1"
-                XAxisTickAlignment="Values"
-                XAxisTickVisibility="Major"
-                YAxisTickVisibility="Major"
                 XAxisTextProvider="{Binding Chart.Status.XAxisDateConverter}"
-                YAxisTextProvider="{Binding Chart.Status.YAxisConverter}"
-                YAxisTextFormat="N0">
+                YAxisTextProvider="{Binding Chart.Status.YAxisConverter}">
 
                 <rc:ChartContainer.TopTitle>
                     <TextBlock Style="{StaticResource ChartTitleTextBlockStyle}" Text="{x:Static r:Strings.ChartTitleStatusCodes}"/>
@@ -69,6 +64,18 @@
                 ItemsSource="{Binding Chart.Status.Selector}"
                 SelectedItem="{Binding Chart.Status.Selector.SelectedStatus, Mode=TwoWay}"/>
         </Grid>
+
+        <!-- Unique Ip chart-->
+        <rc:ChartContainer
+            Grid.Row="1"
+            XAxisTextProvider="{Binding Chart.Traffic.XAxisDateConverter}"
+            YAxisTextProvider="{Binding Chart.Traffic.YAxisConverter}">
+            <rc:ChartContainer.TopTitle>
+                <TextBlock Style="{StaticResource ChartTitleTextBlockStyle}" Text="{x:Static r:Strings.ChartTitleUniqueIp}"/>
+            </rc:ChartContainer.TopTitle>
+            <rc:BarChart
+                Data="{Binding Chart.UniqueIp.Data}"/>
+        </rc:ChartContainer>
 
     </Grid>
 </UserControl>

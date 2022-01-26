@@ -1,6 +1,7 @@
 ﻿using Restless.Logite.Database.Core;
 using Restless.Toolkit.Core.Database.SQLite;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Text;
 
@@ -212,6 +213,26 @@ namespace Restless.Logite.Database.Tables
                     case 500:
                         point.Count500++;
                         break;
+                }
+            });
+        }
+
+        public DataPointCollection<CountDataPoint> GetUniqueIpTrafficData(DomainRow domain)
+        {
+            Dictionary<DateTime, List<long>> ips = new Dictionary<DateTime, List<long>>();
+
+            return GetDateCountCollection<CountDataPoint>(domain, (points, logEntryRecord) =>
+            {
+                CountDataPoint point = points.Add(CountDataPoint.Create(logEntryRecord.Timestamp));
+                if (!ips.ContainsKey(point.Date))
+                {
+                    ips.Add(point.Date, new List<long>());
+                }
+
+                if (!ips[point.Date].Contains(logEntryRecord.IpAddressId))
+                {
+                    ips[point.Date].Add(logEntryRecord.IpAddressId);
+                    point.Count++;
                 }
             });
         }

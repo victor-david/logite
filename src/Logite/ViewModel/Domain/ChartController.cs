@@ -29,6 +29,14 @@ namespace Restless.Logite.ViewModel.Domain
         {
             get;
         }
+
+        /// <summary>
+        /// Gets the unique ip chart data provider.
+        /// </summary>
+        public UniqueIpChart UniqueIp
+        {
+            get;
+        }
         #endregion
 
         /************************************************************************/
@@ -43,6 +51,7 @@ namespace Restless.Logite.ViewModel.Domain
             Domain = domain ?? throw new ArgumentNullException(nameof(domain));
             Traffic = new TrafficChart(Domain);
             Status = new StatusChart(Domain);
+            UniqueIp = new UniqueIpChart(Domain);
         }
         #endregion
 
@@ -56,6 +65,7 @@ namespace Restless.Logite.ViewModel.Domain
         {
             Traffic.CreateData();
             Status.CreateData();
+            UniqueIp.CreateData();
         }
         #endregion
     }
