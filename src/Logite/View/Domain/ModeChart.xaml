@@ -14,7 +14,6 @@
         <Style TargetType="Border" BasedOn="{StaticResource SubContentBorderStyle}"/>
         <Style TargetType="rc:ChartContainer">
             <Setter Property="Margin" Value="10"/>
-            <!--<Setter Property="Background" Value="LightGoldenrodYellow"/>-->
         </Style>
     </UserControl.Resources>    
 
@@ -34,40 +33,23 @@
                 Data="{Binding Chart.Traffic.Data}"/>
         </rc:ChartContainer>
 
-        <!--<rc:ChartConnectorGrid Grid.Column="1" tk:Property.ColumnWidths="*,Auto">-->
-            <rc:ChartContainer
-                Grid.Column="1"
-                XAxisTickAlignment="Values"
-                XAxisTickVisibility="Major"
-                YAxisTickVisibility="Major"
-                XAxisTextProvider="{Binding Chart.Status.XAxisDateConverter}"
-                YAxisTextProvider="{Binding Chart.Status.YAxisConverter}"
-                YAxisTextFormat="N0">
-                <rc:ChartContainer.TopTitle>
-                    <TextBlock Style="{StaticResource ChartTitleTextBlockStyle}" Text="{x:Static r:Strings.ChartTitleStatusCodes}"/>
-                </rc:ChartContainer.TopTitle>
-                <rc:LineChart
-                    PointSize="5"
-                    SelectedSeriesIndex="{Binding Chart.Status.SelectedLegendIndex}"
-                    Data="{Binding Chart.Status.Data}"
-                />
-            </rc:ChartContainer>
+        <rc:ChartContainer
+            Grid.Column="1"
+            XAxisTickAlignment="Values"
+            XAxisTickVisibility="Major"
+            YAxisTickVisibility="Major"
+            XAxisTextProvider="{Binding Chart.Status.XAxisDateConverter}"
+            YAxisTextProvider="{Binding Chart.Status.YAxisConverter}"
+            YAxisTextFormat="N0">
 
-            <!--<rc:ChartLegend
-                Grid.Column="1"
-                Width="220"
-                VerticalAlignment="Top"
-                HorizontalAlignment="Right"
-                Margin="0,16,4,0"
-                HeaderText="Legend"
-                HeaderTextForeground="Gray"
-                Foreground="DarkGray"
-                Background="LightGoldenrodYellow"
-                BorderBrush="{StaticResource DefaultBorderBrush}"
-                BorderThickness="1"
-                Padding="3"
-                SelectedItem="{Binding Chart.Status.SelectedLegendItem}"/>-->
-        <!--</rc:ChartConnectorGrid>-->
+            <rc:ChartContainer.TopTitle>
+                <TextBlock Style="{StaticResource ChartTitleTextBlockStyle}" Text="{x:Static r:Strings.ChartTitleStatusCodes}"/>
+            </rc:ChartContainer.TopTitle>
+            <rc:LineChart
+                PointSize="5"
+                SelectedSeriesIndex="{Binding Chart.Status.SelectedLegendIndex}"
+                Data="{Binding Chart.Status.Data}"/>
+        </rc:ChartContainer>
 
     </Grid>
 </UserControl>
