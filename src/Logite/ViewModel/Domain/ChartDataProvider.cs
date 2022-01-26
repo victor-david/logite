@@ -9,7 +9,7 @@ namespace Restless.Logite.ViewModel.Domain
     /// <summary>
     /// Base data provider for charts. This class must be inherited.
     /// </summary>
-    public abstract class ChartBase : ObservableObject
+    public abstract class ChartDataProvider : ObservableObject
     {
         #region Private
         private DataSeries data;
@@ -86,10 +86,10 @@ namespace Restless.Logite.ViewModel.Domain
 
         #region Constructor
         /// <summary>
-        /// Initializes a new instance of the <see cref="ChartBase"/> class.
+        /// Initializes a new instance of the <see cref="ChartDataProvider"/> class.
         /// </summary>
         /// <param name="domain">The domain</param>
-        protected ChartBase(DomainRow domain)
+        protected ChartDataProvider(DomainRow domain)
         {
             Domain = domain ?? throw new ArgumentNullException(nameof(domain));
             XAxisDateConverter = new MappedValueConverter();

@@ -6,6 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:rc="clr-namespace:Restless.Controls.Chart;assembly=Restless.Charts"
+    xmlns:con="clr-namespace:Restless.Logite.Controls;assembly=Logite.Controls"
     xmlns:r="clr-namespace:Restless.Logite.Resources"
     xmlns:vm="clr-namespace:Restless.Logite.ViewModel.Domain" d:DataContext="{d:DesignInstance Type=vm:DomainViewModel}"
     mc:Ignorable="d"
@@ -13,7 +14,14 @@
     <UserControl.Resources>
         <Style TargetType="Border" BasedOn="{StaticResource SubContentBorderStyle}"/>
         <Style TargetType="rc:ChartContainer">
-            <Setter Property="Margin" Value="10"/>
+            <Setter Property="Margin" Value="10,10,10,0"/>
+        </Style>
+        <Style TargetType="con:DropDownButton" BasedOn="{StaticResource DefaultDropDownButtonStyle}">
+            <Setter Property="Margin" Value="0,0,36,0"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="MinWidth" Value="102"/>
+            <Setter Property="DisplayMemberPath" Value="Name"/>
         </Style>
     </UserControl.Resources>    
 
@@ -33,23 +41,34 @@
                 Data="{Binding Chart.Traffic.Data}"/>
         </rc:ChartContainer>
 
-        <rc:ChartContainer
-            Grid.Column="1"
-            XAxisTickAlignment="Values"
-            XAxisTickVisibility="Major"
-            YAxisTickVisibility="Major"
-            XAxisTextProvider="{Binding Chart.Status.XAxisDateConverter}"
-            YAxisTextProvider="{Binding Chart.Status.YAxisConverter}"
-            YAxisTextFormat="N0">
+        <Grid Grid.Column="1" tk:Property.RowHeights="*,Auto">
 
-            <rc:ChartContainer.TopTitle>
-                <TextBlock Style="{StaticResource ChartTitleTextBlockStyle}" Text="{x:Static r:Strings.ChartTitleStatusCodes}"/>
-            </rc:ChartContainer.TopTitle>
-            <rc:LineChart
-                PointSize="5"
-                SelectedSeriesIndex="{Binding Chart.Status.SelectedLegendIndex}"
-                Data="{Binding Chart.Status.Data}"/>
-        </rc:ChartContainer>
+            <rc:ChartContainer
+                Grid.Column="1"
+                XAxisTickAlignment="Values"
+                XAxisTickVisibility="Major"
+                YAxisTickVisibility="Major"
+                XAxisTextProvider="{Binding Chart.Status.XAxisDateConverter}"
+                YAxisTextProvider="{Binding Chart.Status.YAxisConverter}"
+                YAxisTextFormat="N0">
+
+                <rc:ChartContainer.TopTitle>
+                    <TextBlock Style="{StaticResource ChartTitleTextBlockStyle}" Text="{x:Static r:Strings.ChartTitleStatusCodes}"/>
+                </rc:ChartContainer.TopTitle>
+                <rc:LineChart
+                    PointSize="5"
+                    SelectedSeriesIndex="{Binding Chart.Status.SelectedLegendIndex}"
+                    Data="{Binding Chart.Status.Data}"/>
+            </rc:ChartContainer>
+
+            <con:DropDownButton
+                Grid.Row="1"
+                MinWidth="132"
+                Style="{StaticResource StatusDropDownButtonStyle}"
+                Content="{Binding Chart.Status.Selector.Title}"
+                ItemsSource="{Binding Chart.Status.Selector}"
+                SelectedItem="{Binding Chart.Status.Selector.SelectedStatus, Mode=TwoWay}"/>
+        </Grid>
 
     </Grid>
 </UserControl>

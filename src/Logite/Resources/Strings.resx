@@ -246,6 +246,9 @@
   <data name="TextAddDomain" xml:space="preserve">
     <value>This will add a new domain entry with default values. Once added, you can edit the values.</value>
   </data>
+  <data name="TextClearAll" xml:space="preserve">
+    <value>Clear all</value>
+  </data>
   <data name="TextClearSelection" xml:space="preserve">
     <value>Clear selection for this item</value>
   </data>

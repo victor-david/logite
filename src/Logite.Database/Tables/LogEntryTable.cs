@@ -184,7 +184,7 @@ namespace Restless.Logite.Database.Tables
             });
         }
 
-        public DataPointCollection<StatusDataPoint> GetStatusTrafficData(DomainRow domain, long status)
+        public DataPointCollection<StatusDataPoint> GetStatusTrafficData(DomainRow domain)
         {
             return GetDateCountCollection<StatusDataPoint>(domain, (points, logEntryRecord) =>
             {
@@ -194,6 +194,12 @@ namespace Restless.Logite.Database.Tables
                     case 200:
                         point.Count200++;
                         break;
+                    case 302:
+                        point.Count302++;
+                        break;
+                    case 304:
+                        point.Count304++;
+                        break;
                     case 400:
                         point.Count400++;
                         break;
@@ -202,6 +208,9 @@ namespace Restless.Logite.Database.Tables
                         break;
                     case 444:
                         point.Count444++;
+                        break;
+                    case 500:
+                        point.Count500++;
                         break;
                 }
             });

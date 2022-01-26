@@ -1,16 +1,14 @@
 ﻿using Restless.Controls.Chart;
 using Restless.Logite.Database.Core;
 using Restless.Logite.Database.Tables;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media;
 
 namespace Restless.Logite.ViewModel.Domain
 {
-    public class TrafficChart : ChartBase
+    /// <summary>
+    /// Provides data for the traffic chart.
+    /// </summary>
+    public class TrafficChart : ChartDataProvider
     {
         protected override double YAxisDivisor => 1.0;
 
@@ -27,6 +25,9 @@ namespace Restless.Logite.ViewModel.Domain
         /************************************************************************/
 
         #region Public methods
+        /// <summary>
+        /// Creates and assigns the chart data
+        /// </summary>
         public override void CreateData()
         {
             DataSeries data = DataSeries.Create();

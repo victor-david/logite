@@ -20,6 +20,24 @@ namespace Restless.Logite.Database.Core
         }
 
         /// <summary>
+        /// Gets the count of 302 responses.
+        /// </summary>
+        public long Count302
+        {
+            get;
+            internal set;
+        }
+
+        /// <summary>
+        /// Gets the count of 304 responses.
+        /// </summary>
+        public long Count304
+        {
+            get;
+            internal set;
+        }
+
+        /// <summary>
         /// Gets the count of 400 responses.
         /// </summary>
         public long Count400
@@ -41,6 +59,15 @@ namespace Restless.Logite.Database.Core
         /// Gets the count of 444 responses.
         /// </summary>
         public long Count444
+        {
+            get;
+            internal set;
+        }
+
+        /// <summary>
+        /// Gets the count of 500 responses.
+        /// </summary>
+        public long Count500
         {
             get;
             internal set;

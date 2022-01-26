@@ -448,6 +448,15 @@ namespace Restless.Logite.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Clear all.
+        /// </summary>
+        public static string TextClearAll {
+            get {
+                return ResourceManager.GetString("TextClearAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Clear selection for this item.
         /// </summary>
         public static string TextClearSelection {
