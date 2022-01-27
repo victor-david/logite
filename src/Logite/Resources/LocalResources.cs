@@ -34,6 +34,11 @@ namespace Restless.Logite.Resources
             {
                 get => LocalResources.Get<Style>(nameof(StatusTextBlockStyle));
             }
+
+            public static Style ChartTitleTextBlockStyle
+            {
+                get => LocalResources.Get<Style>(nameof(ChartTitleTextBlockStyle));
+            }
         }
     }
 }

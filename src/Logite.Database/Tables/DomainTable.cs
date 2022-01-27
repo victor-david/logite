@@ -1,4 +1,5 @@
-﻿using Restless.Toolkit.Core.Database.SQLite;
+﻿using Restless.Logite.Database.Core;
+using Restless.Toolkit.Core.Database.SQLite;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -49,7 +50,12 @@ namespace Restless.Logite.Database.Tables
                 /// <summary>
                 /// The number of past days for reporting on this domain
                 /// </summary>
-                public const string PastDays = "pastdays";
+                public const string Period = "period";
+
+                /// <summary>
+                /// Bit mapped values from <see cref="StatusCode"/>.
+                /// </summary>
+                public const string ChartStatus = "chartstatus";
 
                 /// <summary>
                 /// The total number of log entries for this domain
@@ -107,19 +113,35 @@ namespace Restless.Logite.Database.Tables
                 public const string NewDomainPreface = "xxx.access";
 
                 /// <summary>
-                /// The display mode for data
+                /// The default for <see cref="Defs.Columns.Period"/>.
                 /// </summary>
-                public const long DisplayModeData = 0;
+                public const long DefaultPeriod = 30;
 
                 /// <summary>
-                /// The display mode for chart
+                /// The default value for <see cref="Defs.Columns.ChartStatus"/>.
                 /// </summary>
-                public const long DisplayModeChart = 1;
+                public const long DefaultChartStatus = StatusCode.Code200.BitValue + StatusCode.Code404.BitValue;
 
                 /// <summary>
-                /// Number of past days default.
+                /// Provides static values for <see cref="Defs.Columns.DisplayMode"/>
                 /// </summary>
-                public const long DefaultPastDays = 30;
+                public static class DisplayMode
+                {
+                    /// <summary>
+                    /// Overview display mode
+                    /// </summary>
+                    public const long Overview = 0;
+
+                    /// <summary>
+                    /// Raw data display mode
+                    /// </summary>
+                    public const long Raw = 1;
+
+                    /// <summary>
+                    /// Chart display mode
+                    /// </summary>
+                    public const long Chart = 2;
+                }
             }
         }
         #endregion
@@ -177,8 +199,9 @@ namespace Restless.Logite.Database.Tables
             {
                 DisplayName = displayName,
                 Preface = preface,
-                DisplayMode = Defs.Values.DisplayModeData,
-                PastDays = Defs.Values.DefaultPastDays,
+                DisplayMode = Defs.Values.DisplayMode.Raw,
+                Period = Defs.Values.DefaultPeriod,
+                ChartStatus = Defs.Values.DefaultChartStatus,
                 LogEntryCount = 0
             };
             Rows.Add(obj.Row);
@@ -240,8 +263,9 @@ namespace Restless.Logite.Database.Tables
                 { Defs.Columns.Id, ColumnType.Integer, true },
                 { Defs.Columns.DisplayName, ColumnType.Text, false, false},
                 { Defs.Columns.Preface, ColumnType.Text, false, false },
-                { Defs.Columns.DisplayMode, ColumnType.Integer, false, false, Defs.Values.DisplayModeData },
-                { Defs.Columns.PastDays, ColumnType.Integer, false, false, Defs.Values.DefaultPastDays },
+                { Defs.Columns.DisplayMode, ColumnType.Integer, false, false, Defs.Values.DisplayMode.Raw },
+                { Defs.Columns.Period, ColumnType.Integer, false, false, Defs.Values.DefaultPeriod },
+                { Defs.Columns.ChartStatus, ColumnType.Integer, false, false, Defs.Values.DefaultChartStatus },
                 { Defs.Columns.LogEntryCount, ColumnType.Integer, false, false, 0L }
             };
         }
@@ -266,7 +290,7 @@ namespace Restless.Logite.Database.Tables
         /// <returns>A list of column names</returns>
         protected override List<string> GetPopulateColumnList()
         {
-            return new List<string>() { Defs.Columns.Id, Defs.Columns.DisplayName, Defs.Columns.Preface, Defs.Columns.PastDays };
+            return new List<string>() { Defs.Columns.Id, Defs.Columns.DisplayName, Defs.Columns.Preface, Defs.Columns.Period };
         }
 
         /// <summary>
@@ -275,7 +299,7 @@ namespace Restless.Logite.Database.Tables
         /// <returns>An IEnumerable</returns>
         protected override IEnumerable<object[]> EnumeratePopulateValues()
         {
-            yield return new object[] { Defs.Values.DomainZeroId, Defs.Values.DomainZeroDisplayName, Defs.Values.DomainZeroPreface, Defs.Values.DefaultPastDays };
+            yield return new object[] { Defs.Values.DomainZeroId, Defs.Values.DomainZeroDisplayName, Defs.Values.DomainZeroPreface, Defs.Values.DefaultPeriod };
         }
         #endregion
 

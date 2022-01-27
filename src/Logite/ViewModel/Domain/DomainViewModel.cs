@@ -68,10 +68,23 @@ namespace Restless.Logite.ViewModel.Domain
             get;
         }
 
+        public ChartController Chart
+        {
+            get;
+        }
+
         /// <summary>
         /// Gets the filter controller
         /// </summary>
         public FilterController Filter
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Gets the section selector
+        /// </summary>
+        public SectionSelector Sections
         {
             get;
         }
@@ -92,10 +105,17 @@ namespace Restless.Logite.ViewModel.Domain
             Status = new StatusController(Domain);
             Ip = new IpAddressController(Domain);
             LogEntry = new LogEntryController(Domain);
+            Chart = new ChartController(Domain);
+
+            Sections = new SectionSelector()
+            {
+                TitlePreface = Strings.TextData
+            };
+            InitializeSections();
 
             Filter = new FilterController()
             {
-                TitlePreface = Strings.CaptionView,
+                TitlePreface = Strings.TextPeriod,
                 DateTimeColumnName = LogEntryTable.Defs.Columns.Timestamp,
                 TextSearchColumnNames = new string[]
                 {
@@ -103,11 +123,11 @@ namespace Restless.Logite.ViewModel.Domain
                 }
             };
 
-            Filter.SetSelectedTimeFilter((TimeFilter)Domain.PastDays);
+            Filter.SetSelectedTimeFilter((TimeFilter)Domain.Period);
 
             Filter.FilterChanged += (s, e) =>
             {
-                Domain.PastDays = (long)e.Item.Filter;
+                Domain.Period = (long)e.Item.Filter;
                 Domain.Table.Save();
                 Update();
             };
@@ -144,11 +164,19 @@ namespace Restless.Logite.ViewModel.Domain
 
         protected override void OnUpdate()
         {
-            DatabaseController.Instance.GetTable<LogEntryTable>().LoadDomain(Domain);
-            Method.Update();
-            Status.Update();
-            Ip.Update();
-            LogEntry.Update();
+            DatabaseController.Instance.GetTable<LogEntryTable>().UnloadDomain();
+
+            if (Domain.DisplayMode == DomainTable.Defs.Values.DisplayMode.Raw)
+            {
+                DatabaseController.Instance.GetTable<LogEntryTable>().LoadDomain(Domain);
+                UpdateControllers();
+
+            }
+            else
+            {
+                UpdateControllers();
+                Chart.Update();
+            }
         }
 
         /// <summary>
@@ -168,6 +196,27 @@ namespace Restless.Logite.ViewModel.Domain
         /************************************************************************/
 
         #region Private methods
+        private void InitializeSections()
+        {
+            Sections.Add(DomainTable.Defs.Values.DisplayMode.Raw, "Raw");
+            Sections.Add(DomainTable.Defs.Values.DisplayMode.Chart, "Charts");
+            Sections.SetSelectedSection(Domain.DisplayMode);
+            Sections.SectionChanged += (s, e) =>
+            {
+                Domain.DisplayMode = e.Id;
+                OnPropertyChanged(nameof(Domain));
+                Update();
+            };
+        }
+
+        private void UpdateControllers()
+        {
+            Method.Update();
+            Status.Update();
+            Ip.Update();
+            LogEntry.Update();
+        }
+
         private void UpdateDomainStatus()
         {
             DomainStatus = $"{Domain.LogEntryCount} log entries";

@@ -45,13 +45,23 @@ namespace Restless.Logite.Database.Tables
             get => GetInt64(Columns.DisplayMode);
             set => SetValue(Columns.DisplayMode, value);
         }
+
         /// <summary>
         /// Gets or sets the number of past days for reporting on this domain
         /// </summary>
-        public long PastDays
+        public long Period
         {
-            get => GetInt64(Columns.PastDays);
-            set => SetValue(Columns.PastDays, value);
+            get => GetInt64(Columns.Period);
+            set => SetValue(Columns.Period, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the bit-mapped value that represents the status codes a domain wants to use for its status chart.
+        /// </summary>
+        public long ChartStatus
+        {
+            get => GetInt64(Columns.ChartStatus);
+            set => SetValue(Columns.ChartStatus, value);
         }
 
         /// <summary>

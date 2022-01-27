@@ -19,14 +19,21 @@
         <TextBlock Text="{Binding DomainStatus}"/>
         
         <Separator/>
-
+        
         <con:DropDownButton
-            MinWidth="132"
+            MinWidth="112"
+            CloseOnSelection="False"
+            Content="{Binding Sections.Title}"
+            SelectedItem="{Binding Sections.SelectedSection}"
+            ItemsSource="{Binding Sections.Sections}"
+            DisplayMemberPath="Name"/>
+        
+        <con:DropDownButton
+            MinWidth="112"
             CloseOnSelection="True"
             Content="{Binding Filter.Title}"
             SelectedItem="{Binding Filter.SelectedTimeFilter}"
             ItemsSource="{Binding Filter.TimeFilters}"
             DisplayMemberPath="Name"/>
-
     </ToolBar>
 </ToolBarTray>
