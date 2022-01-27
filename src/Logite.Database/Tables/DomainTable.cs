@@ -128,11 +128,6 @@ namespace Restless.Logite.Database.Tables
                 public static class DisplayMode
                 {
                     /// <summary>
-                    /// Overview display mode
-                    /// </summary>
-                    public const long Overview = 0;
-
-                    /// <summary>
                     /// Raw data display mode
                     /// </summary>
                     public const long Raw = 1;

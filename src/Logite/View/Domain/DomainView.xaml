@@ -14,11 +14,6 @@
     <Grid tk:Property.RowHeights="Auto,*" Style="{StaticResource DataEntryPanelStyle}">
 
         <vw:MainToolBar/>
-        
-        <!-- Display mode overview -->
-        <vw:ModeOverview
-            Grid.Row="1"
-            Visibility="{Binding Domain.DisplayMode, Converter={cv:LongToVisibilityConverter}, ConverterParameter={x:Static db:DomainTable+Defs+Values+DisplayMode.Overview}}"/>
 
         <!-- Display mode raw -->
         <vw:ModeRaw
