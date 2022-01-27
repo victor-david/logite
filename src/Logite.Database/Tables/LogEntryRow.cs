@@ -16,7 +16,7 @@ namespace Restless.Logite.Database.Tables
     /// of this class are all read only. It's used when displaying log entry detail;
     /// the constructor loads attack data if it exists.
     /// </remarks>
-    public class LogEntryRow : RowObjectBase<LogEntryTable>
+    public class LogEntryRow : RawRow
     {
         #region Helper class
         public class Property
@@ -148,8 +148,7 @@ namespace Restless.Logite.Database.Tables
         /// <summary>
         /// Initializes a new instance of the <see cref="LogEntryRow"/> class.
         /// </summary>
-        /// <param name="row">The data row</param>
-        public LogEntryRow(DataRow row) : base(row)
+        internal LogEntryRow() : base (LogEntryTable.Defs.TableName)
         {
             RequestAttack = GetAttack(GetInt64(Columns.AttackIdRequest));
             RefererAttack = GetAttack(GetInt64(Columns.AttackIdReferer));
@@ -184,7 +183,7 @@ namespace Restless.Logite.Database.Tables
                 return "(none)";
             }
 
-            string sql = $"select {AttackTable.Defs.Columns.AttackString} from {Table.Namespace}.{AttackTable.Defs.TableName} where {AttackTable.Defs.Columns.Id}={attackId}";
+            string sql = $"select {AttackTable.Defs.Columns.AttackString} from {DatabaseController.MainAppSchemaName}.{AttackTable.Defs.TableName} where {AttackTable.Defs.Columns.Id}={attackId}";
             object result = DatabaseController.Instance.Execution.Scalar(sql);
             return result != null ? result.ToString() : "(failed)";
         }

@@ -5,7 +5,7 @@ using System.Data;
 
 namespace Restless.Logite.Database.Tables
 {
-    public class RequestTable : DemandDomainTable
+    public class RequestTable : RawTable<RequestRow>
     {
         #region Public properties
         /// <summary>

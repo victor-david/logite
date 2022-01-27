@@ -8,7 +8,7 @@ namespace Restless.Logite.ViewModel.Domain
     /// <summary>
     /// Display http methods (GET, POST, etc)
     /// </summary>
-    public class MethodController : DomainController<MethodTable>
+    public class MethodController : DomainController<MethodTable, MethodRow>
     {
         #region Constructor
         /// <summary>
@@ -17,8 +17,8 @@ namespace Restless.Logite.ViewModel.Domain
         /// <param name="domain">The domain</param>
         public MethodController(DomainRow domain) : base(domain)
         {
-            Columns.Create("Method", MethodTable.Defs.Columns.Method);
-            Columns.Create("Count", MethodTable.Defs.Columns.Calculated.UsageCount).MakeFixedWidth(FixedWidth.W096);
+            //Columns.Create("Method", MethodTable.Defs.Columns.Method);
+            //Columns.Create("Count", MethodTable.Defs.Columns.Calculated.UsageCount).MakeFixedWidth(FixedWidth.W096);
         }
         #endregion
 
@@ -26,20 +26,20 @@ namespace Restless.Logite.ViewModel.Domain
 
         #region Protected methods
 
-        protected override bool OnDataRowFilter(DataRow item)
+        protected override bool OnDataRowFilter(RawRow item)
         {
-            return (long)item[MethodTable.Defs.Columns.Calculated.UsageCount] > 0;
+            return true; //  (long)item[MethodTable.Defs.Columns.Calculated.UsageCount] > 0;
         }
 
-        protected override int OnDataRowCompare(DataRow item1, DataRow item2)
+        protected override int OnDataRowCompare(RawRow item1, RawRow item2)
         {
-            return DataRowCompareLong(item1, item2, MethodTable.Defs.Columns.Id);
+            return 0; // DataRowCompareLong(item1, item2, MethodTable.Defs.Columns.Id);
         }
 
         protected override void OnSelectedItemChanged()
         {
-            long id = (SelectedDataRow != null) ? (long)SelectedDataRow[MethodTable.Defs.Columns.Id] : -1;
-            OnSelectedItemChanged(id);
+            //long id = (SelectedDataRow != null) ? (long)SelectedDataRow[MethodTable.Defs.Columns.Id] : -1;
+            //OnSelectedItemChanged(id);
         }
         #endregion
     }

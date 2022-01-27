@@ -5,7 +5,7 @@ using System.Data;
 
 namespace Restless.Logite.Database.Tables
 {
-    public class IpAddressTable : DemandDomainTable
+    public class IpAddressTable : RawTable<IpAddressRow>
     {
         #region Public properties
         /// <summary>

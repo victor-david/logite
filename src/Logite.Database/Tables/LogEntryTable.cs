@@ -3,11 +3,12 @@ using Restless.Toolkit.Core.Database.SQLite;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Text;
 
 namespace Restless.Logite.Database.Tables
 {
-    public class LogEntryTable : DemandDomainTable
+    public class LogEntryTable : RawTable<LogEntryRow>
     {
         private IdCollection ipId;
         private IdCollection requestId;
@@ -311,13 +312,24 @@ namespace Restless.Logite.Database.Tables
         /************************************************************************/
 
         #region Private methods
+        private Stopwatch stopwatch = new Stopwatch();
         private void LoadDomainPrivate(DomainRow domain)
         {
             Clear();
             ClearIdCollections();
 
+            stopwatch.Restart();
             string sql = $"SELECT * FROM {Namespace}.{TableName} WHERE {Defs.Columns.DomainId}={domain.Id} AND  {Defs.Columns.Timestamp} > date('now','-{domain.Period} day')";
-            Load(Controller.Execution.Query(sql));
+
+            IDataReader reader = Controller.Execution.Query(sql);
+            while (reader.Read())
+            {
+
+            }
+            // Load(Controller.Execution.Query(sql));
+
+            stopwatch.Stop();
+            Debug.WriteLine($"Main load: {stopwatch.ElapsedMilliseconds} ms");
 
             foreach (DataRow row in Rows)
             {
@@ -326,10 +338,14 @@ namespace Restless.Logite.Database.Tables
                 refererId.Add((long)row[Defs.Columns.RefererId]);
                 agentId.Add((long)row[Defs.Columns.UserAgentId]);
             }
-            Controller.GetTable<IpAddressTable>().Load(ipId);
-            Controller.GetTable<RequestTable>().Load(requestId);
-            Controller.GetTable<RefererTable>().Load(refererId);
-            Controller.GetTable<UserAgentTable>().Load(agentId);
+
+            stopwatch.Start();
+            //Controller.GetTable<IpAddressTable>().Load(ipId);
+            //Controller.GetTable<RequestTable>().Load(requestId);
+            //Controller.GetTable<RefererTable>().Load(refererId);
+            //Controller.GetTable<UserAgentTable>().Load(agentId);
+            stopwatch.Stop();
+            Debug.WriteLine($"Secondary load: {stopwatch.ElapsedMilliseconds} ms");
         }
 
         private void UnloadDomainPrivate()

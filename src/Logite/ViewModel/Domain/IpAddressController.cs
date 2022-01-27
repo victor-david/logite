@@ -5,7 +5,7 @@ using System.Data;
 
 namespace Restless.Logite.ViewModel.Domain
 {
-    public class IpAddressController : DomainController<IpAddressTable>
+    public class IpAddressController : DomainController<IpAddressTable, IpAddressRow>
     {
         #region Constructor
         /// <summary>
@@ -14,9 +14,9 @@ namespace Restless.Logite.ViewModel.Domain
         /// <param name="domain">The domain</param>
         public IpAddressController(DomainRow domain): base(domain)
         {
-            Columns.Create("Id", IpAddressTable.Defs.Columns.Id).MakeFixedWidth(FixedWidth.W048);
-            Columns.Create("Ip Address", IpAddressTable.Defs.Columns.IpAddress);
-            Columns.Create("Count", IpAddressTable.Defs.Columns.Calculated.UsageCount).MakeFixedWidth(FixedWidth.W096);
+            //Columns.Create("Id", IpAddressTable.Defs.Columns.Id).MakeFixedWidth(FixedWidth.W048);
+            //Columns.Create("Ip Address", IpAddressTable.Defs.Columns.IpAddress);
+            //Columns.Create("Count", IpAddressTable.Defs.Columns.Calculated.UsageCount).MakeFixedWidth(FixedWidth.W096);
         }
         #endregion
 
@@ -24,20 +24,20 @@ namespace Restless.Logite.ViewModel.Domain
 
         #region Protected methods
 
-        protected override bool OnDataRowFilter(DataRow item)
+        protected override bool OnDataRowFilter(RawRow item)
         {
-            return (long)item[IpAddressTable.Defs.Columns.Calculated.UsageCount] > 0;
+            return true; // (long)item[IpAddressTable.Defs.Columns.Calculated.UsageCount] > 0;
         }
 
-        protected override int OnDataRowCompare(DataRow item1, DataRow item2)
+        protected override int OnDataRowCompare(RawRow item1, RawRow item2)
         {
-            return DataRowCompareLong(item2, item1, IpAddressTable.Defs.Columns.Calculated.UsageCount);
+            return 0; // DataRowCompareLong(item2, item1, IpAddressTable.Defs.Columns.Calculated.UsageCount);
         }
 
         protected override void OnSelectedItemChanged()
         {
-            long id = (SelectedDataRow != null) ? (long)SelectedDataRow[IpAddressTable.Defs.Columns.Id] : -1;
-            OnSelectedItemChanged(id);
+            //long id = (SelectedDataRow != null) ? (long)SelectedDataRow[IpAddressTable.Defs.Columns.Id] : -1;
+            //OnSelectedItemChanged(id);
         }
         #endregion
     }

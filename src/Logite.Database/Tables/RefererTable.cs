@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Restless.Logite.Database.Tables
 {
-    public class RefererTable : DemandDomainTable
+    public class RefererTable : RawTable<RefererRow>
     {
         #region Public properties
         /// <summary>

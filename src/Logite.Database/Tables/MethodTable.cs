@@ -9,7 +9,7 @@ namespace Restless.Logite.Database.Tables
     /// <summary>
     /// Lookup table for http methods
     /// </summary>
-    public class MethodTable : Core.ApplicationTableBase
+    public class MethodTable : RawTable<MethodRow>
     {
         #region Public properties
         /// <summary>
@@ -93,22 +93,14 @@ namespace Restless.Logite.Database.Tables
 
         #region Public methods
         /// <summary>
-        /// Loads the data from the database into the Data collection for this table.
-        /// </summary>
-        public override void Load()
-        {
-            Load(null, Defs.Columns.Id);
-        }
-
-        /// <summary>
         /// Provides an enumerable that returns all records
         /// </summary>
         /// <returns></returns>
         public IEnumerable<MethodRow> EnumerateAll()
         {
-            foreach (var row in EnumerateRows(null, Defs.Columns.Id))
+            foreach (var row in RawRows)
             {
-                yield return new MethodRow(row);
+                yield return row;
             }
         }
 

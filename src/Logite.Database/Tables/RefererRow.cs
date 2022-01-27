@@ -1,14 +1,11 @@
-﻿using Restless.Toolkit.Core.Database.SQLite;
-using System;
-using System.Data;
-using Columns = Restless.Logite.Database.Tables.MethodTable.Defs.Columns;
+﻿using Columns = Restless.Logite.Database.Tables.RefererTable.Defs.Columns;
 
 namespace Restless.Logite.Database.Tables
 {
     /// <summary>
-    /// Encapsulates a single row from the <see cref="MethodTable"/>.
+    /// Encapsulates a single row from the <see cref="RefererTable"/>.
     /// </summary>
-    public class MethodRow : RawRow
+    public class RefererRow : RawRow
     {
         #region Public properties
         /// <summary>
@@ -20,11 +17,11 @@ namespace Restless.Logite.Database.Tables
         }
 
         /// <summary>
-        /// Gets the method name.
+        /// Gets the referer name.
         /// </summary>
-        public string Method
+        public string Referer
         {
-            get => GetString(Columns.Method);
+            get => GetString(Columns.Referer);
         }
         #endregion
 
@@ -32,9 +29,9 @@ namespace Restless.Logite.Database.Tables
 
         #region Constructor
         /// <summary>
-        /// Initializes a new instance of the <see cref="MethodRow"/> class.
+        /// Initializes a new instance of the <see cref="RefererRow"/> class.
         /// </summary>
-        public MethodRow() : base(MethodTable.Defs.TableName)
+        public RefererRow() : base(RefererTable.Defs.TableName)
         {
         }
         #endregion
@@ -48,7 +45,7 @@ namespace Restless.Logite.Database.Tables
         /// <returns>The string.</returns>
         public override string ToString()
         {
-            return Method;
+            return Referer;
         }
         #endregion
     }

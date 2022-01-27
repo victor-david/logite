@@ -10,7 +10,7 @@ using System.Windows;
 
 namespace Restless.Logite.ViewModel.Domain
 {
-    public class LogEntryController : DomainController<LogEntryTable>, IDetailPanel
+    public class LogEntryController : DomainController<LogEntryTable, LogEntryRow>, IDetailPanel
     {
         #region Private
         private Dictionary<string, long> filters;
@@ -100,15 +100,15 @@ namespace Restless.Logite.ViewModel.Domain
         /// <param name="domain">The domain</param>
         public LogEntryController(DomainRow domain): base(domain)
         {
-            Columns.Create("Id", LogEntryTable.Defs.Columns.Id).MakeFixedWidth(FixedWidth.W052);
-            Columns.Create("Timestamp", LogEntryTable.Defs.Columns.Timestamp).MakeDate(Config.LogDisplayFormat).MakeFixedWidth(FixedWidth.W136);
-            Columns.Create("Ip", LogEntryTable.Defs.Columns.Calculated.IpAddress).MakeFixedWidth(FixedWidth.W096);
-            Columns.Create("Method", LogEntryTable.Defs.Columns.Calculated.Method).MakeFixedWidth(FixedWidth.W076);
-            Columns.Create("Request", LogEntryTable.Defs.Columns.Calculated.Request);
-            Columns.Create("Status", LogEntryTable.Defs.Columns.Status)
-                .AddCellStyle(LocalResources.Styles.StatusTextBlockStyle)
-                .MakeFixedWidth(FixedWidth.W052);
-            Columns.Create("Bytes", LogEntryTable.Defs.Columns.BytesSent).MakeFixedWidth(FixedWidth.W052);
+            //Columns.Create("Id", LogEntryTable.Defs.Columns.Id).MakeFixedWidth(FixedWidth.W052);
+            //Columns.Create("Timestamp", LogEntryTable.Defs.Columns.Timestamp).MakeDate(Config.LogDisplayFormat).MakeFixedWidth(FixedWidth.W136);
+            //Columns.Create("Ip", LogEntryTable.Defs.Columns.Calculated.IpAddress).MakeFixedWidth(FixedWidth.W096);
+            //Columns.Create("Method", LogEntryTable.Defs.Columns.Calculated.Method).MakeFixedWidth(FixedWidth.W076);
+            //Columns.Create("Request", LogEntryTable.Defs.Columns.Calculated.Request);
+            //Columns.Create("Status", LogEntryTable.Defs.Columns.Status)
+            //    .AddCellStyle(LocalResources.Styles.StatusTextBlockStyle)
+            //    .MakeFixedWidth(FixedWidth.W052);
+            //Columns.Create("Bytes", LogEntryTable.Defs.Columns.BytesSent).MakeFixedWidth(FixedWidth.W052);
             filters = new Dictionary<string, long>();
             IsDetailVisible = Config.LogEntryDetailVisible;
         }
@@ -142,7 +142,7 @@ namespace Restless.Logite.ViewModel.Domain
                     filters.Remove(propertyName);
                 }
             }
-            Refresh();
+            //Refresh();
         }
         #endregion
 
@@ -175,26 +175,26 @@ namespace Restless.Logite.ViewModel.Domain
             base.OnUpdate();
         }
 
-        protected override bool OnDataRowFilter(DataRow item)
+        protected override bool OnDataRowFilter(RawRow item)
         {
-            return
-                Domain != null &&
-                (long)item[LogEntryTable.Defs.Columns.DomainId] == Domain.Id &&
-                !item[LogEntryTable.Defs.Columns.Calculated.Request].ToString().StartsWith("/asset", StringComparison.InvariantCultureIgnoreCase) &&
-                EvaluateFilters(item);
+            return true;
+                //Domain != null &&
+                //(long)item[LogEntryTable.Defs.Columns.DomainId] == Domain.Id &&
+                //!item[LogEntryTable.Defs.Columns.Calculated.Request].ToString().StartsWith("/asset", StringComparison.InvariantCultureIgnoreCase) &&
+                //EvaluateFilters(item);
         }
 
-        protected override int OnDataRowCompare(DataRow item1, DataRow item2)
+        protected override int OnDataRowCompare(RawRow item1, RawRow item2)
         {
-            return DataRowCompareDateTime(item2, item1, LogEntryTable.Defs.Columns.Timestamp);
+            return 0; //  DataRowCompareDateTime(item2, item1, LogEntryTable.Defs.Columns.Timestamp);
         }
 
         protected override void OnSelectedItemChanged()
         {
-            if (SelectedDataRow != null && IsDetailVisible)
-            {
-                LogEntry = new LogEntryRow(SelectedDataRow);
-            }
+            //if (SelectedDataRow != null && IsDetailVisible)
+            //{
+            //    LogEntry = new LogEntryRow(SelectedDataRow);
+            //}
         }
         #endregion
 
@@ -203,13 +203,13 @@ namespace Restless.Logite.ViewModel.Domain
         #region Private methods
         private void SynchronizeOnDetailVisible()
         {
-            if (SelectedDataRow != null)
-            {
-                if (LogEntry == null || LogEntry.Row != SelectedDataRow)
-                {
-                    LogEntry = new LogEntryRow(SelectedDataRow);
-                }
-            }
+            //if (SelectedDataRow != null)
+            //{
+            //    if (LogEntry == null || LogEntry.Row != SelectedDataRow)
+            //    {
+            //        LogEntry = new LogEntryRow(SelectedDataRow);
+            //    }
+            //}
         }
 
         private bool EvaluateFilters(DataRow item)

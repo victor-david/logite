@@ -5,7 +5,7 @@ using System.Data;
 
 namespace Restless.Logite.Database.Tables
 {
-    public class StatusTable : Core.ApplicationTableBase
+    public class StatusTable : RawTable<StatusRow>
     {
         #region Public properties
         /// <summary>
@@ -72,10 +72,10 @@ namespace Restless.Logite.Database.Tables
         /************************************************************************/
 
         #region Public methods
-        public override void Load()
-        {
-            Load(null, Defs.Columns.Status);
-        }
+        //public override void Load()
+        //{
+        //    Load(null, Defs.Columns.Status);
+        //}
         #endregion
 
         /************************************************************************/

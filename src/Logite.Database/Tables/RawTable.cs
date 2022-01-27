@@ -1,6 +1,8 @@
 ﻿using Restless.Logite.Database.Core;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SQLite;
 using System.Text;
 
@@ -10,14 +12,20 @@ namespace Restless.Logite.Database.Tables
     /// Represents a table that is loaded upon demand for the specified domain.
     /// Tables that derive from this class use direct execution for various operations.
     /// </summary>
-    public abstract class DemandDomainTable : Core.ApplicationTableBase
+    public abstract class RawTable<T> : Core.ApplicationTableBase where T: RawRow
     {
+        public List<T> RawRows
+        {
+            get;
+        }
+
         #region Constructor
         /// <summary>
-        /// Initializes a new instance of the <see cref="DemandDomainTable"/> class.
+        /// Initializes a new instance of the <see cref="RawTable"/> class.
         /// </summary>
-        protected DemandDomainTable(string tableName) : base(tableName)
+        protected RawTable(string tableName) : base(tableName)
         {
+            RawRows = new List<T>();
         }
         #endregion
 
@@ -31,7 +39,7 @@ namespace Restless.Logite.Database.Tables
         /// This method satisfies the abstract base class, but does not load any data.
         /// Data is loaded upon demand using the <see cref="Load(long)"/> method.
         /// </remarks>
-        public override void Load()
+        public override sealed void Load()
         {
             Load("0=1", PrimaryKeyName);
         }
@@ -84,7 +92,7 @@ namespace Restless.Logite.Database.Tables
         {
             Clear();
             string sql = $"SELECT * FROM {Namespace}.{TableName} WHERE {PrimaryKeyName} IN ({ids})";
-            Load(Controller.Execution.Query(sql));
+            IDataReader reader = Controller.Execution.Query(sql);
         }
 
         /// <summary>

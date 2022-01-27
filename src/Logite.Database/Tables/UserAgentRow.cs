@@ -1,14 +1,11 @@
-﻿using Restless.Toolkit.Core.Database.SQLite;
-using System;
-using System.Data;
-using Columns = Restless.Logite.Database.Tables.MethodTable.Defs.Columns;
+﻿using Columns = Restless.Logite.Database.Tables.UserAgentTable.Defs.Columns;
 
 namespace Restless.Logite.Database.Tables
 {
     /// <summary>
-    /// Encapsulates a single row from the <see cref="MethodTable"/>.
+    /// Encapsulates a single row from the <see cref="UserAgentTable"/>.
     /// </summary>
-    public class MethodRow : RawRow
+    public class UserAgentRow : RawRow
     {
         #region Public properties
         /// <summary>
@@ -20,11 +17,11 @@ namespace Restless.Logite.Database.Tables
         }
 
         /// <summary>
-        /// Gets the method name.
+        /// Gets the user agent name.
         /// </summary>
-        public string Method
+        public string UserAgent
         {
-            get => GetString(Columns.Method);
+            get => GetString(Columns.Agent);
         }
         #endregion
 
@@ -32,9 +29,9 @@ namespace Restless.Logite.Database.Tables
 
         #region Constructor
         /// <summary>
-        /// Initializes a new instance of the <see cref="MethodRow"/> class.
+        /// Initializes a new instance of the <see cref="UserAgentRow"/> class.
         /// </summary>
-        public MethodRow() : base(MethodTable.Defs.TableName)
+        public UserAgentRow() : base(UserAgentTable.Defs.TableName)
         {
         }
         #endregion
@@ -48,7 +45,7 @@ namespace Restless.Logite.Database.Tables
         /// <returns>The string.</returns>
         public override string ToString()
         {
-            return Method;
+            return UserAgent;
         }
         #endregion
     }

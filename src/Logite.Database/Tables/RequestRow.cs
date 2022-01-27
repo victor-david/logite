@@ -1,14 +1,11 @@
-﻿using Restless.Toolkit.Core.Database.SQLite;
-using System;
-using System.Data;
-using Columns = Restless.Logite.Database.Tables.MethodTable.Defs.Columns;
+﻿using Columns = Restless.Logite.Database.Tables.RequestTable.Defs.Columns;
 
 namespace Restless.Logite.Database.Tables
 {
     /// <summary>
-    /// Encapsulates a single row from the <see cref="MethodTable"/>.
+    /// Encapsulates a single row from the <see cref="RequestTable"/>.
     /// </summary>
-    public class MethodRow : RawRow
+    public class RequestRow : RawRow
     {
         #region Public properties
         /// <summary>
@@ -20,11 +17,11 @@ namespace Restless.Logite.Database.Tables
         }
 
         /// <summary>
-        /// Gets the method name.
+        /// Gets the request name.
         /// </summary>
-        public string Method
+        public string Request
         {
-            get => GetString(Columns.Method);
+            get => GetString(Columns.Request);
         }
         #endregion
 
@@ -32,9 +29,9 @@ namespace Restless.Logite.Database.Tables
 
         #region Constructor
         /// <summary>
-        /// Initializes a new instance of the <see cref="MethodRow"/> class.
+        /// Initializes a new instance of the <see cref="RequestRow"/> class.
         /// </summary>
-        public MethodRow() : base(MethodTable.Defs.TableName)
+        public RequestRow() : base(RequestTable.Defs.TableName)
         {
         }
         #endregion
@@ -48,7 +45,7 @@ namespace Restless.Logite.Database.Tables
         /// <returns>The string.</returns>
         public override string ToString()
         {
-            return Method;
+            return Request;
         }
         #endregion
     }
