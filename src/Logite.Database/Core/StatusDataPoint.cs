@@ -10,68 +10,7 @@ namespace Restless.Logite.Database.Core
     public class StatusDataPoint : DataPoint
     {
         #region Properties
-        /// <summary>
-        /// Gets the count of 200 responses.
-        /// </summary>
-        public long Count200
-        {
-            get;
-            internal set;
-        }
-
-        /// <summary>
-        /// Gets the count of 302 responses.
-        /// </summary>
-        public long Count302
-        {
-            get;
-            internal set;
-        }
-
-        /// <summary>
-        /// Gets the count of 304 responses.
-        /// </summary>
-        public long Count304
-        {
-            get;
-            internal set;
-        }
-
-        /// <summary>
-        /// Gets the count of 400 responses.
-        /// </summary>
-        public long Count400
-        {
-            get;
-            internal set;
-        }
-
-        /// <summary>
-        /// Gets the count of 404 responses.
-        /// </summary>
-        public long Count404
-        {
-            get;
-            internal set;
-        }
-
-        /// <summary>
-        /// Gets the count of 444 responses.
-        /// </summary>
-        public long Count444
-        {
-            get;
-            internal set;
-        }
-
-        /// <summary>
-        /// Gets the count of 500 responses.
-        /// </summary>
-        public long Count500
-        {
-            get;
-            internal set;
-        }
+        private Dictionary<long, long> storage;
         #endregion
 
         /************************************************************************/
@@ -89,6 +28,11 @@ namespace Restless.Logite.Database.Core
 
         private StatusDataPoint(DateTime date): base (date)
         {
+            storage = new Dictionary<long, long>();
+            foreach (StatusCode.StatusCodeItem item in StatusCode.EnumerateAll())
+            {
+                storage.Add(item.Value, 0);
+            }
         }
         #endregion
 
@@ -96,12 +40,46 @@ namespace Restless.Logite.Database.Core
 
         #region Public methods
         /// <summary>
+        /// Gets the count for the specified status code.
+        /// </summary>
+        /// <param name="status">The status code</param>
+        /// <returns>The count for the status</returns>
+        public long GetCountForStatus(long status)
+        {
+            if (storage.ContainsKey(status))
+            {
+                return storage[status];
+            }
+            return 0;
+        }
+
+        /// <summary>
         /// Gets a string representation of this object.
         /// </summary>
         /// <returns>A string that describes this object</returns>
         public override string ToString()
         {
-            return $"Data Point: {Date} 200:{Count200} 400:{Count400} 404:{Count404} 444:{Count444}";
+            return 
+                $"Data Point: {Date} " +
+                $"200:{storage[StatusCode.Code200.Value]} 400:{storage[StatusCode.Code400.Value]} " +
+                $"404:{storage[StatusCode.Code404.Value]} 444:{storage[StatusCode.Code444.Value]}";
+        }
+
+        #endregion
+
+        /************************************************************************/
+
+        #region Internal methods
+        /// <summary>
+        /// Increments the count for the specified status code if it exists.
+        /// </summary>
+        /// <param name="statusCode">The status code.</param>
+        internal void IncrementStatusCount(long statusCode)
+        {
+            if (storage.ContainsKey(statusCode))
+            {
+                storage[statusCode]++;
+            }
         }
         #endregion
     }

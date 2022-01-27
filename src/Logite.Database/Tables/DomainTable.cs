@@ -53,7 +53,7 @@ namespace Restless.Logite.Database.Tables
                 public const string Period = "period";
 
                 /// <summary>
-                /// Bit mapped values from <see cref="ChartStatus"/>.
+                /// Bit mapped values from <see cref="StatusCode"/>.
                 /// </summary>
                 public const string ChartStatus = "chartstatus";
 
@@ -120,7 +120,7 @@ namespace Restless.Logite.Database.Tables
                 /// <summary>
                 /// The default value for <see cref="Defs.Columns.ChartStatus"/>.
                 /// </summary>
-                public const long DefaultChartStatus = (long)(ChartStatus.Code200 | ChartStatus.Code404);
+                public const long DefaultChartStatus = StatusCode.Code200.BitValue + StatusCode.Code404.BitValue;
 
                 /// <summary>
                 /// Provides static values for <see cref="Defs.Columns.DisplayMode"/>

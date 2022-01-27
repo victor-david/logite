@@ -35,13 +35,13 @@ namespace Restless.Logite.ViewModel.Domain
         {
             Selector = new StatusSelector();
             Selector.TitlePreface = Strings.ChartTitleStatusCodes;
-            Selector.AddStatus("200", 200, (long)ChartStatus.Code200, Brushes.MediumSeaGreen);
-            Selector.AddStatus("302", 302, (long)ChartStatus.Code302, Brushes.DodgerBlue);
-            Selector.AddStatus("304", 304, (long)ChartStatus.Code304, Brushes.CornflowerBlue);
-            Selector.AddStatus("400", 400, (long)ChartStatus.Code400, Brushes.DarkMagenta);
-            Selector.AddStatus("404", 404, (long)ChartStatus.Code404, Brushes.Coral);
-            Selector.AddStatus("444", 444, (long)ChartStatus.Code444, Brushes.Red);
-            Selector.AddStatus("500", 500, (long)ChartStatus.Code500, Brushes.DarkOrange);
+            Selector.AddStatus("200", StatusCode.Code200.Value, StatusCode.Code200.BitValue, Brushes.MediumSeaGreen);
+            Selector.AddStatus("302", StatusCode.Code302.Value, StatusCode.Code302.BitValue, Brushes.DodgerBlue);
+            Selector.AddStatus("304", StatusCode.Code304.Value, StatusCode.Code304.BitValue, Brushes.CornflowerBlue);
+            Selector.AddStatus("400", StatusCode.Code400.Value, StatusCode.Code400.BitValue, Brushes.DarkMagenta);
+            Selector.AddStatus("404", StatusCode.Code404.Value, StatusCode.Code404.BitValue, Brushes.Coral);
+            Selector.AddStatus("444", StatusCode.Code444.Value, StatusCode.Code444.BitValue, Brushes.Red);
+            Selector.AddStatus("500", StatusCode.Code500.Value, StatusCode.Code500.BitValue, Brushes.DarkOrange);
             Selector.AddSeparator();
             Selector.AddClearStatus(Strings.TextClearAll);
             Selector.Initialize(domain.ChartStatus);
@@ -74,7 +74,7 @@ namespace Restless.Logite.ViewModel.Domain
             {
                 foreach (StatusSelection selection in Selector.EnumerateSelected())
                 {
-                    data.Add(x, GetPointPropertyFromValue(point, selection.Value));
+                    data.Add(x, point.GetCountForStatus(selection.Value));
                 }
                 XAxisDateConverter.AddToMap(x, GetXAxisDateString(point.Date));
                 x++;
@@ -97,21 +97,6 @@ namespace Restless.Logite.ViewModel.Domain
         /************************************************************************/
 
         #region Private methods
-        private long GetPointPropertyFromValue(StatusDataPoint point, long value)
-        {
-            return value switch
-            {
-                200 => point.Count200,
-                302 => point.Count302,
-                304 => point.Count304,
-                400 => point.Count400,
-                404 => point.Count404,
-                444 => point.Count444,
-                500 => point.Count500,
-                _ => 0
-            };
-        }
-
         private void SelectedStatusChanged(StatusSelection selection)
         {
             Domain.ChartStatus = Selector.BitValueSelectedSum;

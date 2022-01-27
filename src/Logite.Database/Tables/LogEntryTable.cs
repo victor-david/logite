@@ -189,31 +189,7 @@ namespace Restless.Logite.Database.Tables
         {
             return GetDateCountCollection<StatusDataPoint>(domain, (points, logEntryRecord) =>
             {
-                StatusDataPoint point = points.Add(StatusDataPoint.Create(logEntryRecord.Timestamp));
-                switch (logEntryRecord.Status)
-                {
-                    case 200:
-                        point.Count200++;
-                        break;
-                    case 302:
-                        point.Count302++;
-                        break;
-                    case 304:
-                        point.Count304++;
-                        break;
-                    case 400:
-                        point.Count400++;
-                        break;
-                    case 404:
-                        point.Count404++;
-                        break;
-                    case 444:
-                        point.Count444++;
-                        break;
-                    case 500:
-                        point.Count500++;
-                        break;
-                }
+                points.Add(StatusDataPoint.Create(logEntryRecord.Timestamp)).IncrementStatusCount(logEntryRecord.Status);
             });
         }
 
