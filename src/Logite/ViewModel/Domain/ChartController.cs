@@ -1,5 +1,6 @@
 ﻿using Restless.Logite.Database.Tables;
 using System;
+using System.Windows.Threading;
 
 namespace Restless.Logite.ViewModel.Domain
 {
@@ -63,9 +64,13 @@ namespace Restless.Logite.ViewModel.Domain
         /// </summary>
         protected override void OnUpdate()
         {
-            Traffic.CreateData();
-            Status.CreateData();
-            UniqueIp.CreateData();
+            /* Need dispatcher or the grid lines don't appear at first */
+            Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(() =>
+            {
+                Traffic.CreateData();
+                Status.CreateData();
+                UniqueIp.CreateData();
+            }));
         }
         #endregion
     }
