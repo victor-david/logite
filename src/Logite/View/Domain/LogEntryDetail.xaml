@@ -9,7 +9,7 @@
     d:DesignHeight="450" d:DesignWidth="800">
     <DockPanel>
         <TextBlock DockPanel.Dock="Top" Text="Details"/>
-        <DataGrid DockPanel.Dock="Top" ItemsSource="{Binding LogEntry.LogEntry.PropertyEnumerator}">
+        <DataGrid DockPanel.Dock="Top" ItemsSource="{Binding LogEntry.SelectedRawRow.PropertyEnumerator}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Item" Width="100" Binding="{Binding Name}">
                 </DataGridTextColumn>

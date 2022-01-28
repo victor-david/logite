@@ -2,10 +2,7 @@
 using Restless.Logite.Database.Core;
 using Restless.Logite.Database.Tables;
 using Restless.Toolkit.Controls;
-using Restless.Toolkit.Core.Database.SQLite;
 using System;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.Windows.Data;
 
 namespace Restless.Logite.ViewModel.Domain
@@ -68,6 +65,9 @@ namespace Restless.Logite.ViewModel.Domain
             }
         }
 
+        /// <summary>
+        /// Gets the selected raw row
+        /// </summary>
         public TR SelectedRawRow
         {
             get => selectedItem as TR;
@@ -112,6 +112,11 @@ namespace Restless.Logite.ViewModel.Domain
         /************************************************************************/
 
         #region Protected methods
+        protected override void OnDeactivated()
+        {
+            SelectedItem = null;
+        }
+
         /// <summary>
         /// Override in a derived class to filter <see cref="ListView"/>. The base implementation returns true.
         /// </summary>
@@ -141,13 +146,6 @@ namespace Restless.Logite.ViewModel.Domain
         protected virtual void OnSelectedItemChanged()
         {
         }
-
-
-        //protected override void OnUpdate()
-        //{
-        //    SelectedItem = null;
-        //    Refresh();
-        //}
 
         /// <summary>
         /// Raises the <see cref="SelectedItemChanged"/> event

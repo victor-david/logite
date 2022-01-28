@@ -16,20 +16,11 @@ namespace Restless.Logite.ViewModel.Domain
         private Dictionary<LogEntryFilterType, long> filters;
         private double detailMinWidth;
         private GridLength detailWidth;
-        private LogEntryRow logEntry;
         #endregion
 
         /************************************************************************/
 
         #region Properties
-        /// <summary>
-        /// Gets the selected log entry
-        /// </summary>
-        public LogEntryRow LogEntry
-        {
-            get => logEntry;
-            private set => SetProperty(ref logEntry, value);
-        }
         #endregion
 
         /************************************************************************/
@@ -149,32 +140,6 @@ namespace Restless.Logite.ViewModel.Domain
         /************************************************************************/
 
         #region Protected methods
-        /// <summary>
-        /// Called when deactivated.
-        /// </summary>
-        /// <remarks>
-        /// On deactivation, need to set <see cref="LogEntry"/> to null. It gets set when detail
-        /// is displayed, but when switching to another domain, the log entry table
-        /// is populated on demand and the row represented by LogEntry no longer exists;
-        /// it then throws an exception if it's accessed.
-        /// </remarks>
-        protected override void OnDeactivated()
-        {
-            LogEntry = null;
-        }
-
-        /// <summary>
-        /// Called when updated
-        /// </summary>
-        /// <remarks>
-        /// Set <see cref="LogEntry"/> to null as upon deactivation.
-        /// </remarks>
-        protected override void OnUpdate()
-        {
-            LogEntry = null;
-            base.OnUpdate();
-        }
-
         protected override bool OnDataRowFilter(LogEntryRow item)
         {
             return 
@@ -191,7 +156,7 @@ namespace Restless.Logite.ViewModel.Domain
         {
             //if (SelectedDataRow != null && IsDetailVisible)
             //{
-            //    LogEntry = new LogEntryRow(SelectedDataRow);
+            ////    LogEntry = new LogEntryRow(SelectedDataRow);
             //}
         }
         #endregion
