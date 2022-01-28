@@ -145,18 +145,8 @@ namespace Restless.Logite.ViewModel.Domain
         /// <summary>
         /// Called when the view model is activated.
         /// </summary>
-        /// <remarks>
-        /// Activation occurs for <see cref="DomainViewModel"/> when the user selects
-        /// a domain from the navigation list. This method sets <see cref="LogEntry"/>
-        /// to an activated state and calls update to load the domain records.
-        /// Note that <see cref="LogEntry"/> doesn't do anything upon activation,
-        /// but it needs to be placed into an active state so that it can be 
-        /// deactivated; the Deactivate() method doesn't do anything if the
-        /// view model isn't in an activate state.
-        /// </remarks>
         protected override void OnActivated()
         {
-            LogEntry.Activate();
             Update();
             UpdateDomainStatus();
         }
@@ -181,14 +171,9 @@ namespace Restless.Logite.ViewModel.Domain
         /// <summary>
         /// Deactivates the view model.
         /// </summary>
-        /// <remarks>
-        /// Deactivation occurs for <see cref="DomainViewModel"/> when the user switches to another
-        /// domain or to another view model (such as settings). Of the sub-controllers owned
-        /// by this class, only <see cref="LogEntry"/> currently needs to be deactivated.
-        /// </remarks>
         protected override void OnDeactivated()
         {
-            LogEntry.Deactivate();
+            // nothing yet
         }
         #endregion
 

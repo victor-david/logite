@@ -39,7 +39,6 @@ namespace Restless.Logite.ViewModel.Domain
                 {
                     DetailMinWidth = Config.DetailPanel.DomainMinWidth;
                     DetailWidth = new GridLength(Config.LogEntryDetailWidth, GridUnitType.Pixel);
-                    SynchronizeOnDetailVisible();
                 }
                 else
                 {
@@ -151,30 +150,11 @@ namespace Restless.Logite.ViewModel.Domain
         {
             return item2.Timestamp.CompareTo(item1.Timestamp);
         }
-
-        protected override void OnSelectedItemChanged()
-        {
-            //if (SelectedDataRow != null && IsDetailVisible)
-            //{
-            ////    LogEntry = new LogEntryRow(SelectedDataRow);
-            //}
-        }
         #endregion
 
         /************************************************************************/
 
         #region Private methods
-        private void SynchronizeOnDetailVisible()
-        {
-            //if (SelectedDataRow != null)
-            //{
-            //    if (LogEntry == null || LogEntry.Row != SelectedDataRow)
-            //    {
-            //        LogEntry = new LogEntryRow(SelectedDataRow);
-            //    }
-            //}
-        }
-
         private bool EvaluateFilters(LogEntryRow item)
         {
             bool result = true;
