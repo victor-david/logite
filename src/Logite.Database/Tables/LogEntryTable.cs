@@ -309,9 +309,9 @@ namespace Restless.Logite.Database.Tables
                     RequestId = reader.GetInt64(9),
                     RefererId = reader.GetInt64(10),
                     AgentId = reader.GetInt64(11),
-                    AttackIdRequest = reader.GetInt64(12),
-                    AttackIdReferer = reader.GetInt64(13),
-                    AttackIdAgent = reader.GetInt64(14),
+                    RequestAttackId = reader.GetInt64(12),
+                    RefererAttackId = reader.GetInt64(13),
+                    AgentAttackId = reader.GetInt64(14),
                     IpAddress = reader.GetString(15),
                     Method = reader.GetString(16),
                     Request = reader.GetString(17)

@@ -79,55 +79,82 @@ namespace Restless.Logite.Database.Tables
             internal set;
         }
 
+        /// <summary>
+        /// Gets the domain id, <see cref="DomainTable"/>.
+        /// </summary>
         public long DomainId
         {
             get;
             internal set;
         }
 
+        /// <summary>
+        /// Gets the ip address id, <see cref="IpAddressTable"/>.
+        /// </summary>
         public long IpAddressId
         {
             get;
             internal set;
         }
 
+        /// <summary>
+        /// Gets the method id, <see cref="MethodTable"/>.
+        /// </summary>
         public long MethodId
         {
             get;
             internal set;
         }
 
+        /// <summary>
+        /// Gets the request id, <see cref="RequestTable"/>.
+        /// </summary>
         public long RequestId
         {
             get;
             internal set;
         }
 
+        /// <summary>
+        /// Gets the referer id, <see cref="RefererTable"/>.
+        /// </summary>
         public long RefererId
         {
             get;
             internal set;
         }
 
+        /// <summary>
+        /// Gets the user agent id, <see cref="UserAgentTable"/>.
+        /// </summary>
         public long AgentId
         {
             get;
             internal set;
         }
 
-        public long AttackIdRequest
+        /// <summary>
+        /// Gets the request attack id, <see cref="AttackTable"/>.
+        /// </summary>
+        public long RequestAttackId
         {
             get;
             internal set;
         }
 
-        public long AttackIdReferer
+        /// <summary>
+        /// Gets the referer attack id, <see cref="AttackTable"/>.
+        /// </summary>
+        public long RefererAttackId
         {
             get;
             internal set;
         }
 
-        public long AttackIdAgent
+        /// <summary>
+        /// Gets the user agent attack id, <see cref="AttackTable"/>.
+        /// </summary>
+        public long AgentAttackId
         {
             get;
             internal set;
@@ -142,6 +169,9 @@ namespace Restless.Logite.Database.Tables
             internal set;
         }
 
+        /// <summary>
+        /// Gest the method
+        /// </summary>
         public string Method
         {
             get;
@@ -241,14 +271,14 @@ namespace Restless.Logite.Database.Tables
         {
             if (string.IsNullOrEmpty(RequestAttack))
             {
-                RequestAttack = GetAttackProperty(AttackIdRequest);
-                RefererAttack = GetAttackProperty(AttackIdReferer);
-                AgentAttack = GetAttackProperty(AttackIdAgent);
+                RequestAttack = GetAttackProperty(RequestAttackId);
+                RefererAttack = GetAttackProperty(RefererAttackId);
+                AgentAttack = GetAttackProperty(AgentAttackId);
             }
         }
 
         /// <summary>
-        /// Gets a single attack property vis direct access
+        /// Gets a single attack property via direct access
         /// </summary>
         /// <param name="attackId"></param>
         /// <returns></returns>
