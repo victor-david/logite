@@ -1,44 +1,25 @@
-﻿using Restless.Toolkit.Core.Database.SQLite;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Text;
-
-namespace Restless.Logite.Database.Tables
+﻿namespace Restless.Logite.Database.Tables
 {
+    /// <summary>
+    /// Represents a single row from a <see cref="RawTable{T}"/>
+    /// </summary>
     public abstract class RawRow
     {
+        /// <summary>
+        /// The table name.
+        /// </summary>
         public string TableName
         {
             get;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RawRow"/> class
+        /// </summary>
+        /// <param name="tableName"></param>
         protected RawRow(string tableName)
         {
             TableName = tableName;
         }
-
-        protected string GetString(string colName)
-        {
-            return string.Empty;
-        }
-
-        protected long GetInt64(string column)
-        {
-            return 10;
-        }
-
-        protected DateTime GetDateTime(string column)
-        {
-            //if (Row[colName] != DBNull.Value)
-            //{
-            //    return (DateTime)Row[colName];
-            //}
-            //else
-            {
-                return DateTime.MinValue;
-            }
-        }
-
     }
 }

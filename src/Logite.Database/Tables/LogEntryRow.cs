@@ -1,21 +1,12 @@
 ﻿using Restless.Logite.Database.Core;
-using Restless.Toolkit.Core.Database.SQLite;
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Text;
-using Columns = Restless.Logite.Database.Tables.LogEntryTable.Defs.Columns;
 
 namespace Restless.Logite.Database.Tables
 {
     /// <summary>
     /// Encapsulates a single row from the <see cref="LogEntryTable"/>.
     /// </summary>
-    /// <remarks>
-    /// Unlike other classes of a similar type for other tables, the properties
-    /// of this class are all read only. It's used when displaying log entry detail;
-    /// the constructor loads attack data if it exists.
-    /// </remarks>
     public class LogEntryRow : RawRow
     {
         #region Helper class
@@ -219,9 +210,6 @@ namespace Restless.Logite.Database.Tables
         /// </summary>
         internal LogEntryRow() : base (LogEntryTable.Defs.TableName)
         {
-            RequestAttack = GetAttack(GetInt64(Columns.AttackIdRequest));
-            RefererAttack = GetAttack(GetInt64(Columns.AttackIdReferer));
-            AgentAttack = GetAttack(GetInt64(Columns.AttackIdAgent));
         }
         #endregion
 
@@ -233,6 +221,7 @@ namespace Restless.Logite.Database.Tables
         /// </summary>
         private IEnumerable<Property> EnumerateProperties()
         {
+            InitializeAttackProperties();
             yield return new Property(nameof(Timestamp), Timestamp.ToString());
             yield return new Property(nameof(IpAddress), IpAddress);
             yield return new Property(nameof(HttpVersion), HttpVersion);
@@ -245,16 +234,33 @@ namespace Restless.Logite.Database.Tables
             yield return new Property(nameof(AgentAttack), AgentAttack);
         }
 
-        private string GetAttack(long attackId)
+        /// <summary>
+        /// Initializes the attack properties if not already initialized
+        /// </summary>
+        private void InitializeAttackProperties()
         {
-            if (attackId == 0)
+            if (string.IsNullOrEmpty(RequestAttack))
             {
-                return "(none)";
+                RequestAttack = GetAttackProperty(AttackIdRequest);
+                RefererAttack = GetAttackProperty(AttackIdReferer);
+                AgentAttack = GetAttackProperty(AttackIdAgent);
             }
+        }
 
-            string sql = $"select {AttackTable.Defs.Columns.AttackString} from {DatabaseController.MainAppSchemaName}.{AttackTable.Defs.TableName} where {AttackTable.Defs.Columns.Id}={attackId}";
-            object result = DatabaseController.Instance.Execution.Scalar(sql);
-            return result != null ? result.ToString() : "(failed)";
+        /// <summary>
+        /// Gets a single attack property vis direct access
+        /// </summary>
+        /// <param name="attackId"></param>
+        /// <returns></returns>
+        private string GetAttackProperty(long attackId)
+        {
+            if (attackId > 0)
+            {
+                string sql = $"select {AttackTable.Defs.Columns.AttackString} from {DatabaseController.MainAppSchemaName}.{AttackTable.Defs.TableName} where {AttackTable.Defs.Columns.Id}={attackId}";
+                object result = DatabaseController.Instance.Execution.Scalar(sql);
+                return result != null ? attackId.ToString() + "--" + result.ToString() : "(failed)";
+            }
+            return "(none)";
         }
         #endregion
     }

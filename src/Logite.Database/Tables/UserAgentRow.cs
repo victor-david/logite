@@ -1,6 +1,4 @@
-﻿using Columns = Restless.Logite.Database.Tables.UserAgentTable.Defs.Columns;
-
-namespace Restless.Logite.Database.Tables
+﻿namespace Restless.Logite.Database.Tables
 {
     /// <summary>
     /// Encapsulates a single row from the <see cref="UserAgentTable"/>.
@@ -13,7 +11,8 @@ namespace Restless.Logite.Database.Tables
         /// </summary>
         public long Id
         {
-            get => GetInt64(Columns.Id);
+            get;
+            internal set;
         }
 
         /// <summary>
@@ -21,7 +20,8 @@ namespace Restless.Logite.Database.Tables
         /// </summary>
         public string UserAgent
         {
-            get => GetString(Columns.Agent);
+            get;
+            internal set;
         }
         #endregion
 
