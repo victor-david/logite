@@ -21,4 +21,4 @@ the files into a local database. Once imported, you can view the log files in di
 
 ### Log Files
 **Logite** uses the log file name to distinquish one from another. 
-See the [readme about log files](/LOGFILES.md) for more information.
+See the [Log Files & Rotation](/LOGFILES.md) for more information.
