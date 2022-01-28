@@ -58,6 +58,11 @@ namespace Restless.Logite.Database.Tables
                 public const string ChartStatus = "chartstatus";
 
                 /// <summary>
+                /// List of requests to ignore when loading, separated by semi-colon.
+                /// </summary>
+                public const string Ignored = "ignored";
+
+                /// <summary>
                 /// The total number of log entries for this domain
                 /// </summary>
                 public const string LogEntryCount = "logentrycount";
@@ -121,6 +126,11 @@ namespace Restless.Logite.Database.Tables
                 /// The default value for <see cref="Defs.Columns.ChartStatus"/>.
                 /// </summary>
                 public const long DefaultChartStatus = StatusCode.Code200.BitValue + StatusCode.Code404.BitValue;
+
+                /// <summary>
+                /// The default value for <see cref="Columns.Ignored"/>.
+                /// </summary>
+                public const string DefaultIgnored = "/asset;/robots.txt;/favicon;/appple.touch;/site.web.manifest";
 
                 /// <summary>
                 /// Provides static values for <see cref="Defs.Columns.DisplayMode"/>
@@ -197,6 +207,7 @@ namespace Restless.Logite.Database.Tables
                 DisplayMode = Defs.Values.DisplayMode.Raw,
                 Period = Defs.Values.DefaultPeriod,
                 ChartStatus = Defs.Values.DefaultChartStatus,
+                Ignored = Defs.Values.DefaultIgnored,
                 LogEntryCount = 0
             };
             Rows.Add(obj.Row);
@@ -261,6 +272,7 @@ namespace Restless.Logite.Database.Tables
                 { Defs.Columns.DisplayMode, ColumnType.Integer, false, false, Defs.Values.DisplayMode.Raw },
                 { Defs.Columns.Period, ColumnType.Integer, false, false, Defs.Values.DefaultPeriod },
                 { Defs.Columns.ChartStatus, ColumnType.Integer, false, false, Defs.Values.DefaultChartStatus },
+                { Defs.Columns.Ignored, ColumnType.Text, false, false, Defs.Values.DefaultIgnored },
                 { Defs.Columns.LogEntryCount, ColumnType.Integer, false, false, 0L }
             };
         }

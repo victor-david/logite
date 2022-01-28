@@ -65,6 +65,15 @@ namespace Restless.Logite.Database.Tables
         }
 
         /// <summary>
+        /// Gets or sets a semi-colon separated list of requests to ignore when loading.
+        /// </summary>
+        public string Ignored
+        {
+            get => GetString(Columns.Ignored);
+            set => SetValue(Columns.Ignored, value);
+        }
+
+        /// <summary>
         /// Gets the count of log entries for this domain.
         /// </summary>
         public long LogEntryCount
