@@ -32,28 +32,6 @@ namespace Restless.Logite.Database.Tables
                 /// The request status, 200, 404, etc.
                 /// </summary>
                 public const string Status = "status";
-
-                /// <summary>
-                /// Provides static column names for columns that are calculated from other values.
-                /// </summary>
-                public class Calculated
-                {
-                    /// <summary>
-                    /// Number of usages.
-                    /// </summary>
-                    public const string UsageCount = "CalcUsageCount";
-                }
-            }
-
-            /// <summary>
-            /// Provides static relation names.
-            /// </summary>
-            public static class Relations
-            {
-                /// <summary>
-                /// The name of the relation that relates the <see cref="StatusTable"/> to the <see cref="LogEntryTable"/>.
-                /// </summary>
-                public const string ToLogEntry = "StatusToLogEntry";
             }
         }
         #endregion
@@ -67,15 +45,6 @@ namespace Restless.Logite.Database.Tables
         public StatusTable() : base(Defs.TableName)
         {
         }
-        #endregion
-
-        /************************************************************************/
-
-        #region Public methods
-        //public override void Load()
-        //{
-        //    Load(null, Defs.Columns.Status);
-        //}
         #endregion
 
         /************************************************************************/
@@ -117,19 +86,6 @@ namespace Restless.Logite.Database.Tables
             yield return new object[] { 5, 404 };
             yield return new object[] { 6, 444 };
             yield return new object[] { 7, 500 };
-        }
-
-        /// <inheritdoc/>
-        protected override void SetDataRelations()
-        {
-            CreateParentChildRelation<LogEntryTable>(Defs.Relations.ToLogEntry, Defs.Columns.Status, LogEntryTable.Defs.Columns.Status);
-        }
-
-        /// <inheritdoc/>
-        protected override void UseDataRelations()
-        {
-            string expr = string.Format("Count(Child({0}).{1})", Defs.Relations.ToLogEntry, LogEntryTable.Defs.Columns.Id);
-            CreateExpressionColumn<long>(Defs.Columns.Calculated.UsageCount, expr);
         }
         #endregion
 

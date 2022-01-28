@@ -3,7 +3,6 @@ using Restless.Toolkit.Core.Database.SQLite;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Diagnostics;
 using System.Text;
 
 namespace Restless.Logite.Database.Tables
@@ -114,33 +113,6 @@ namespace Restless.Logite.Database.Tables
                 /// The id of the user agent attack, or zero
                 /// </summary>
                 public const string AttackIdAgent = "attackidagent";
-
-                /// <summary>
-                /// Provides static column names for columns that are calculated from other values.
-                /// </summary>
-                public class Calculated
-                {
-                    /// <summary>
-                    /// Ip Address
-                    /// </summary>
-                    public const string IpAddress = "CalcIpAddress";
-
-                    /// <summary>
-                    /// Method
-                    /// </summary>
-                    public const string Method = "CalcMethod";
-
-                    /// <summary>
-                    /// Request
-                    /// </summary>
-                    public const string Request = "CalcRequest";
-
-                    /// <summary>
-                    /// Referer
-                    /// </summary>
-                    public const string Referer = "CalcReferer";
-                }
-
             }
         }
         #endregion
@@ -244,14 +216,6 @@ namespace Restless.Logite.Database.Tables
 
             };
         }
-
-        protected override void UseDataRelations()
-        {
-            CreateChildToParentColumn(Defs.Columns.Calculated.IpAddress, IpAddressTable.Defs.Relations.ToLogEntry, IpAddressTable.Defs.Columns.IpAddress);
-            CreateChildToParentColumn(Defs.Columns.Calculated.Method, MethodTable.Defs.Relations.ToLogEntry, MethodTable.Defs.Columns.Method);
-            CreateChildToParentColumn(Defs.Columns.Calculated.Request, RequestTable.Defs.Relations.ToLogEntry, RequestTable.Defs.Columns.Request);
-            CreateChildToParentColumn(Defs.Columns.Calculated.Referer, RefererTable.Defs.Relations.ToLogEntry, RefererTable.Defs.Columns.Referer);
-        }
         #endregion
 
         /************************************************************************/
@@ -315,13 +279,11 @@ namespace Restless.Logite.Database.Tables
         /************************************************************************/
 
         #region Private methods
-        private Stopwatch stopwatch = new Stopwatch();
         private void LoadDomainPrivate(DomainRow domain)
         {
             Clear();
             ClearIdCollections();
 
-            stopwatch.Restart();
             string sql = 
                 $"SELECT " +
                 $"L.{Defs.Columns.Id},{Defs.Columns.RemoteUser},{Defs.Columns.Timestamp},{Defs.Columns.Status}," +
@@ -363,9 +325,6 @@ namespace Restless.Logite.Database.Tables
                 };
             });
 
-            stopwatch.Stop();
-            Debug.WriteLine($"Main load: {stopwatch.ElapsedMilliseconds} ms");
-
             foreach (LogEntryRow row in RawRows)
             {
                 ipId.Add(row.IpAddressId);
@@ -373,13 +332,9 @@ namespace Restless.Logite.Database.Tables
                 statusId.Add(row.Status);
             }
 
-            stopwatch.Start();
             Controller.GetTable<IpAddressTable>().Load(domain.Id, ipId);
             Controller.GetTable<MethodTable>().Load(domain.Id, methodId);
             Controller.GetTable<StatusTable>().Load(domain.Id, statusId);
-
-            stopwatch.Stop();
-            Debug.WriteLine($"Secondary load: {stopwatch.ElapsedMilliseconds} ms");
         }
 
         private void UnloadDomainPrivate()
@@ -399,7 +354,6 @@ namespace Restless.Logite.Database.Tables
             statusId.Clear();
         }
 
-        // private DataPointCollection<T> GetDateCountCollection<T>(DomainRow domain, Predicate<LogEntryRecord> evaluator) where T : DataPoint
         private DataPointCollection<T> GetDateCountCollection<T>(DomainRow domain, Action<DataPointCollection<T>, LogEntryRecord> processor) where T : DataPoint
         {
             DataPointCollection<T> dataPoints = new DataPointCollection<T>();

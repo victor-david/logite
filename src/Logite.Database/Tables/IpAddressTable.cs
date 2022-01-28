@@ -1,7 +1,5 @@
 ﻿using Restless.Logite.Database.Core;
 using Restless.Toolkit.Core.Database.SQLite;
-using System;
-using System.Data;
 
 namespace Restless.Logite.Database.Tables
 {
@@ -32,28 +30,6 @@ namespace Restless.Logite.Database.Tables
                 /// The request.
                 /// </summary>
                 public const string IpAddress = "ipaddress";
-
-                /// <summary>
-                /// Provides static column names for columns that are calculated from other values.
-                /// </summary>
-                public class Calculated
-                {
-                    /// <summary>
-                    /// Number of usages.
-                    /// </summary>
-                    public const string UsageCount = "CalcUsageCount";
-                }
-            }
-
-            /// <summary>
-            /// Provides static relation names.
-            /// </summary>
-            public static class Relations
-            {
-                /// <summary>
-                /// The name of the relation that relates the <see cref="IpAddressTable"/> to the <see cref="LogEntryTable"/>.
-                /// </summary>
-                public const string ToLogEntry = "IpToLogEntry";
             }
         }
         #endregion
@@ -71,11 +47,6 @@ namespace Restless.Logite.Database.Tables
 
         /************************************************************************/
 
-        #region Public methods
-        #endregion
-
-        /************************************************************************/
-
         #region Protected methods
         /// <summary>
         /// Gets the column definitions for this table.
@@ -88,19 +59,6 @@ namespace Restless.Logite.Database.Tables
                 { Defs.Columns.Id, ColumnType.Integer, true },
                 { Defs.Columns.IpAddress, ColumnType.Text },
             };
-        }
-
-        /// <inheritdoc/>
-        protected override void SetDataRelations()
-        {
-            CreateParentChildRelation<LogEntryTable>(Defs.Relations.ToLogEntry, Defs.Columns.Id, LogEntryTable.Defs.Columns.IpAddressId);
-        }
-
-        /// <inheritdoc/>
-        protected override void UseDataRelations()
-        {
-            string expr = string.Format("Count(Child({0}).{1})", Defs.Relations.ToLogEntry, LogEntryTable.Defs.Columns.Id);
-            CreateExpressionColumn<long>(Defs.Columns.Calculated.UsageCount, expr);
         }
         #endregion
 

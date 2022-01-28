@@ -105,6 +105,7 @@ namespace Restless.Logite.ViewModel.Domain
             }
 
             Columns = new DataGridColumnCollection();
+            Commands.Add("ClearSelection", p => SelectedItem = null);
         }
         #endregion
 

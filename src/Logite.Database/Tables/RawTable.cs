@@ -117,7 +117,6 @@ namespace Restless.Logite.Database.Tables
         #region Internal methods
         internal virtual void Load(long domainId, IdCollection ids)
         {
-
         }
 
         /// <summary>

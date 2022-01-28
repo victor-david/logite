@@ -119,7 +119,6 @@ namespace Restless.Logite.ViewModel.Domain
                 DateTimeColumnName = LogEntryTable.Defs.Columns.Timestamp,
                 TextSearchColumnNames = new string[]
                 {
-                    LogEntryTable.Defs.Columns.Calculated.Request
                 }
             };
 
