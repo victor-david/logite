@@ -1,10 +1,12 @@
 ﻿namespace Restless.Logite.Database.Tables
 {
     /// <summary>
-    /// Encapsulates a single row from the <see cref="MethodTable"/>.
+    /// Encapsulates a single row from the <see cref="IpAddressTable"/>.
     /// </summary>
-    public class MethodRow : RawRow
+    public class IpAddressRow : RawRow
     {
+        /************************************************************************/
+
         #region Public properties
         /// <summary>
         /// Gets the id for this row object.
@@ -16,9 +18,9 @@
         }
 
         /// <summary>
-        /// Gets the method name.
+        /// Gets the ip address
         /// </summary>
-        public string Method
+        public string IpAddress
         {
             get;
             internal set;
@@ -38,15 +40,14 @@
 
         #region Constructor
         /// <summary>
-        /// Initializes a new instance of the <see cref="MethodRow"/> class.
+        /// Initializes a new instance of the <see cref="IpAddressRow"/> class.
         /// </summary>
-        public MethodRow() : base(MethodTable.Defs.TableName)
+        internal IpAddressRow() : base (IpAddressTable.Defs.TableName)
         {
         }
         #endregion
 
         /************************************************************************/
-
         #region Public methods
         /// <summary>
         /// Gets the string representation of this object.
@@ -54,8 +55,9 @@
         /// <returns>The string.</returns>
         public override string ToString()
         {
-            return $"Id:{Id} Method:{Method}";
+            return $"Id:{Id} Ip Address:{IpAddress}";
         }
         #endregion
+
     }
 }

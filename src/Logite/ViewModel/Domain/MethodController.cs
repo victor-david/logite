@@ -1,14 +1,13 @@
 ﻿using Restless.Logite.Core;
 using Restless.Logite.Database.Tables;
 using Restless.Toolkit.Controls;
-using System.Data;
 
 namespace Restless.Logite.ViewModel.Domain
 {
     /// <summary>
     /// Display http methods (GET, POST, etc)
     /// </summary>
-    public class MethodController : DomainController<MethodTable>
+    public class MethodController : DomainController<MethodTable, MethodRow>
     {
         #region Constructor
         /// <summary>
@@ -17,8 +16,8 @@ namespace Restless.Logite.ViewModel.Domain
         /// <param name="domain">The domain</param>
         public MethodController(DomainRow domain) : base(domain)
         {
-            Columns.Create("Method", MethodTable.Defs.Columns.Method);
-            Columns.Create("Count", MethodTable.Defs.Columns.Calculated.UsageCount).MakeFixedWidth(FixedWidth.W096);
+            Columns.Create("Method", nameof(MethodRow.Method));
+            Columns.Create("Count", nameof(MethodRow.UsageCount)).MakeFixedWidth(FixedWidth.W096);
         }
         #endregion
 
@@ -26,19 +25,14 @@ namespace Restless.Logite.ViewModel.Domain
 
         #region Protected methods
 
-        protected override bool OnDataRowFilter(DataRow item)
+        protected override int OnDataRowCompare(MethodRow item1, MethodRow item2)
         {
-            return (long)item[MethodTable.Defs.Columns.Calculated.UsageCount] > 0;
-        }
-
-        protected override int OnDataRowCompare(DataRow item1, DataRow item2)
-        {
-            return DataRowCompareLong(item1, item2, MethodTable.Defs.Columns.Id);
+            return item1.Id.CompareTo(item2.Id);
         }
 
         protected override void OnSelectedItemChanged()
         {
-            long id = (SelectedDataRow != null) ? (long)SelectedDataRow[MethodTable.Defs.Columns.Id] : -1;
+            long id = (SelectedRawRow != null) ? SelectedRawRow.Id : -1;
             OnSelectedItemChanged(id);
         }
         #endregion

@@ -1,15 +1,15 @@
-﻿using Restless.Toolkit.Core.Database.SQLite;
+﻿using Restless.Logite.Database.Core;
+using Restless.Toolkit.Core.Database.SQLite;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Text;
 
 namespace Restless.Logite.Database.Tables
 {
     /// <summary>
     /// Lookup table for http methods
     /// </summary>
-    public class MethodTable : Core.ApplicationTableBase
+    public class MethodTable : RawTable<MethodRow>
     {
         #region Public properties
         /// <summary>
@@ -36,28 +36,6 @@ namespace Restless.Logite.Database.Tables
                 /// The method name.
                 /// </summary>
                 public const string Method = "method";
-
-                /// <summary>
-                /// Provides static column names for columns that are calculated from other values.
-                /// </summary>
-                public class Calculated
-                {
-                    /// <summary>
-                    /// Number of usages.
-                    /// </summary>
-                    public const string UsageCount = "CalcUsageCount";
-                }
-            }
-
-            /// <summary>
-            /// Provides static relation names.
-            /// </summary>
-            public static class Relations
-            {
-                /// <summary>
-                /// The name of the relation that relates the <see cref="MethodTable"/> to the <see cref="LogEntryTable"/>.
-                /// </summary>
-                public const string ToLogEntry = "MethodToLogEntry";
             }
 
             /// <summary>
@@ -86,50 +64,6 @@ namespace Restless.Logite.Database.Tables
         /// </summary>
         public MethodTable() : base(Defs.TableName)
         {
-        }
-        #endregion
-
-        /************************************************************************/
-
-        #region Public methods
-        /// <summary>
-        /// Loads the data from the database into the Data collection for this table.
-        /// </summary>
-        public override void Load()
-        {
-            Load(null, Defs.Columns.Id);
-        }
-
-        /// <summary>
-        /// Provides an enumerable that returns all records
-        /// </summary>
-        /// <returns></returns>
-        public IEnumerable<MethodRow> EnumerateAll()
-        {
-            foreach (var row in EnumerateRows(null, Defs.Columns.Id))
-            {
-                yield return new MethodRow(row);
-            }
-        }
-
-        /// <summary>
-        /// Gets the method id for the specified method.
-        /// </summary>
-        /// <param name="method">The method string</param>
-        /// <returns>The method id</returns>
-        public long GetMethodId(string method)
-        {
-            if (!string.IsNullOrEmpty(method))
-            {
-                foreach (MethodRow row in EnumerateAll())
-                {
-                    if (row.Method.Equals(method, StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        return row.Id;
-                    }
-                }
-            }
-            return Defs.Values.MethodZeroId;
         }
         #endregion
 
@@ -176,18 +110,78 @@ namespace Restless.Logite.Database.Tables
             yield return new object[] { Defs.Values.MethodZeroId + 8, "TRACE" };
             yield return new object[] { Defs.Values.MethodZeroId + 9, "PATCH" };
         }
+        #endregion
 
-        /// <inheritdoc/>
-        protected override void SetDataRelations()
+        /************************************************************************/
+
+        #region Internal methods
+        /// <summary>
+        /// Loads method data.
+        /// </summary>
+        /// <remarks>
+        /// This method is called to have the methods loaded prior to an import operation.
+        /// MethodTable does not use <see cref="RawTable{T}.InsertEntryIf(LogEntry)"/>
+        /// because methods are inserted into the table at creation time; no new methods
+        /// may be added.
+        /// </remarks>
+        internal void LoadMethodData()
         {
-            CreateParentChildRelation<LogEntryTable>(Defs.Relations.ToLogEntry, Defs.Columns.Id, LogEntryTable.Defs.Columns.MethodId);
+            ClearRaw();
+            string sql =
+                $"select {Defs.Columns.Id},{Defs.Columns.Method} " +
+                $"from {Namespace}.{TableName} " +
+                $"order by {Defs.Columns.Id}";
+
+            LoadFromSql(sql, (reader) =>
+            {
+                return new MethodRow()
+                {
+                    Id = reader.GetInt64(0),
+                    Method = reader.GetString(1)
+                };
+            });
         }
 
-        /// <inheritdoc/>
-        protected override void UseDataRelations()
+        /// <summary>
+        /// Gets the method id for the specified method.
+        /// </summary>
+        /// <param name="entry">The log entry</param>
+        /// <returns>The method id</returns>
+        internal long GetMethodId(LogEntry entry)
         {
-            string expr = string.Format("Count(Child({0}).{1})", Defs.Relations.ToLogEntry, LogEntryTable.Defs.Columns.Id);
-            CreateExpressionColumn<long>(Defs.Columns.Calculated.UsageCount, expr);
+            if (!string.IsNullOrEmpty(entry.Method))
+            {
+                foreach (MethodRow row in EnumerateAll())
+                {
+                    if (row.Method.Equals(entry.Method, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        return row.Id;
+                    }
+                }
+            }
+            return Defs.Values.MethodZeroId;
+        }
+
+        internal override void Load(long domainId, IdCollection ids)
+        {
+            string sql =
+                $"SELECT M.{Defs.Columns.Id},{Defs.Columns.Method}," +
+                $"COUNT(L.{LogEntryTable.Defs.Columns.Id}) " +
+                $"FROM {Defs.TableName} M " +
+                $"JOIN {LogEntryTable.Defs.TableName} L " +
+                $"ON (M.{Defs.Columns.Id}=L.{LogEntryTable.Defs.Columns.MethodId} AND L.{LogEntryTable.Defs.Columns.DomainId}={domainId}) " +
+                $"WHERE M.{Defs.Columns.Id} IN ({ids}) " +
+                $"GROUP BY M.id";
+
+            LoadFromSql(sql, (reader) =>
+            {
+                return new MethodRow()
+                {
+                    Id = reader.GetInt64(0),
+                    Method = reader.GetString(1),
+                    UsageCount = reader.GetInt64(2)
+                };
+            });
         }
         #endregion
     }

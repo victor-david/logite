@@ -1,11 +1,10 @@
 ﻿using Restless.Logite.Core;
 using Restless.Logite.Database.Tables;
 using Restless.Toolkit.Controls;
-using System.Data;
 
 namespace Restless.Logite.ViewModel.Domain
 {
-    public class IpAddressController : DomainController<IpAddressTable>
+    public class IpAddressController : DomainController<IpAddressTable, IpAddressRow>
     {
         #region Constructor
         /// <summary>
@@ -14,9 +13,9 @@ namespace Restless.Logite.ViewModel.Domain
         /// <param name="domain">The domain</param>
         public IpAddressController(DomainRow domain): base(domain)
         {
-            Columns.Create("Id", IpAddressTable.Defs.Columns.Id).MakeFixedWidth(FixedWidth.W048);
-            Columns.Create("Ip Address", IpAddressTable.Defs.Columns.IpAddress);
-            Columns.Create("Count", IpAddressTable.Defs.Columns.Calculated.UsageCount).MakeFixedWidth(FixedWidth.W096);
+            Columns.Create("Id", nameof(IpAddressRow.Id)).MakeFixedWidth(FixedWidth.W048);
+            Columns.Create("Ip Address", nameof(IpAddressRow.IpAddress));
+            Columns.Create("Count", nameof(IpAddressRow.UsageCount)).MakeFixedWidth(FixedWidth.W096);
         }
         #endregion
 
@@ -24,19 +23,14 @@ namespace Restless.Logite.ViewModel.Domain
 
         #region Protected methods
 
-        protected override bool OnDataRowFilter(DataRow item)
+        protected override int OnDataRowCompare(IpAddressRow item1, IpAddressRow item2)
         {
-            return (long)item[IpAddressTable.Defs.Columns.Calculated.UsageCount] > 0;
-        }
-
-        protected override int OnDataRowCompare(DataRow item1, DataRow item2)
-        {
-            return DataRowCompareLong(item2, item1, IpAddressTable.Defs.Columns.Calculated.UsageCount);
+            return item2.UsageCount.CompareTo(item1.UsageCount);
         }
 
         protected override void OnSelectedItemChanged()
         {
-            long id = (SelectedDataRow != null) ? (long)SelectedDataRow[IpAddressTable.Defs.Columns.Id] : -1;
+            long id = (SelectedRawRow != null) ? SelectedRawRow.Id : -1;
             OnSelectedItemChanged(id);
         }
         #endregion

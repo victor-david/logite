@@ -10,26 +10,17 @@ using System.Windows;
 
 namespace Restless.Logite.ViewModel.Domain
 {
-    public class LogEntryController : DomainController<LogEntryTable>, IDetailPanel
+    public class LogEntryController : DomainController<LogEntryTable, LogEntryRow>, IDetailPanel
     {
         #region Private
-        private Dictionary<string, long> filters;
+        private Dictionary<LogEntryFilterType, long> filters;
         private double detailMinWidth;
         private GridLength detailWidth;
-        private LogEntryRow logEntry;
         #endregion
 
         /************************************************************************/
 
         #region Properties
-        /// <summary>
-        /// Gets the selected log entry
-        /// </summary>
-        public LogEntryRow LogEntry
-        {
-            get => logEntry;
-            private set => SetProperty(ref logEntry, value);
-        }
         #endregion
 
         /************************************************************************/
@@ -48,7 +39,6 @@ namespace Restless.Logite.ViewModel.Domain
                 {
                     DetailMinWidth = Config.DetailPanel.DomainMinWidth;
                     DetailWidth = new GridLength(Config.LogEntryDetailWidth, GridUnitType.Pixel);
-                    SynchronizeOnDetailVisible();
                 }
                 else
                 {
@@ -100,16 +90,16 @@ namespace Restless.Logite.ViewModel.Domain
         /// <param name="domain">The domain</param>
         public LogEntryController(DomainRow domain): base(domain)
         {
-            Columns.Create("Id", LogEntryTable.Defs.Columns.Id).MakeFixedWidth(FixedWidth.W052);
-            Columns.Create("Timestamp", LogEntryTable.Defs.Columns.Timestamp).MakeDate(Config.LogDisplayFormat).MakeFixedWidth(FixedWidth.W136);
-            Columns.Create("Ip", LogEntryTable.Defs.Columns.Calculated.IpAddress).MakeFixedWidth(FixedWidth.W096);
-            Columns.Create("Method", LogEntryTable.Defs.Columns.Calculated.Method).MakeFixedWidth(FixedWidth.W076);
-            Columns.Create("Request", LogEntryTable.Defs.Columns.Calculated.Request);
-            Columns.Create("Status", LogEntryTable.Defs.Columns.Status)
+            Columns.Create("Id", nameof(LogEntryRow.Id)).MakeFixedWidth(FixedWidth.W052);
+            Columns.Create("Timestamp", nameof(LogEntryRow.Timestamp)).MakeDate(Config.LogDisplayFormat).MakeFixedWidth(FixedWidth.W136);
+            Columns.Create("Ip", nameof(LogEntryRow.IpAddress)).MakeFixedWidth(FixedWidth.W096);
+            Columns.Create("Method", nameof(LogEntryRow.Method)).MakeFixedWidth(FixedWidth.W076);
+            Columns.Create("Request", nameof(LogEntryRow.Request));
+            Columns.Create("Status", nameof(LogEntryRow.Status))
                 .AddCellStyle(LocalResources.Styles.StatusTextBlockStyle)
                 .MakeFixedWidth(FixedWidth.W052);
-            Columns.Create("Bytes", LogEntryTable.Defs.Columns.BytesSent).MakeFixedWidth(FixedWidth.W052);
-            filters = new Dictionary<string, long>();
+            Columns.Create("Bytes", nameof(LogEntryRow.BytesSent)).MakeFixedWidth(FixedWidth.W052);
+            filters = new Dictionary<LogEntryFilterType, long>();
             IsDetailVisible = Config.LogEntryDetailVisible;
         }
         #endregion
@@ -122,104 +112,71 @@ namespace Restless.Logite.ViewModel.Domain
         /// </summary>
         /// <param name="propertyName">The name of the (long) property to filter on</param>
         /// <param name="value">The value</param>
-        public void UpdateFilter(string propertyName, long value)
+        public void UpdateFilter(LogEntryFilterType filterType, long value)
         {
             if (value != -1)
             {
-                if (filters.ContainsKey(propertyName))
+                if (filters.ContainsKey(filterType))
                 {
-                    filters[propertyName] = value;
+                    filters[filterType] = value;
                 }
                 else
                 {
-                    filters.Add(propertyName, value);
+                    filters.Add(filterType, value);
                 }
             }
             else
             {
-                if (filters.ContainsKey(propertyName))
+                if (filters.ContainsKey(filterType))
                 {
-                    filters.Remove(propertyName);
+                    filters.Remove(filterType);
                 }
             }
-            Refresh();
+            ListView.Refresh();
         }
         #endregion
 
         /************************************************************************/
 
         #region Protected methods
-        /// <summary>
-        /// Called when deactivated.
-        /// </summary>
-        /// <remarks>
-        /// On deactivation, need to set <see cref="LogEntry"/> to null. It gets set when detail
-        /// is displayed, but when switching to another domain, the log entry table
-        /// is populated on demand and the row represented by LogEntry no longer exists;
-        /// it then throws an exception if it's accessed.
-        /// </remarks>
-        protected override void OnDeactivated()
+        protected override bool OnDataRowFilter(LogEntryRow item)
         {
-            LogEntry = null;
-        }
-
-        /// <summary>
-        /// Called when updated
-        /// </summary>
-        /// <remarks>
-        /// Set <see cref="LogEntry"/> to null as upon deactivation.
-        /// </remarks>
-        protected override void OnUpdate()
-        {
-            LogEntry = null;
-            base.OnUpdate();
-        }
-
-        protected override bool OnDataRowFilter(DataRow item)
-        {
-            return
-                Domain != null &&
-                (long)item[LogEntryTable.Defs.Columns.DomainId] == Domain.Id &&
-                !item[LogEntryTable.Defs.Columns.Calculated.Request].ToString().StartsWith("/asset", StringComparison.InvariantCultureIgnoreCase) &&
+            return 
+                !item.Request.StartsWith("/asset", StringComparison.InvariantCultureIgnoreCase) &&
                 EvaluateFilters(item);
         }
 
-        protected override int OnDataRowCompare(DataRow item1, DataRow item2)
+        protected override int OnDataRowCompare(LogEntryRow item1, LogEntryRow item2)
         {
-            return DataRowCompareDateTime(item2, item1, LogEntryTable.Defs.Columns.Timestamp);
-        }
-
-        protected override void OnSelectedItemChanged()
-        {
-            if (SelectedDataRow != null && IsDetailVisible)
-            {
-                LogEntry = new LogEntryRow(SelectedDataRow);
-            }
+            return item2.Timestamp.CompareTo(item1.Timestamp);
         }
         #endregion
 
         /************************************************************************/
 
         #region Private methods
-        private void SynchronizeOnDetailVisible()
-        {
-            if (SelectedDataRow != null)
-            {
-                if (LogEntry == null || LogEntry.Row != SelectedDataRow)
-                {
-                    LogEntry = new LogEntryRow(SelectedDataRow);
-                }
-            }
-        }
-
-        private bool EvaluateFilters(DataRow item)
+        private bool EvaluateFilters(LogEntryRow item)
         {
             bool result = true;
-            foreach (var x in filters)
+            if (filters != null)
             {
-                result = result && (long)item[x.Key] == x.Value;
+                foreach (var x in filters)
+                {
+                    result = result && GetFilterResult(x.Key, item, x.Value);
+                }
             }
             return result;
+        }
+
+        private bool GetFilterResult(LogEntryFilterType filterType, LogEntryRow row, long value)
+        {
+            return filterType switch
+            {
+                LogEntryFilterType.IpAddress => row.IpAddressId == value,
+                LogEntryFilterType.Method => row.MethodId == value,
+                LogEntryFilterType.Status => row.Status == value,
+                _ => true
+            };
         }
         #endregion
     }

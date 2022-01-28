@@ -1,22 +1,13 @@
 ﻿using Restless.Logite.Database.Core;
-using Restless.Toolkit.Core.Database.SQLite;
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Text;
-using Columns = Restless.Logite.Database.Tables.LogEntryTable.Defs.Columns;
 
 namespace Restless.Logite.Database.Tables
 {
     /// <summary>
     /// Encapsulates a single row from the <see cref="LogEntryTable"/>.
     /// </summary>
-    /// <remarks>
-    /// Unlike other classes of a similar type for other tables, the properties
-    /// of this class are all read only. It's used when displaying log entry detail;
-    /// the constructor loads attack data if it exists.
-    /// </remarks>
-    public class LogEntryRow : RowObjectBase<LogEntryTable>
+    public class LogEntryRow : RawRow
     {
         #region Helper class
         public class Property
@@ -39,7 +30,8 @@ namespace Restless.Logite.Database.Tables
         /// </summary>
         public long Id
         {
-            get => GetInt64(Columns.Id);
+            get;
+            internal set;
         }
 
         /// <summary>
@@ -47,7 +39,8 @@ namespace Restless.Logite.Database.Tables
         /// </summary>
         public string RemoteUser
         {
-            get => GetString(Columns.RemoteUser);
+            get;
+            internal set;
         }
 
         /// <summary>
@@ -55,7 +48,8 @@ namespace Restless.Logite.Database.Tables
         /// </summary>
         public DateTime Timestamp
         {
-            get => GetDateTime(Columns.Timestamp);
+            get;
+            internal set;
         }
 
         /// <summary>
@@ -63,7 +57,8 @@ namespace Restless.Logite.Database.Tables
         /// </summary>
         public long Status
         {
-            get => GetInt64(Columns.Status);
+            get;
+            internal set;
         }
 
         /// <summary>
@@ -71,7 +66,8 @@ namespace Restless.Logite.Database.Tables
         /// </summary>
         public long BytesSent
         {
-            get => GetInt64(Columns.BytesSent);
+            get;
+            internal set;
         }
 
         /// <summary>
@@ -79,23 +75,89 @@ namespace Restless.Logite.Database.Tables
         /// </summary>
         public string HttpVersion
         {
-            get => GetString(Columns.HttpVersion);
+            get;
+            internal set;
         }
 
         /// <summary>
-        /// Gets the request.
+        /// Gets the domain id, <see cref="DomainTable"/>.
         /// </summary>
-        public string Request
+        public long DomainId
         {
-            get => GetString(Columns.Calculated.Request);
+            get;
+            internal set;
         }
 
         /// <summary>
-        /// Gets the referer.
+        /// Gets the ip address id, <see cref="IpAddressTable"/>.
         /// </summary>
-        public string Referer
+        public long IpAddressId
         {
-            get => GetString(Columns.Calculated.Referer);
+            get;
+            internal set;
+        }
+
+        /// <summary>
+        /// Gets the method id, <see cref="MethodTable"/>.
+        /// </summary>
+        public long MethodId
+        {
+            get;
+            internal set;
+        }
+
+        /// <summary>
+        /// Gets the request id, <see cref="RequestTable"/>.
+        /// </summary>
+        public long RequestId
+        {
+            get;
+            internal set;
+        }
+
+        /// <summary>
+        /// Gets the referer id, <see cref="RefererTable"/>.
+        /// </summary>
+        public long RefererId
+        {
+            get;
+            internal set;
+        }
+
+        /// <summary>
+        /// Gets the user agent id, <see cref="UserAgentTable"/>.
+        /// </summary>
+        public long AgentId
+        {
+            get;
+            internal set;
+        }
+
+        /// <summary>
+        /// Gets the request attack id, <see cref="AttackTable"/>.
+        /// </summary>
+        public long RequestAttackId
+        {
+            get;
+            internal set;
+        }
+
+        /// <summary>
+        /// Gets the referer attack id, <see cref="AttackTable"/>.
+        /// </summary>
+        public long RefererAttackId
+        {
+            get;
+            internal set;
+        }
+
+        /// <summary>
+        /// Gets the user agent attack id, <see cref="AttackTable"/>.
+        /// </summary>
+        public long AgentAttackId
+        {
+            get;
+            internal set;
         }
 
         /// <summary>
@@ -103,7 +165,35 @@ namespace Restless.Logite.Database.Tables
         /// </summary>
         public string IpAddress
         {
-            get => GetString(Columns.Calculated.IpAddress);
+            get;
+            internal set;
+        }
+
+        /// <summary>
+        /// Gest the method
+        /// </summary>
+        public string Method
+        {
+            get;
+            internal set;
+        }
+
+        /// <summary>
+        /// Gets the request.
+        /// </summary>
+        public string Request
+        {
+            get;
+            internal set;
+        }
+
+        /// <summary>
+        /// Gets the referer.
+        /// </summary>
+        public string Referer
+        {
+            get;
+            internal set;
         }
 
         /// <summary>
@@ -148,12 +238,8 @@ namespace Restless.Logite.Database.Tables
         /// <summary>
         /// Initializes a new instance of the <see cref="LogEntryRow"/> class.
         /// </summary>
-        /// <param name="row">The data row</param>
-        public LogEntryRow(DataRow row) : base(row)
+        internal LogEntryRow() : base (LogEntryTable.Defs.TableName)
         {
-            RequestAttack = GetAttack(GetInt64(Columns.AttackIdRequest));
-            RefererAttack = GetAttack(GetInt64(Columns.AttackIdReferer));
-            AgentAttack = GetAttack(GetInt64(Columns.AttackIdAgent));
         }
         #endregion
 
@@ -165,6 +251,7 @@ namespace Restless.Logite.Database.Tables
         /// </summary>
         private IEnumerable<Property> EnumerateProperties()
         {
+            InitializeAttackProperties();
             yield return new Property(nameof(Timestamp), Timestamp.ToString());
             yield return new Property(nameof(IpAddress), IpAddress);
             yield return new Property(nameof(HttpVersion), HttpVersion);
@@ -177,16 +264,33 @@ namespace Restless.Logite.Database.Tables
             yield return new Property(nameof(AgentAttack), AgentAttack);
         }
 
-        private string GetAttack(long attackId)
+        /// <summary>
+        /// Initializes the attack properties if not already initialized
+        /// </summary>
+        private void InitializeAttackProperties()
         {
-            if (attackId == 0)
+            if (string.IsNullOrEmpty(RequestAttack))
             {
-                return "(none)";
+                RequestAttack = GetAttackProperty(RequestAttackId);
+                RefererAttack = GetAttackProperty(RefererAttackId);
+                AgentAttack = GetAttackProperty(AgentAttackId);
             }
+        }
 
-            string sql = $"select {AttackTable.Defs.Columns.AttackString} from {Table.Namespace}.{AttackTable.Defs.TableName} where {AttackTable.Defs.Columns.Id}={attackId}";
-            object result = DatabaseController.Instance.Execution.Scalar(sql);
-            return result != null ? result.ToString() : "(failed)";
+        /// <summary>
+        /// Gets a single attack property via direct access
+        /// </summary>
+        /// <param name="attackId"></param>
+        /// <returns></returns>
+        private string GetAttackProperty(long attackId)
+        {
+            if (attackId > 0)
+            {
+                string sql = $"select {AttackTable.Defs.Columns.AttackString} from {DatabaseController.MainAppSchemaName}.{AttackTable.Defs.TableName} where {AttackTable.Defs.Columns.Id}={attackId}";
+                object result = DatabaseController.Instance.Execution.Scalar(sql);
+                return result != null ? attackId.ToString() + "--" + result.ToString() : "(failed)";
+            }
+            return "(none)";
         }
         #endregion
     }

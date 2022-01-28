@@ -1,6 +1,9 @@
 ﻿using Restless.Logite.Database.Core;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Data;
 using System.Data.SQLite;
 using System.Text;
 
@@ -10,14 +13,23 @@ namespace Restless.Logite.Database.Tables
     /// Represents a table that is loaded upon demand for the specified domain.
     /// Tables that derive from this class use direct execution for various operations.
     /// </summary>
-    public abstract class DemandDomainTable : Core.ApplicationTableBase
+    public abstract class RawTable<T> : Core.ApplicationTableBase where T: RawRow
     {
+        /// <summary>
+        /// Gets the collection of raw rows
+        /// </summary>
+        public ObservableCollection<T> RawRows
+        {
+            get;
+        }
+
         #region Constructor
         /// <summary>
-        /// Initializes a new instance of the <see cref="DemandDomainTable"/> class.
+        /// Initializes a new instance of the <see cref="RawTable"/> class.
         /// </summary>
-        protected DemandDomainTable(string tableName) : base(tableName)
+        protected RawTable(string tableName) : base(tableName)
         {
+            RawRows = new ObservableCollection<T>();
         }
         #endregion
 
@@ -29,9 +41,9 @@ namespace Restless.Logite.Database.Tables
         /// </summary>
         /// <remarks>
         /// This method satisfies the abstract base class, but does not load any data.
-        /// Data is loaded upon demand using the <see cref="Load(long)"/> method.
+        /// Data is loaded upon demand using the <see cref="LoadFromSql(string, Func{IDataReader, T})"/> method.
         /// </remarks>
-        public override void Load()
+        public override sealed void Load()
         {
             Load("0=1", PrimaryKeyName);
         }
@@ -39,7 +51,33 @@ namespace Restless.Logite.Database.Tables
 
         /************************************************************************/
 
+        #region Public methods
+        /// <summary>
+        /// Provides an enumerable that returns all records from <see cref="RawRows"/>
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<T> EnumerateAll()
+        {
+            foreach (var row in RawRows)
+            {
+                yield return row;
+            }
+        }
+        #endregion
+
+        /************************************************************************/
+
         #region Protected methods
+        protected void LoadFromSql(string sql, Func<IDataReader, T> rawBuilder)
+        {
+            RawRows.Clear();
+            IDataReader reader = Controller.Execution.Query(sql);
+            while (reader.Read())
+            {
+                RawRows.Add(rawBuilder(reader));
+            }
+        }
+
         /// <summary>
         /// Selects an id value using direct execution.
         /// </summary>
@@ -80,11 +118,20 @@ namespace Restless.Logite.Database.Tables
         /************************************************************************/
 
         #region Internal methods
-        internal void Load(IdCollection ids)
+        /// <summary>
+        /// Loads records into <see cref="RawRows"/>
+        /// </summary>
+        /// <param name="domainId">The domain id</param>
+        /// <param name="ids">The list of ids to load.</param>
+        /// <remarks>
+        /// This method is used to load secondary tables (ipaddress, request, referer, etc.)
+        /// that have a relationship with the primary table <see cref="LogEntryTable"/>.
+        /// Derived classes must override this method if they need this functionality.
+        /// The base method throws a NotImplementedException.
+        /// </remarks>
+        internal virtual void Load(long domainId, IdCollection ids)
         {
-            Clear();
-            string sql = $"SELECT * FROM {Namespace}.{TableName} WHERE {PrimaryKeyName} IN ({ids})";
-            Load(Controller.Execution.Query(sql));
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -99,6 +146,14 @@ namespace Restless.Logite.Database.Tables
         internal virtual long InsertEntryIf(LogEntry entry)
         {
             throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Clears <see cref="RawRows"/>.
+        /// </summary>
+        internal void ClearRaw()
+        {
+            RawRows.Clear();
         }
         #endregion
     }

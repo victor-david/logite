@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Restless.Logite.Database.Tables
 {
-    public class UserAgentTable : DemandDomainTable
+    public class UserAgentTable : RawTable<UserAgentRow>
     {
         #region Public properties
         /// <summary>

@@ -1,9 +1,8 @@
 ﻿using Restless.Logite.Database.Tables;
-using System.Data;
 
 namespace Restless.Logite.ViewModel.Domain
 {
-    public class StatusController : DomainController<StatusTable>
+    public class StatusController : DomainController<StatusTable, StatusRow>
     {
         #region Constructor
         /// <summary>
@@ -12,8 +11,8 @@ namespace Restless.Logite.ViewModel.Domain
         /// <param name="domain">The domain</param>
         public StatusController(DomainRow domain): base(domain)
         {
-            Columns.Create("Status", StatusTable.Defs.Columns.Status); //.MakeFixedWidth(FixedWidth.W052);
-            Columns.Create("Count", StatusTable.Defs.Columns.Calculated.UsageCount); //.MakeFixedWidth(FixedWidth.W052);
+            Columns.Create("Status", nameof(StatusRow.Status)); //.MakeFixedWidth(FixedWidth.W052);
+            Columns.Create("Count",  nameof(StatusRow.UsageCount)); //.MakeFixedWidth(FixedWidth.W052);
         }
         #endregion
 
@@ -21,19 +20,14 @@ namespace Restless.Logite.ViewModel.Domain
 
         #region Protected methods
 
-        protected override bool OnDataRowFilter(DataRow item)
+        protected override int OnDataRowCompare(StatusRow item1, StatusRow item2)
         {
-            return (long)item[StatusTable.Defs.Columns.Calculated.UsageCount] > 0;
-        }
-
-        protected override int OnDataRowCompare(DataRow item1, DataRow item2)
-        {
-            return DataRowCompareLong(item1, item2, StatusTable.Defs.Columns.Status);
+            return item1.Status.CompareTo(item2.Status);
         }
 
         protected override void OnSelectedItemChanged()
         {
-            long id = (SelectedDataRow != null) ? (long)SelectedDataRow[StatusTable.Defs.Columns.Status] : -1;
+            long id = (SelectedRawRow != null) ? SelectedRawRow.Status : -1;
             OnSelectedItemChanged(id);
         }
         #endregion

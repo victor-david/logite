@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Restless.Logite.Database.Tables
 {
-    public class RefererTable : DemandDomainTable
+    public class RefererTable : RawTable<RefererRow>
     {
         #region Public properties
         /// <summary>
@@ -34,28 +34,6 @@ namespace Restless.Logite.Database.Tables
                 /// The referer.
                 /// </summary>
                 public const string Referer = "referer";
-
-                /// <summary>
-                /// Provides static column names for columns that are calculated from other values.
-                /// </summary>
-                public class Calculated
-                {
-                    /// <summary>
-                    /// Number of usages.
-                    /// </summary>
-                    public const string UsageCount = "CalcUsageCount";
-                }
-            }
-
-            /// <summary>
-            /// Provides static relation names.
-            /// </summary>
-            public static class Relations
-            {
-                /// <summary>
-                /// The name of the relation that relates the <see cref="RefererTable"/> to the <see cref="LogEntryTable"/>.
-                /// </summary>
-                public const string ToLogEntry = "RefererToLogEntry";
             }
         }
         #endregion
@@ -73,11 +51,6 @@ namespace Restless.Logite.Database.Tables
 
         /************************************************************************/
 
-        #region Public methods
-        #endregion
-
-        /************************************************************************/
-
         #region Protected methods
         /// <summary>
         /// Gets the column definitions for this table.
@@ -90,19 +63,6 @@ namespace Restless.Logite.Database.Tables
                 { Defs.Columns.Id, ColumnType.Integer, true },
                 { Defs.Columns.Referer, ColumnType.Text},
             };
-        }
-
-        /// <inheritdoc/>
-        protected override void SetDataRelations()
-        {
-            CreateParentChildRelation<LogEntryTable>(Defs.Relations.ToLogEntry, Defs.Columns.Id, LogEntryTable.Defs.Columns.RefererId);
-        }
-
-        /// <inheritdoc/>
-        protected override void UseDataRelations()
-        {
-            string expr = string.Format("Count(Child({0}).{1})", Defs.Relations.ToLogEntry, LogEntryTable.Defs.Columns.Id);
-            CreateExpressionColumn<long>(Defs.Columns.Calculated.UsageCount, expr);
         }
         #endregion
 

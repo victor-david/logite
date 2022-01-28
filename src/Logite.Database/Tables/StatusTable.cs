@@ -5,7 +5,7 @@ using System.Data;
 
 namespace Restless.Logite.Database.Tables
 {
-    public class StatusTable : Core.ApplicationTableBase
+    public class StatusTable : RawTable<StatusRow>
     {
         #region Public properties
         /// <summary>
@@ -32,28 +32,6 @@ namespace Restless.Logite.Database.Tables
                 /// The request status, 200, 404, etc.
                 /// </summary>
                 public const string Status = "status";
-
-                /// <summary>
-                /// Provides static column names for columns that are calculated from other values.
-                /// </summary>
-                public class Calculated
-                {
-                    /// <summary>
-                    /// Number of usages.
-                    /// </summary>
-                    public const string UsageCount = "CalcUsageCount";
-                }
-            }
-
-            /// <summary>
-            /// Provides static relation names.
-            /// </summary>
-            public static class Relations
-            {
-                /// <summary>
-                /// The name of the relation that relates the <see cref="StatusTable"/> to the <see cref="LogEntryTable"/>.
-                /// </summary>
-                public const string ToLogEntry = "StatusToLogEntry";
             }
         }
         #endregion
@@ -66,15 +44,6 @@ namespace Restless.Logite.Database.Tables
         /// </summary>
         public StatusTable() : base(Defs.TableName)
         {
-        }
-        #endregion
-
-        /************************************************************************/
-
-        #region Public methods
-        public override void Load()
-        {
-            Load(null, Defs.Columns.Status);
         }
         #endregion
 
@@ -118,19 +87,6 @@ namespace Restless.Logite.Database.Tables
             yield return new object[] { 6, 444 };
             yield return new object[] { 7, 500 };
         }
-
-        /// <inheritdoc/>
-        protected override void SetDataRelations()
-        {
-            CreateParentChildRelation<LogEntryTable>(Defs.Relations.ToLogEntry, Defs.Columns.Status, LogEntryTable.Defs.Columns.Status);
-        }
-
-        /// <inheritdoc/>
-        protected override void UseDataRelations()
-        {
-            string expr = string.Format("Count(Child({0}).{1})", Defs.Relations.ToLogEntry, LogEntryTable.Defs.Columns.Id);
-            CreateExpressionColumn<long>(Defs.Columns.Calculated.UsageCount, expr);
-        }
         #endregion
 
         /************************************************************************/
@@ -154,6 +110,28 @@ namespace Restless.Logite.Database.Tables
             Rows.Add(row);
             Save();
             return (long)row[Defs.Columns.Id];
+        }
+
+        internal override void Load(long domainId, IdCollection ids)
+        {
+            string sql =
+                $"SELECT S.{Defs.Columns.Id},S.{Defs.Columns.Status}," +
+                $"COUNT(L.{LogEntryTable.Defs.Columns.Id}) " +
+                $"FROM {Defs.TableName} S " +
+                $"LEFT JOIN {LogEntryTable.Defs.TableName} L " +
+                $"ON (S.{Defs.Columns.Status}=L.{LogEntryTable.Defs.Columns.Status} AND L.{LogEntryTable.Defs.Columns.DomainId}={domainId}) " +
+                $"WHERE S.{Defs.Columns.Status} IN ({ids})" +
+                $"GROUP BY S.{Defs.Columns.Status}";
+
+            LoadFromSql(sql, (reader) =>
+            {
+                return new StatusRow()
+                {
+                    Id = reader.GetInt64(0),
+                    Status = reader.GetInt64(1),
+                    UsageCount = reader.GetInt64(2)
+                };
+            });
         }
         #endregion
     }

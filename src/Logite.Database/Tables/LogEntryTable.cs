@@ -7,12 +7,11 @@ using System.Text;
 
 namespace Restless.Logite.Database.Tables
 {
-    public class LogEntryTable : DemandDomainTable
+    public class LogEntryTable : RawTable<LogEntryRow>
     {
         private IdCollection ipId;
-        private IdCollection requestId;
-        private IdCollection refererId;
-        private IdCollection agentId;
+        private IdCollection methodId;
+        private IdCollection statusId;
 
         #region Public properties
         /// <summary>
@@ -114,33 +113,6 @@ namespace Restless.Logite.Database.Tables
                 /// The id of the user agent attack, or zero
                 /// </summary>
                 public const string AttackIdAgent = "attackidagent";
-
-                /// <summary>
-                /// Provides static column names for columns that are calculated from other values.
-                /// </summary>
-                public class Calculated
-                {
-                    /// <summary>
-                    /// Ip Address
-                    /// </summary>
-                    public const string IpAddress = "CalcIpAddress";
-
-                    /// <summary>
-                    /// Method
-                    /// </summary>
-                    public const string Method = "CalcMethod";
-
-                    /// <summary>
-                    /// Request
-                    /// </summary>
-                    public const string Request = "CalcRequest";
-
-                    /// <summary>
-                    /// Referer
-                    /// </summary>
-                    public const string Referer = "CalcReferer";
-                }
-
             }
         }
         #endregion
@@ -154,9 +126,8 @@ namespace Restless.Logite.Database.Tables
         public LogEntryTable() : base(Defs.TableName)
         {
             ipId = new IdCollection();
-            requestId = new IdCollection();
-            refererId = new IdCollection();
-            agentId = new IdCollection();
+            methodId = new IdCollection();
+            statusId = new IdCollection();
         }
         #endregion
 
@@ -179,17 +150,17 @@ namespace Restless.Logite.Database.Tables
 
         public DataPointCollection<CountDataPoint> GetTotalTrafficData(DomainRow domain)
         {
-            return GetDateCountCollection<CountDataPoint>(domain, (points, logEntryRecord) => 
+            return GetDateCountCollection<CountDataPoint>(domain, (points, logEntryRow) => 
             {
-                points.Add(CountDataPoint.Create(logEntryRecord.Timestamp)).Count++;
+                points.Add(CountDataPoint.Create(logEntryRow.Timestamp)).Count++;
             });
         }
 
         public DataPointCollection<StatusDataPoint> GetStatusTrafficData(DomainRow domain)
         {
-            return GetDateCountCollection<StatusDataPoint>(domain, (points, logEntryRecord) =>
+            return GetDateCountCollection<StatusDataPoint>(domain, (points, logEntryRow) =>
             {
-                points.Add(StatusDataPoint.Create(logEntryRecord.Timestamp)).IncrementStatusCount(logEntryRecord.Status);
+                points.Add(StatusDataPoint.Create(logEntryRow.Timestamp)).IncrementStatusCount(logEntryRow.Status);
             });
         }
 
@@ -197,17 +168,17 @@ namespace Restless.Logite.Database.Tables
         {
             Dictionary<DateTime, List<long>> ips = new Dictionary<DateTime, List<long>>();
 
-            return GetDateCountCollection<CountDataPoint>(domain, (points, logEntryRecord) =>
+            return GetDateCountCollection<CountDataPoint>(domain, (points, logEntryRow) =>
             {
-                CountDataPoint point = points.Add(CountDataPoint.Create(logEntryRecord.Timestamp));
+                CountDataPoint point = points.Add(CountDataPoint.Create(logEntryRow.Timestamp));
                 if (!ips.ContainsKey(point.Date))
                 {
                     ips.Add(point.Date, new List<long>());
                 }
 
-                if (!ips[point.Date].Contains(logEntryRecord.IpAddressId))
+                if (!ips[point.Date].Contains(logEntryRow.IpAddressId))
                 {
-                    ips[point.Date].Add(logEntryRecord.IpAddressId);
+                    ips[point.Date].Add(logEntryRow.IpAddressId);
                     point.Count++;
                 }
             });
@@ -244,14 +215,6 @@ namespace Restless.Logite.Database.Tables
                 { Defs.Columns.AttackIdAgent, ColumnType.Integer, false, false, AttackTable.Defs.Values.AttackZeroId, IndexType.Index }
 
             };
-        }
-
-        protected override void UseDataRelations()
-        {
-            CreateChildToParentColumn(Defs.Columns.Calculated.IpAddress, IpAddressTable.Defs.Relations.ToLogEntry, IpAddressTable.Defs.Columns.IpAddress);
-            CreateChildToParentColumn(Defs.Columns.Calculated.Method, MethodTable.Defs.Relations.ToLogEntry, MethodTable.Defs.Columns.Method);
-            CreateChildToParentColumn(Defs.Columns.Calculated.Request, RequestTable.Defs.Relations.ToLogEntry, RequestTable.Defs.Columns.Request);
-            CreateChildToParentColumn(Defs.Columns.Calculated.Referer, RefererTable.Defs.Relations.ToLogEntry, RefererTable.Defs.Columns.Referer);
         }
         #endregion
 
@@ -303,7 +266,6 @@ namespace Restless.Logite.Database.Tables
             sql.Append($"{ids.AttackRefererId},");
             sql.Append($"{ids.AttackAgentId})");
 
-
             Controller.Execution.NonQuery(sql.ToString());
         }
         #endregion
@@ -316,42 +278,79 @@ namespace Restless.Logite.Database.Tables
             Clear();
             ClearIdCollections();
 
-            string sql = $"SELECT * FROM {Namespace}.{TableName} WHERE {Defs.Columns.DomainId}={domain.Id} AND  {Defs.Columns.Timestamp} > date('now','-{domain.Period} day')";
-            Load(Controller.Execution.Query(sql));
+            string sql = 
+                $"SELECT " +
+                $"L.{Defs.Columns.Id},{Defs.Columns.RemoteUser},{Defs.Columns.Timestamp},{Defs.Columns.Status}," +
+                $"{Defs.Columns.BytesSent},{Defs.Columns.HttpVersion},{Defs.Columns.DomainId},{Defs.Columns.IpAddressId}," +
+                $"{Defs.Columns.MethodId},{Defs.Columns.RequestId},{Defs.Columns.RefererId},{Defs.Columns.UserAgentId}," +
+                $"{Defs.Columns.AttackIdRequest},{Defs.Columns.AttackIdReferer},{Defs.Columns.AttackIdAgent}," +
+                $"IP.{IpAddressTable.Defs.Columns.IpAddress}," +
+                $"M.{MethodTable.Defs.Columns.Method}," +
+                $"R.{RequestTable.Defs.Columns.Request} " +
+                $"FROM {Namespace}.{TableName} L " +
+                $"LEFT JOIN {IpAddressTable.Defs.TableName} IP ON (L.{Defs.Columns.IpAddressId} = IP.{IpAddressTable.Defs.Columns.Id}) " +
+                $"LEFT JOIN {MethodTable.Defs.TableName} M ON (L.{Defs.Columns.MethodId} = M.{MethodTable.Defs.Columns.Id}) " +
+                $"LEFT JOIN {RequestTable.Defs.TableName} R ON (L.{Defs.Columns.RequestId} = R.{RequestTable.Defs.Columns.Id}) " +
+                $"WHERE {Defs.Columns.DomainId}={domain.Id} AND {Defs.Columns.Timestamp} > date('now','-{domain.Period} day')";
 
-            foreach (DataRow row in Rows)
+            LoadFromSql(sql, (reader) =>
             {
-                ipId.Add((long)row[Defs.Columns.IpAddressId]);
-                requestId.Add((long)row[Defs.Columns.RequestId]);
-                refererId.Add((long)row[Defs.Columns.RefererId]);
-                agentId.Add((long)row[Defs.Columns.UserAgentId]);
+                return new LogEntryRow()
+                {
+                    Id = reader.GetInt64(0),
+                    //RemoteUser = reader.GetString(1),
+                    Timestamp = reader.GetDateTime(2),
+                    Status = reader.GetInt64(3),
+                    BytesSent = reader.GetInt64(4),
+                    HttpVersion = reader.GetString(5),
+                    DomainId = reader.GetInt64(6),
+                    IpAddressId = reader.GetInt64(7),
+                    MethodId = reader.GetInt64(8),
+                    RequestId = reader.GetInt64(9),
+                    RefererId = reader.GetInt64(10),
+                    AgentId = reader.GetInt64(11),
+                    RequestAttackId = reader.GetInt64(12),
+                    RefererAttackId = reader.GetInt64(13),
+                    AgentAttackId = reader.GetInt64(14),
+                    IpAddress = reader.GetString(15),
+                    Method = reader.GetString(16),
+                    Request = reader.GetString(17)
+
+                };
+            });
+
+            foreach (LogEntryRow row in RawRows)
+            {
+                ipId.Add(row.IpAddressId);
+                methodId.Add(row.MethodId);
+                statusId.Add(row.Status);
             }
-            Controller.GetTable<IpAddressTable>().Load(ipId);
-            Controller.GetTable<RequestTable>().Load(requestId);
-            Controller.GetTable<RefererTable>().Load(refererId);
-            Controller.GetTable<UserAgentTable>().Load(agentId);
+
+            Controller.GetTable<IpAddressTable>().Load(domain.Id, ipId);
+            Controller.GetTable<MethodTable>().Load(domain.Id, methodId);
+            Controller.GetTable<StatusTable>().Load(domain.Id, statusId);
         }
 
         private void UnloadDomainPrivate()
         {
             Clear();
+            ClearRaw();
             ClearIdCollections();
-            Controller.GetTable<IpAddressTable>().Clear();
-            Controller.GetTable<RequestTable>().Clear();
-            Controller.GetTable<RefererTable>().Clear();
-            Controller.GetTable<UserAgentTable>().Clear();
+            Controller.GetTable<IpAddressTable>().ClearRaw();
+            Controller.GetTable<MethodTable>().ClearRaw();
+            Controller.GetTable<RequestTable>().ClearRaw();
+            Controller.GetTable<RefererTable>().ClearRaw();
+            Controller.GetTable<UserAgentTable>().ClearRaw();
         }
 
         private void ClearIdCollections()
         {
             ipId.Clear();
-            requestId.Clear();
-            refererId.Clear();
-            agentId.Clear();
+            methodId.Clear();
+            statusId.Clear();
         }
 
-        // private DataPointCollection<T> GetDateCountCollection<T>(DomainRow domain, Predicate<LogEntryRecord> evaluator) where T : DataPoint
-        private DataPointCollection<T> GetDateCountCollection<T>(DomainRow domain, Action<DataPointCollection<T>, LogEntryRecord> processor) where T : DataPoint
+        private DataPointCollection<T> GetDateCountCollection<T>(DomainRow domain, Action<DataPointCollection<T>, LogEntryRow> processor) where T : DataPoint
         {
             DataPointCollection<T> dataPoints = new DataPointCollection<T>();
 
@@ -368,21 +367,16 @@ namespace Restless.Logite.Database.Tables
 
             while (reader.Read())
             {
-                LogEntryRecord record =  GetLogEntryRecord(reader);
+                LogEntryRow record =  GetLogEntryRecord(reader);
                 processor(dataPoints, record);
-
-                //if (evaluator(record))
-                //{
-                //    //dataPoints.AddDataPoint(record.Timestamp);
-                //}
             }
 
             return dataPoints;
         }
 
-        private LogEntryRecord GetLogEntryRecord(IDataReader reader)
+        private LogEntryRow GetLogEntryRecord(IDataReader reader)
         {
-            return new LogEntryRecord()
+            return new LogEntryRow()
             {
                 Id = reader.GetInt64(0),
                 Timestamp = reader.GetDateTime(1),
@@ -392,10 +386,10 @@ namespace Restless.Logite.Database.Tables
                 MethodId = reader.GetInt64(5),
                 RequestId = reader.GetInt64(6),
                 RefererId = reader.GetInt64(7),
-                UserAgentId = reader.GetInt64(8),
-                AttackIdRequest = reader.GetInt64(9),
-                AttackIdReferer = reader.GetInt64(10),
-                AttackIdAgent = reader.GetInt64(11)
+                AgentId = reader.GetInt64(8),
+                RequestAttackId = reader.GetInt64(9),
+                RefererAttackId = reader.GetInt64(10),
+                AgentAttackId = reader.GetInt64(11)
             };
         }
         #endregion

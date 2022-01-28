@@ -1,9 +1,9 @@
 ﻿namespace Restless.Logite.Database.Tables
 {
     /// <summary>
-    /// Encapsulates a single row from the <see cref="MethodTable"/>.
+    /// Encapsulates a single row from the <see cref="StatusTable"/>.
     /// </summary>
-    public class MethodRow : RawRow
+    public class StatusRow : RawRow
     {
         #region Public properties
         /// <summary>
@@ -16,9 +16,9 @@
         }
 
         /// <summary>
-        /// Gets the method name.
+        /// Gets the status
         /// </summary>
-        public string Method
+        public long Status
         {
             get;
             internal set;
@@ -38,9 +38,9 @@
 
         #region Constructor
         /// <summary>
-        /// Initializes a new instance of the <see cref="MethodRow"/> class.
+        /// Initializes a new instance of the <see cref="StatusRow"/> class.
         /// </summary>
-        public MethodRow() : base(MethodTable.Defs.TableName)
+        public StatusRow() : base(StatusTable.Defs.TableName)
         {
         }
         #endregion
@@ -54,7 +54,7 @@
         /// <returns>The string.</returns>
         public override string ToString()
         {
-            return $"Id:{Id} Method:{Method}";
+            return $"Id:{Id} Status:{Status}";
         }
         #endregion
     }

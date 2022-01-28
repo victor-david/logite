@@ -27,19 +27,19 @@
 
     <Style x:Key="StatusTextBlockStyle" TargetType="TextBlock">
         <Style.Triggers>
-            <DataTrigger Binding="{Binding status, Converter={cv:StatusToNormalizedConverter}}" Value="200">
+            <DataTrigger Binding="{Binding Status, Converter={cv:StatusToNormalizedConverter}}" Value="200">
                 <Setter Property="Foreground" Value="{StaticResource Status200Brush}"/>
             </DataTrigger>
             
-            <DataTrigger Binding="{Binding status, Converter={cv:StatusToNormalizedConverter}}" Value="300">
+            <DataTrigger Binding="{Binding Status, Converter={cv:StatusToNormalizedConverter}}" Value="300">
                 <Setter Property="Foreground" Value="{StaticResource Status300Brush}"/>
             </DataTrigger>            
             
-            <DataTrigger Binding="{Binding status, Converter={cv:StatusToNormalizedConverter}}" Value="400">
+            <DataTrigger Binding="{Binding Status, Converter={cv:StatusToNormalizedConverter}}" Value="400">
                 <Setter Property="Foreground" Value="{StaticResource Status400Brush}"/>
             </DataTrigger>
             
-            <DataTrigger Binding="{Binding status, Converter={cv:StatusToNormalizedConverter}}" Value="500">
+            <DataTrigger Binding="{Binding Status, Converter={cv:StatusToNormalizedConverter}}" Value="500">
                 <Setter Property="Foreground" Value="{StaticResource Status500Brush}"/>
             </DataTrigger>            
 
