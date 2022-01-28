@@ -15,6 +15,9 @@ namespace Restless.Logite.Database.Tables
     /// </summary>
     public abstract class RawTable<T> : Core.ApplicationTableBase where T: RawRow
     {
+        /// <summary>
+        /// Gets the collection of raw rows
+        /// </summary>
         public ObservableCollection<T> RawRows
         {
             get;
@@ -50,7 +53,7 @@ namespace Restless.Logite.Database.Tables
 
         #region Public methods
         /// <summary>
-        /// Provides an enumerable that returns all records
+        /// Provides an enumerable that returns all records from <see cref="RawRows"/>
         /// </summary>
         /// <returns></returns>
         public IEnumerable<T> EnumerateAll()
@@ -115,8 +118,20 @@ namespace Restless.Logite.Database.Tables
         /************************************************************************/
 
         #region Internal methods
+        /// <summary>
+        /// Loads records into <see cref="RawRows"/>
+        /// </summary>
+        /// <param name="domainId">The domain id</param>
+        /// <param name="ids">The list of ids to load.</param>
+        /// <remarks>
+        /// This method is used to load secondary tables (ipaddress, request, referer, etc.)
+        /// that have a relationship with the primary table <see cref="LogEntryTable"/>.
+        /// Derived classes must override this method if they need this functionality.
+        /// The base method throws a NotImplementedException.
+        /// </remarks>
         internal virtual void Load(long domainId, IdCollection ids)
         {
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -131,6 +146,14 @@ namespace Restless.Logite.Database.Tables
         internal virtual long InsertEntryIf(LogEntry entry)
         {
             throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Clears <see cref="RawRows"/>.
+        /// </summary>
+        internal void ClearRaw()
+        {
+            RawRows.Clear();
         }
         #endregion
     }

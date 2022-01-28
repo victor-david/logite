@@ -266,13 +266,7 @@ namespace Restless.Logite.Database.Tables
             sql.Append($"{ids.AttackRefererId},");
             sql.Append($"{ids.AttackAgentId})");
 
-
             Controller.Execution.NonQuery(sql.ToString());
-        }
-
-        internal override void Load(long domainId, IdCollection ids)
-        {
-            throw new NotImplementedException();
         }
         #endregion
 
@@ -340,11 +334,13 @@ namespace Restless.Logite.Database.Tables
         private void UnloadDomainPrivate()
         {
             Clear();
+            ClearRaw();
             ClearIdCollections();
-            Controller.GetTable<IpAddressTable>().Clear();
-            Controller.GetTable<RequestTable>().Clear();
-            Controller.GetTable<RefererTable>().Clear();
-            Controller.GetTable<UserAgentTable>().Clear();
+            Controller.GetTable<IpAddressTable>().ClearRaw();
+            Controller.GetTable<MethodTable>().ClearRaw();
+            Controller.GetTable<RequestTable>().ClearRaw();
+            Controller.GetTable<RefererTable>().ClearRaw();
+            Controller.GetTable<UserAgentTable>().ClearRaw();
         }
 
         private void ClearIdCollections()

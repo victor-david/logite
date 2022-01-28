@@ -31,6 +31,7 @@ namespace Restless.Logite.Database.Core
             requestTable = DatabaseController.Instance.GetTable<RequestTable>();
             agentTable = DatabaseController.Instance.GetTable<UserAgentTable>();
             attackTable = DatabaseController.Instance.GetTable<AttackTable>();
+            methodTable.LoadMethodData();
             isInitialized = true;
         }
 
@@ -45,7 +46,7 @@ namespace Restless.Logite.Database.Core
                 LogEntryIds ids = new LogEntryIds()
                 {
                     IpAddressId = ipAddressTable.InsertEntryIf(entry),
-                    MethodId = methodTable.GetMethodId(entry.Method),
+                    MethodId = methodTable.GetMethodId(entry),
                     RequestId = requestTable.InsertEntryIf(entry),
                     RefererId = refererTable.InsertEntryIf(entry),
                     AgentId = agentTable.InsertEntryIf(entry),

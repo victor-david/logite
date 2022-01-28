@@ -2,6 +2,7 @@
 using Restless.Toolkit.Core.Database.SQLite;
 using System;
 using System.Collections.Generic;
+using System.Data;
 
 namespace Restless.Logite.Database.Tables
 {
@@ -35,17 +36,6 @@ namespace Restless.Logite.Database.Tables
                 /// The method name.
                 /// </summary>
                 public const string Method = "method";
-
-                /// <summary>
-                /// Provides static column names for columns that are calculated from other values.
-                /// </summary>
-                public class Calculated
-                {
-                    /// <summary>
-                    /// Number of usages.
-                    /// </summary>
-                    public const string UsageCount = "CalcUsageCount";
-                }
             }
 
             /// <summary>
@@ -74,30 +64,6 @@ namespace Restless.Logite.Database.Tables
         /// </summary>
         public MethodTable() : base(Defs.TableName)
         {
-        }
-        #endregion
-
-        /************************************************************************/
-
-        #region Public methods
-        /// <summary>
-        /// Gets the method id for the specified method.
-        /// </summary>
-        /// <param name="method">The method string</param>
-        /// <returns>The method id</returns>
-        public long GetMethodId(string method)
-        {
-            if (!string.IsNullOrEmpty(method))
-            {
-                foreach (MethodRow row in EnumerateAll())
-                {
-                    if (row.Method.Equals(method, StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        return row.Id;
-                    }
-                }
-            }
-            return Defs.Values.MethodZeroId;
         }
         #endregion
 
@@ -144,8 +110,57 @@ namespace Restless.Logite.Database.Tables
             yield return new object[] { Defs.Values.MethodZeroId + 8, "TRACE" };
             yield return new object[] { Defs.Values.MethodZeroId + 9, "PATCH" };
         }
-
         #endregion
+
+        /************************************************************************/
+
+        #region Internal methods
+        /// <summary>
+        /// Loads method data.
+        /// </summary>
+        /// <remarks>
+        /// This method is called to have the methods loaded prior to an import operation.
+        /// MethodTable does not use <see cref="RawTable{T}.InsertEntryIf(LogEntry)"/>
+        /// because methods are inserted into the table at creation time; no new methods
+        /// may be added.
+        /// </remarks>
+        internal void LoadMethodData()
+        {
+            ClearRaw();
+            string sql =
+                $"select {Defs.Columns.Id},{Defs.Columns.Method} " +
+                $"from {Namespace}.{TableName} " +
+                $"order by {Defs.Columns.Id}";
+
+            LoadFromSql(sql, (reader) =>
+            {
+                return new MethodRow()
+                {
+                    Id = reader.GetInt64(0),
+                    Method = reader.GetString(1)
+                };
+            });
+        }
+
+        /// <summary>
+        /// Gets the method id for the specified method.
+        /// </summary>
+        /// <param name="entry">The log entry</param>
+        /// <returns>The method id</returns>
+        internal long GetMethodId(LogEntry entry)
+        {
+            if (!string.IsNullOrEmpty(entry.Method))
+            {
+                foreach (MethodRow row in EnumerateAll())
+                {
+                    if (row.Method.Equals(entry.Method, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        return row.Id;
+                    }
+                }
+            }
+            return Defs.Values.MethodZeroId;
+        }
 
         internal override void Load(long domainId, IdCollection ids)
         {
@@ -168,5 +183,6 @@ namespace Restless.Logite.Database.Tables
                 };
             });
         }
+        #endregion
     }
 }
