@@ -1,8 +1,7 @@
-﻿using Restless.Toolkit.Core.Database.SQLite;
+﻿using Restless.Logite.Database.Core;
+using Restless.Toolkit.Core.Database.SQLite;
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Text;
 
 namespace Restless.Logite.Database.Tables
 {
@@ -93,18 +92,6 @@ namespace Restless.Logite.Database.Tables
 
         #region Public methods
         /// <summary>
-        /// Provides an enumerable that returns all records
-        /// </summary>
-        /// <returns></returns>
-        public IEnumerable<MethodRow> EnumerateAll()
-        {
-            foreach (var row in RawRows)
-            {
-                yield return row;
-            }
-        }
-
-        /// <summary>
         /// Gets the method id for the specified method.
         /// </summary>
         /// <param name="method">The method string</param>
@@ -182,5 +169,27 @@ namespace Restless.Logite.Database.Tables
             CreateExpressionColumn<long>(Defs.Columns.Calculated.UsageCount, expr);
         }
         #endregion
+
+        internal override void Load(long domainId, IdCollection ids)
+        {
+            string sql =
+                $"SELECT M.{Defs.Columns.Id},{Defs.Columns.Method}," +
+                $"COUNT(L.{LogEntryTable.Defs.Columns.Id}) " +
+                $"FROM {Defs.TableName} M " +
+                $"JOIN {LogEntryTable.Defs.TableName} L " +
+                $"ON (M.{Defs.Columns.Id}=L.{LogEntryTable.Defs.Columns.MethodId} AND L.{LogEntryTable.Defs.Columns.DomainId}={domainId}) " +
+                $"WHERE M.{Defs.Columns.Id} IN ({ids}) " +
+                $"GROUP BY M.id";
+
+            LoadFromSql(sql, (reader) =>
+            {
+                return new MethodRow()
+                {
+                    Id = reader.GetInt64(0),
+                    Method = reader.GetString(1),
+                    UsageCount = reader.GetInt64(2)
+                };
+            });
+        }
     }
 }

@@ -25,7 +25,7 @@ namespace Restless.Logite.Database.Tables
 
         protected long GetInt64(string column)
         {
-            return 0;
+            return 10;
         }
 
         protected DateTime GetDateTime(string column)

@@ -1,12 +1,4 @@
-﻿using Restless.Logite.Database.Core;
-using Restless.Toolkit.Core.Database.SQLite;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Text;
-using Columns = Restless.Logite.Database.Tables.IpAddressTable.Defs.Columns;
-
-namespace Restless.Logite.Database.Tables
+﻿namespace Restless.Logite.Database.Tables
 {
     /// <summary>
     /// Encapsulates a single row from the <see cref="IpAddressTable"/>.
@@ -21,7 +13,8 @@ namespace Restless.Logite.Database.Tables
         /// </summary>
         public long Id
         {
-            get => GetInt64(Columns.Id);
+            get;
+            internal set;
         }
 
         /// <summary>
@@ -29,7 +22,17 @@ namespace Restless.Logite.Database.Tables
         /// </summary>
         public string IpAddress
         {
-            get => GetString(Columns.IpAddress);
+            get;
+            internal set;
+        }
+
+        /// <summary>
+        /// Gets the usage count
+        /// </summary>
+        public long UsageCount
+        {
+            get;
+            internal set;
         }
         #endregion
 
@@ -45,8 +48,16 @@ namespace Restless.Logite.Database.Tables
         #endregion
 
         /************************************************************************/
-
-        #region Private methods
+        #region Public methods
+        /// <summary>
+        /// Gets the string representation of this object.
+        /// </summary>
+        /// <returns>The string.</returns>
+        public override string ToString()
+        {
+            return $"Id:{Id} Ip Address:{IpAddress}";
+        }
         #endregion
+
     }
 }

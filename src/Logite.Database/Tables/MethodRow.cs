@@ -1,9 +1,4 @@
-﻿using Restless.Toolkit.Core.Database.SQLite;
-using System;
-using System.Data;
-using Columns = Restless.Logite.Database.Tables.MethodTable.Defs.Columns;
-
-namespace Restless.Logite.Database.Tables
+﻿namespace Restless.Logite.Database.Tables
 {
     /// <summary>
     /// Encapsulates a single row from the <see cref="MethodTable"/>.
@@ -16,7 +11,8 @@ namespace Restless.Logite.Database.Tables
         /// </summary>
         public long Id
         {
-            get => GetInt64(Columns.Id);
+            get;
+            internal set;
         }
 
         /// <summary>
@@ -24,7 +20,17 @@ namespace Restless.Logite.Database.Tables
         /// </summary>
         public string Method
         {
-            get => GetString(Columns.Method);
+            get;
+            internal set;
+        }
+
+        /// <summary>
+        /// Gets the usage count
+        /// </summary>
+        public long UsageCount
+        {
+            get;
+            internal set;
         }
         #endregion
 
@@ -48,7 +54,7 @@ namespace Restless.Logite.Database.Tables
         /// <returns>The string.</returns>
         public override string ToString()
         {
-            return Method;
+            return $"Id:{Id} Method:{Method}";
         }
         #endregion
     }

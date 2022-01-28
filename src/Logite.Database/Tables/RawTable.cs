@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data;
 using System.Data.SQLite;
 using System.Text;
@@ -14,7 +15,7 @@ namespace Restless.Logite.Database.Tables
     /// </summary>
     public abstract class RawTable<T> : Core.ApplicationTableBase where T: RawRow
     {
-        public List<T> RawRows
+        public ObservableCollection<T> RawRows
         {
             get;
         }
@@ -25,7 +26,7 @@ namespace Restless.Logite.Database.Tables
         /// </summary>
         protected RawTable(string tableName) : base(tableName)
         {
-            RawRows = new List<T>();
+            RawRows = new ObservableCollection<T>();
         }
         #endregion
 
@@ -37,7 +38,7 @@ namespace Restless.Logite.Database.Tables
         /// </summary>
         /// <remarks>
         /// This method satisfies the abstract base class, but does not load any data.
-        /// Data is loaded upon demand using the <see cref="Load(long)"/> method.
+        /// Data is loaded upon demand using the <see cref="LoadFromSql(string, Func{IDataReader, T})"/> method.
         /// </remarks>
         public override sealed void Load()
         {
@@ -47,7 +48,33 @@ namespace Restless.Logite.Database.Tables
 
         /************************************************************************/
 
+        #region Public methods
+        /// <summary>
+        /// Provides an enumerable that returns all records
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<T> EnumerateAll()
+        {
+            foreach (var row in RawRows)
+            {
+                yield return row;
+            }
+        }
+        #endregion
+
+        /************************************************************************/
+
         #region Protected methods
+        protected void LoadFromSql(string sql, Func<IDataReader, T> rawBuilder)
+        {
+            RawRows.Clear();
+            IDataReader reader = Controller.Execution.Query(sql);
+            while (reader.Read())
+            {
+                RawRows.Add(rawBuilder(reader));
+            }
+        }
+
         /// <summary>
         /// Selects an id value using direct execution.
         /// </summary>
@@ -88,11 +115,9 @@ namespace Restless.Logite.Database.Tables
         /************************************************************************/
 
         #region Internal methods
-        internal void Load(IdCollection ids)
+        internal virtual void Load(long domainId, IdCollection ids)
         {
-            Clear();
-            string sql = $"SELECT * FROM {Namespace}.{TableName} WHERE {PrimaryKeyName} IN ({ids})";
-            IDataReader reader = Controller.Execution.Query(sql);
+
         }
 
         /// <summary>

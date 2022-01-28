@@ -132,9 +132,9 @@ namespace Restless.Logite.ViewModel.Domain
                 Update();
             };
 
-            Method.SelectedItemChanged += (s, id) => LogEntry.UpdateFilter(LogEntryTable.Defs.Columns.MethodId, id);
-            Status.SelectedItemChanged += (s, id) => LogEntry.UpdateFilter(LogEntryTable.Defs.Columns.Status, id);
-            Ip.SelectedItemChanged += (s, id) => LogEntry.UpdateFilter(LogEntryTable.Defs.Columns.IpAddressId, id);
+            Method.SelectedItemChanged += (s, id) => LogEntry.UpdateFilter(LogEntryFilterType.Method, id);
+            Status.SelectedItemChanged += (s, id) => LogEntry.UpdateFilter(LogEntryFilterType.Status, id);
+            Ip.SelectedItemChanged += (s, id) => LogEntry.UpdateFilter(LogEntryFilterType.IpAddress, id);
 
             UpdateDomainStatus();
         }

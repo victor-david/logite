@@ -13,7 +13,7 @@ namespace Restless.Logite.ViewModel.Domain
     public class LogEntryController : DomainController<LogEntryTable, LogEntryRow>, IDetailPanel
     {
         #region Private
-        private Dictionary<string, long> filters;
+        private Dictionary<LogEntryFilterType, long> filters;
         private double detailMinWidth;
         private GridLength detailWidth;
         private LogEntryRow logEntry;
@@ -100,16 +100,16 @@ namespace Restless.Logite.ViewModel.Domain
         /// <param name="domain">The domain</param>
         public LogEntryController(DomainRow domain): base(domain)
         {
-            //Columns.Create("Id", LogEntryTable.Defs.Columns.Id).MakeFixedWidth(FixedWidth.W052);
-            //Columns.Create("Timestamp", LogEntryTable.Defs.Columns.Timestamp).MakeDate(Config.LogDisplayFormat).MakeFixedWidth(FixedWidth.W136);
-            //Columns.Create("Ip", LogEntryTable.Defs.Columns.Calculated.IpAddress).MakeFixedWidth(FixedWidth.W096);
-            //Columns.Create("Method", LogEntryTable.Defs.Columns.Calculated.Method).MakeFixedWidth(FixedWidth.W076);
-            //Columns.Create("Request", LogEntryTable.Defs.Columns.Calculated.Request);
-            //Columns.Create("Status", LogEntryTable.Defs.Columns.Status)
-            //    .AddCellStyle(LocalResources.Styles.StatusTextBlockStyle)
-            //    .MakeFixedWidth(FixedWidth.W052);
-            //Columns.Create("Bytes", LogEntryTable.Defs.Columns.BytesSent).MakeFixedWidth(FixedWidth.W052);
-            filters = new Dictionary<string, long>();
+            Columns.Create("Id", nameof(LogEntryRow.Id)).MakeFixedWidth(FixedWidth.W052);
+            Columns.Create("Timestamp", nameof(LogEntryRow.Timestamp)).MakeDate(Config.LogDisplayFormat).MakeFixedWidth(FixedWidth.W136);
+            Columns.Create("Ip", nameof(LogEntryRow.IpAddress)).MakeFixedWidth(FixedWidth.W096);
+            Columns.Create("Method", nameof(LogEntryRow.Method)).MakeFixedWidth(FixedWidth.W076);
+            Columns.Create("Request", nameof(LogEntryRow.Request));
+            Columns.Create("Status", nameof(LogEntryRow.Status))
+                .AddCellStyle(LocalResources.Styles.StatusTextBlockStyle)
+                .MakeFixedWidth(FixedWidth.W052);
+            Columns.Create("Bytes", nameof(LogEntryRow.BytesSent)).MakeFixedWidth(FixedWidth.W052);
+            filters = new Dictionary<LogEntryFilterType, long>();
             IsDetailVisible = Config.LogEntryDetailVisible;
         }
         #endregion
@@ -122,27 +122,27 @@ namespace Restless.Logite.ViewModel.Domain
         /// </summary>
         /// <param name="propertyName">The name of the (long) property to filter on</param>
         /// <param name="value">The value</param>
-        public void UpdateFilter(string propertyName, long value)
+        public void UpdateFilter(LogEntryFilterType filterType, long value)
         {
             if (value != -1)
             {
-                if (filters.ContainsKey(propertyName))
+                if (filters.ContainsKey(filterType))
                 {
-                    filters[propertyName] = value;
+                    filters[filterType] = value;
                 }
                 else
                 {
-                    filters.Add(propertyName, value);
+                    filters.Add(filterType, value);
                 }
             }
             else
             {
-                if (filters.ContainsKey(propertyName))
+                if (filters.ContainsKey(filterType))
                 {
-                    filters.Remove(propertyName);
+                    filters.Remove(filterType);
                 }
             }
-            //Refresh();
+            ListView.Refresh();
         }
         #endregion
 
@@ -175,18 +175,16 @@ namespace Restless.Logite.ViewModel.Domain
             base.OnUpdate();
         }
 
-        protected override bool OnDataRowFilter(RawRow item)
+        protected override bool OnDataRowFilter(LogEntryRow item)
         {
-            return true;
-                //Domain != null &&
-                //(long)item[LogEntryTable.Defs.Columns.DomainId] == Domain.Id &&
-                //!item[LogEntryTable.Defs.Columns.Calculated.Request].ToString().StartsWith("/asset", StringComparison.InvariantCultureIgnoreCase) &&
-                //EvaluateFilters(item);
+            return 
+                !item.Request.StartsWith("/asset", StringComparison.InvariantCultureIgnoreCase) &&
+                EvaluateFilters(item);
         }
 
-        protected override int OnDataRowCompare(RawRow item1, RawRow item2)
+        protected override int OnDataRowCompare(LogEntryRow item1, LogEntryRow item2)
         {
-            return 0; //  DataRowCompareDateTime(item2, item1, LogEntryTable.Defs.Columns.Timestamp);
+            return item2.Timestamp.CompareTo(item1.Timestamp);
         }
 
         protected override void OnSelectedItemChanged()
@@ -212,14 +210,28 @@ namespace Restless.Logite.ViewModel.Domain
             //}
         }
 
-        private bool EvaluateFilters(DataRow item)
+        private bool EvaluateFilters(LogEntryRow item)
         {
             bool result = true;
-            foreach (var x in filters)
+            if (filters != null)
             {
-                result = result && (long)item[x.Key] == x.Value;
+                foreach (var x in filters)
+                {
+                    result = result && GetFilterResult(x.Key, item, x.Value);
+                }
             }
             return result;
+        }
+
+        private bool GetFilterResult(LogEntryFilterType filterType, LogEntryRow row, long value)
+        {
+            return filterType switch
+            {
+                LogEntryFilterType.IpAddress => row.IpAddressId == value,
+                LogEntryFilterType.Method => row.MethodId == value,
+                LogEntryFilterType.Status => row.Status == value,
+                _ => true
+            };
         }
         #endregion
     }

@@ -155,6 +155,28 @@ namespace Restless.Logite.Database.Tables
             Save();
             return (long)row[Defs.Columns.Id];
         }
+
+        internal override void Load(long domainId, IdCollection ids)
+        {
+            string sql =
+                $"SELECT S.{Defs.Columns.Id},S.{Defs.Columns.Status}," +
+                $"COUNT(L.{LogEntryTable.Defs.Columns.Id}) " +
+                $"FROM {Defs.TableName} S " +
+                $"LEFT JOIN {LogEntryTable.Defs.TableName} L " +
+                $"ON (S.{Defs.Columns.Status}=L.{LogEntryTable.Defs.Columns.Status} AND L.{LogEntryTable.Defs.Columns.DomainId}={domainId}) " +
+                $"WHERE S.{Defs.Columns.Status} IN ({ids})" +
+                $"GROUP BY S.{Defs.Columns.Status}";
+
+            LoadFromSql(sql, (reader) =>
+            {
+                return new StatusRow()
+                {
+                    Id = reader.GetInt64(0),
+                    Status = reader.GetInt64(1),
+                    UsageCount = reader.GetInt64(2)
+                };
+            });
+        }
         #endregion
     }
 }

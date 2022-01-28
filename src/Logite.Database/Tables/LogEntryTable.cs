@@ -11,9 +11,8 @@ namespace Restless.Logite.Database.Tables
     public class LogEntryTable : RawTable<LogEntryRow>
     {
         private IdCollection ipId;
-        private IdCollection requestId;
-        private IdCollection refererId;
-        private IdCollection agentId;
+        private IdCollection methodId;
+        private IdCollection statusId;
 
         #region Public properties
         /// <summary>
@@ -155,9 +154,8 @@ namespace Restless.Logite.Database.Tables
         public LogEntryTable() : base(Defs.TableName)
         {
             ipId = new IdCollection();
-            requestId = new IdCollection();
-            refererId = new IdCollection();
-            agentId = new IdCollection();
+            methodId = new IdCollection();
+            statusId = new IdCollection();
         }
         #endregion
 
@@ -307,6 +305,11 @@ namespace Restless.Logite.Database.Tables
 
             Controller.Execution.NonQuery(sql.ToString());
         }
+
+        internal override void Load(long domainId, IdCollection ids)
+        {
+            throw new NotImplementedException();
+        }
         #endregion
 
         /************************************************************************/
@@ -319,31 +322,62 @@ namespace Restless.Logite.Database.Tables
             ClearIdCollections();
 
             stopwatch.Restart();
-            string sql = $"SELECT * FROM {Namespace}.{TableName} WHERE {Defs.Columns.DomainId}={domain.Id} AND  {Defs.Columns.Timestamp} > date('now','-{domain.Period} day')";
+            string sql = 
+                $"SELECT " +
+                $"L.{Defs.Columns.Id},{Defs.Columns.RemoteUser},{Defs.Columns.Timestamp},{Defs.Columns.Status}," +
+                $"{Defs.Columns.BytesSent},{Defs.Columns.HttpVersion},{Defs.Columns.DomainId},{Defs.Columns.IpAddressId}," +
+                $"{Defs.Columns.MethodId},{Defs.Columns.RequestId},{Defs.Columns.RefererId},{Defs.Columns.UserAgentId}," +
+                $"{Defs.Columns.AttackIdRequest},{Defs.Columns.AttackIdReferer},{Defs.Columns.AttackIdAgent}," +
+                $"IP.{IpAddressTable.Defs.Columns.IpAddress}," +
+                $"M.{MethodTable.Defs.Columns.Method}," +
+                $"R.{RequestTable.Defs.Columns.Request} " +
+                $"FROM {Namespace}.{TableName} L " +
+                $"LEFT JOIN {IpAddressTable.Defs.TableName} IP ON (L.{Defs.Columns.IpAddressId} = IP.{IpAddressTable.Defs.Columns.Id}) " +
+                $"LEFT JOIN {MethodTable.Defs.TableName} M ON (L.{Defs.Columns.MethodId} = M.{MethodTable.Defs.Columns.Id}) " +
+                $"LEFT JOIN {RequestTable.Defs.TableName} R ON (L.{Defs.Columns.RequestId} = R.{RequestTable.Defs.Columns.Id}) " +
+                $"WHERE {Defs.Columns.DomainId}={domain.Id} AND {Defs.Columns.Timestamp} > date('now','-{domain.Period} day')";
 
-            IDataReader reader = Controller.Execution.Query(sql);
-            while (reader.Read())
+            LoadFromSql(sql, (reader) =>
             {
+                return new LogEntryRow()
+                {
+                    Id = reader.GetInt64(0),
+                    //RemoteUser = reader.GetString(1),
+                    Timestamp = reader.GetDateTime(2),
+                    Status = reader.GetInt64(3),
+                    BytesSent = reader.GetInt64(4),
+                    HttpVersion = reader.GetString(5),
+                    DomainId = reader.GetInt64(6),
+                    IpAddressId = reader.GetInt64(7),
+                    MethodId = reader.GetInt64(8),
+                    RequestId = reader.GetInt64(9),
+                    RefererId = reader.GetInt64(10),
+                    AgentId = reader.GetInt64(11),
+                    AttackIdRequest = reader.GetInt64(12),
+                    AttackIdReferer = reader.GetInt64(13),
+                    AttackIdAgent = reader.GetInt64(14),
+                    IpAddress = reader.GetString(15),
+                    Method = reader.GetString(16),
+                    Request = reader.GetString(17)
 
-            }
-            // Load(Controller.Execution.Query(sql));
+                };
+            });
 
             stopwatch.Stop();
             Debug.WriteLine($"Main load: {stopwatch.ElapsedMilliseconds} ms");
 
-            foreach (DataRow row in Rows)
+            foreach (LogEntryRow row in RawRows)
             {
-                ipId.Add((long)row[Defs.Columns.IpAddressId]);
-                requestId.Add((long)row[Defs.Columns.RequestId]);
-                refererId.Add((long)row[Defs.Columns.RefererId]);
-                agentId.Add((long)row[Defs.Columns.UserAgentId]);
+                ipId.Add(row.IpAddressId);
+                methodId.Add(row.MethodId);
+                statusId.Add(row.Status);
             }
 
             stopwatch.Start();
-            //Controller.GetTable<IpAddressTable>().Load(ipId);
-            //Controller.GetTable<RequestTable>().Load(requestId);
-            //Controller.GetTable<RefererTable>().Load(refererId);
-            //Controller.GetTable<UserAgentTable>().Load(agentId);
+            Controller.GetTable<IpAddressTable>().Load(domain.Id, ipId);
+            Controller.GetTable<MethodTable>().Load(domain.Id, methodId);
+            Controller.GetTable<StatusTable>().Load(domain.Id, statusId);
+
             stopwatch.Stop();
             Debug.WriteLine($"Secondary load: {stopwatch.ElapsedMilliseconds} ms");
         }
@@ -361,9 +395,8 @@ namespace Restless.Logite.Database.Tables
         private void ClearIdCollections()
         {
             ipId.Clear();
-            requestId.Clear();
-            refererId.Clear();
-            agentId.Clear();
+            methodId.Clear();
+            statusId.Clear();
         }
 
         // private DataPointCollection<T> GetDateCountCollection<T>(DomainRow domain, Predicate<LogEntryRecord> evaluator) where T : DataPoint
@@ -386,11 +419,6 @@ namespace Restless.Logite.Database.Tables
             {
                 LogEntryRecord record =  GetLogEntryRecord(reader);
                 processor(dataPoints, record);
-
-                //if (evaluator(record))
-                //{
-                //    //dataPoints.AddDataPoint(record.Timestamp);
-                //}
             }
 
             return dataPoints;

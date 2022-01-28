@@ -39,7 +39,8 @@ namespace Restless.Logite.Database.Tables
         /// </summary>
         public long Id
         {
-            get => GetInt64(Columns.Id);
+            get;
+            internal set;
         }
 
         /// <summary>
@@ -47,7 +48,8 @@ namespace Restless.Logite.Database.Tables
         /// </summary>
         public string RemoteUser
         {
-            get => GetString(Columns.RemoteUser);
+            get;
+            internal set;
         }
 
         /// <summary>
@@ -55,7 +57,8 @@ namespace Restless.Logite.Database.Tables
         /// </summary>
         public DateTime Timestamp
         {
-            get => GetDateTime(Columns.Timestamp);
+            get;
+            internal set;
         }
 
         /// <summary>
@@ -63,7 +66,8 @@ namespace Restless.Logite.Database.Tables
         /// </summary>
         public long Status
         {
-            get => GetInt64(Columns.Status);
+            get;
+            internal set;
         }
 
         /// <summary>
@@ -71,7 +75,8 @@ namespace Restless.Logite.Database.Tables
         /// </summary>
         public long BytesSent
         {
-            get => GetInt64(Columns.BytesSent);
+            get;
+            internal set;
         }
 
         /// <summary>
@@ -79,23 +84,62 @@ namespace Restless.Logite.Database.Tables
         /// </summary>
         public string HttpVersion
         {
-            get => GetString(Columns.HttpVersion);
+            get;
+            internal set;
         }
 
-        /// <summary>
-        /// Gets the request.
-        /// </summary>
-        public string Request
+        public long DomainId
         {
-            get => GetString(Columns.Calculated.Request);
+            get;
+            internal set;
         }
 
-        /// <summary>
-        /// Gets the referer.
-        /// </summary>
-        public string Referer
+        public long IpAddressId
         {
-            get => GetString(Columns.Calculated.Referer);
+            get;
+            internal set;
+        }
+
+        public long MethodId
+        {
+            get;
+            internal set;
+        }
+
+        public long RequestId
+        {
+            get;
+            internal set;
+        }
+
+        public long RefererId
+        {
+            get;
+            internal set;
+        }
+
+        public long AgentId
+        {
+            get;
+            internal set;
+        }
+
+        public long AttackIdRequest
+        {
+            get;
+            internal set;
+        }
+
+        public long AttackIdReferer
+        {
+            get;
+            internal set;
+        }
+
+        public long AttackIdAgent
+        {
+            get;
+            internal set;
         }
 
         /// <summary>
@@ -103,7 +147,32 @@ namespace Restless.Logite.Database.Tables
         /// </summary>
         public string IpAddress
         {
-            get => GetString(Columns.Calculated.IpAddress);
+            get;
+            internal set;
+        }
+
+        public string Method
+        {
+            get;
+            internal set;
+        }
+
+        /// <summary>
+        /// Gets the request.
+        /// </summary>
+        public string Request
+        {
+            get;
+            internal set;
+        }
+
+        /// <summary>
+        /// Gets the referer.
+        /// </summary>
+        public string Referer
+        {
+            get;
+            internal set;
         }
 
         /// <summary>

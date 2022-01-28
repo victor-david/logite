@@ -5,6 +5,7 @@ using Restless.Toolkit.Controls;
 using Restless.Toolkit.Core.Database.SQLite;
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Windows.Data;
 
 namespace Restless.Logite.ViewModel.Domain
@@ -61,10 +62,15 @@ namespace Restless.Logite.ViewModel.Domain
                 if (SetProperty(ref selectedItem, value))
                 {
                     OnPropertyChanged(nameof(IsItemSelected));
-                    //OnPropertyChanged(nameof(SelectedDataRow));
+                    OnPropertyChanged(nameof(SelectedRawRow));
                     OnSelectedItemChanged();
                 }
             }
+        }
+
+        public TR SelectedRawRow
+        {
+            get => selectedItem as TR;
         }
 
         /// <summary>
@@ -94,12 +100,11 @@ namespace Restless.Logite.ViewModel.Domain
             ListView = new ListCollectionView(Table.RawRows);
             using (ListView.DeferRefresh())
             {
-                // ListView.CustomSort = new GenericComparer<DataRowView>((x, y) => OnDataRowCompare(x.Row, y.Row));
-                ListView.Filter = (item) => item is RawRow raw && OnDataRowFilter(raw);
+                ListView.CustomSort = new GenericComparer<TR>((x, y) => OnDataRowCompare(x, y));
+                ListView.Filter = (item) => item is TR raw && OnDataRowFilter(raw);
             }
 
             Columns = new DataGridColumnCollection();
-            //Commands.Add("ClearSelection", p => SelectedItem = null);
         }
         #endregion
 
@@ -111,7 +116,7 @@ namespace Restless.Logite.ViewModel.Domain
         /// </summary>
         /// <param name="item">The item to check.</param>
         /// <returns>true if <paramref name="item"/> is included; otherwise, false.</returns>
-        protected virtual bool OnDataRowFilter(RawRow item)
+        protected virtual bool OnDataRowFilter(TR item)
         {
             return true;
         }
@@ -120,10 +125,10 @@ namespace Restless.Logite.ViewModel.Domain
         /// Override in a derived class to compares two specified <see cref="RawRow"/> objects.
         /// The base method returns zero.
         /// </summary>
-        /// <param name="item1">The first data row</param>
+        /// <param name="item1">The first  row</param>
         /// <param name="item2">The second data row</param>
         /// <returns>An integer value 0, 1, or -1</returns>
-        protected virtual int OnDataRowCompare(RawRow item1, RawRow item2)
+        protected virtual int OnDataRowCompare(TR item1, TR item2)
         {
             return 0;
         }

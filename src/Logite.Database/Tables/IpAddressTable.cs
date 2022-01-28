@@ -117,6 +117,38 @@ namespace Restless.Logite.Database.Tables
             long id = SelectScalarId(Defs.Columns.IpAddress, entry.RemoteAddress);
             return id != -1 ? id : InsertScalarId(Defs.Columns.IpAddress, entry.RemoteAddress);
         }
+
+        internal override void Load(long domainId, IdCollection ids)
+        {
+            string sql = 
+                $"SELECT IP.{Defs.Columns.Id},{Defs.Columns.IpAddress}," +
+                $"COUNT(L.{LogEntryTable.Defs.Columns.Id}) " +
+                $"FROM {Defs.TableName} IP " +
+                $"LEFT JOIN {LogEntryTable.Defs.TableName} L " +
+                $"ON (IP.{Defs.Columns.Id}=L.{LogEntryTable.Defs.Columns.IpAddressId} AND L.{LogEntryTable.Defs.Columns.DomainId}={domainId}) " +
+                $"WHERE IP.{Defs.Columns.Id} IN ({ids})" +
+                $"GROUP BY IP.{Defs.Columns.Id}";
+
+            LoadFromSql(sql, (reader) =>
+            {
+                return new IpAddressRow()
+                {
+                    Id = reader.GetInt64(0),
+                    IpAddress = reader.GetString(1),
+                    UsageCount = reader.GetInt64(2)
+                };
+            });
+        }
+
+//  SELECT
+//IP.id, ipaddress,
+//COUNT(L.id)
+//FROM ipaddress IP
+//left join logentry L on (IP.id = L.ipaddressid)
+
+//WHERE IP.id in (-1,675,676,677,678,123,526,679,680,681,682,683,574,452,487,684,427,685,778,779,780,781)
+//GROUP BY IP.id
+
         #endregion
     }
 }
