@@ -150,17 +150,17 @@ namespace Restless.Logite.Database.Tables
 
         public DataPointCollection<CountDataPoint> GetTotalTrafficData(DomainRow domain)
         {
-            return GetDateCountCollection<CountDataPoint>(domain, (points, logEntryRecord) => 
+            return GetDateCountCollection<CountDataPoint>(domain, (points, logEntryRow) => 
             {
-                points.Add(CountDataPoint.Create(logEntryRecord.Timestamp)).Count++;
+                points.Add(CountDataPoint.Create(logEntryRow.Timestamp)).Count++;
             });
         }
 
         public DataPointCollection<StatusDataPoint> GetStatusTrafficData(DomainRow domain)
         {
-            return GetDateCountCollection<StatusDataPoint>(domain, (points, logEntryRecord) =>
+            return GetDateCountCollection<StatusDataPoint>(domain, (points, logEntryRow) =>
             {
-                points.Add(StatusDataPoint.Create(logEntryRecord.Timestamp)).IncrementStatusCount(logEntryRecord.Status);
+                points.Add(StatusDataPoint.Create(logEntryRow.Timestamp)).IncrementStatusCount(logEntryRow.Status);
             });
         }
 
@@ -168,17 +168,17 @@ namespace Restless.Logite.Database.Tables
         {
             Dictionary<DateTime, List<long>> ips = new Dictionary<DateTime, List<long>>();
 
-            return GetDateCountCollection<CountDataPoint>(domain, (points, logEntryRecord) =>
+            return GetDateCountCollection<CountDataPoint>(domain, (points, logEntryRow) =>
             {
-                CountDataPoint point = points.Add(CountDataPoint.Create(logEntryRecord.Timestamp));
+                CountDataPoint point = points.Add(CountDataPoint.Create(logEntryRow.Timestamp));
                 if (!ips.ContainsKey(point.Date))
                 {
                     ips.Add(point.Date, new List<long>());
                 }
 
-                if (!ips[point.Date].Contains(logEntryRecord.IpAddressId))
+                if (!ips[point.Date].Contains(logEntryRow.IpAddressId))
                 {
-                    ips[point.Date].Add(logEntryRecord.IpAddressId);
+                    ips[point.Date].Add(logEntryRow.IpAddressId);
                     point.Count++;
                 }
             });
@@ -350,7 +350,7 @@ namespace Restless.Logite.Database.Tables
             statusId.Clear();
         }
 
-        private DataPointCollection<T> GetDateCountCollection<T>(DomainRow domain, Action<DataPointCollection<T>, LogEntryRecord> processor) where T : DataPoint
+        private DataPointCollection<T> GetDateCountCollection<T>(DomainRow domain, Action<DataPointCollection<T>, LogEntryRow> processor) where T : DataPoint
         {
             DataPointCollection<T> dataPoints = new DataPointCollection<T>();
 
@@ -367,16 +367,16 @@ namespace Restless.Logite.Database.Tables
 
             while (reader.Read())
             {
-                LogEntryRecord record =  GetLogEntryRecord(reader);
+                LogEntryRow record =  GetLogEntryRecord(reader);
                 processor(dataPoints, record);
             }
 
             return dataPoints;
         }
 
-        private LogEntryRecord GetLogEntryRecord(IDataReader reader)
+        private LogEntryRow GetLogEntryRecord(IDataReader reader)
         {
-            return new LogEntryRecord()
+            return new LogEntryRow()
             {
                 Id = reader.GetInt64(0),
                 Timestamp = reader.GetDateTime(1),
@@ -386,10 +386,10 @@ namespace Restless.Logite.Database.Tables
                 MethodId = reader.GetInt64(5),
                 RequestId = reader.GetInt64(6),
                 RefererId = reader.GetInt64(7),
-                UserAgentId = reader.GetInt64(8),
-                AttackIdRequest = reader.GetInt64(9),
-                AttackIdReferer = reader.GetInt64(10),
-                AttackIdAgent = reader.GetInt64(11)
+                AgentId = reader.GetInt64(8),
+                RequestAttackId = reader.GetInt64(9),
+                RefererAttackId = reader.GetInt64(10),
+                AgentAttackId = reader.GetInt64(11)
             };
         }
         #endregion
