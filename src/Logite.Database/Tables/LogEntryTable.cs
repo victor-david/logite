@@ -301,12 +301,13 @@ namespace Restless.Logite.Database.Tables
             LoadFromSql(sql, (reader) =>
             {
                 string request = reader.GetString(17);
+
                 if (IsRequestIncluded(ignored, request))
                 {
                     return new LogEntryRow()
                     {
                         Id = reader.GetInt64(0),
-                        //RemoteUser = reader.GetString(1),
+                        RemoteUser = reader.IsDBNull(1) ? null : reader.GetString(1),
                         Timestamp = reader.GetDateTime(2),
                         Status = reader.GetInt64(3),
                         BytesSent = reader.GetInt64(4),
