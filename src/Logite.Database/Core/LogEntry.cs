@@ -197,7 +197,7 @@ namespace Restless.Logite.Database.Core
         /// <param name="value">The complete request string</param>
         /// <remarks>
         /// This method expects that the entire request string is passed, i.e. "GET /user/test HTTP/1.1"
-        /// It extracts the method and the request, populating <see cref="Method"/> and <see cref="Request"/>.
+        /// It extracts the method, the request, and the http version - populating their respective properties.
         /// </remarks>
         public void SetRequest(string value)
         {
@@ -213,7 +213,7 @@ namespace Restless.Logite.Database.Core
                 }
                 else
                 {
-                    int httpPos = request.IndexOf("HTTP/1");
+                    int httpPos = request.IndexOf("HTTP/");
                     if (httpPos != -1)
                     {
                         string[] http = request.Substring(httpPos).Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);

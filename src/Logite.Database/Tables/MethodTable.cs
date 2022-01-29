@@ -114,6 +114,7 @@ namespace Restless.Logite.Database.Tables
             yield return new object[] { Defs.Values.MethodZeroId + 7, "OPTIONS" };
             yield return new object[] { Defs.Values.MethodZeroId + 8, "TRACE" };
             yield return new object[] { Defs.Values.MethodZeroId + 9, "PATCH" };
+            yield return new object[] { Defs.Values.MethodZeroId + 10, "PRI" };
         }
         #endregion
 
