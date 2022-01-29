@@ -91,10 +91,11 @@ namespace Restless.Logite.ViewModel.Domain
         public LogEntryController(DomainRow domain): base(domain)
         {
             Columns.Create("Id", nameof(LogEntryRow.Id)).MakeFixedWidth(FixedWidth.W052);
-            Columns.Create("Timestamp", nameof(LogEntryRow.Timestamp)).MakeDate(Config.LogDisplayFormat).MakeFixedWidth(FixedWidth.W136);
+            Columns.Create("Timestamp", nameof(LogEntryRow.Timestamp)).MakeDate(Config.LogDisplayFormat, FixedWidth.W136, false);
             Columns.Create("Ip", nameof(LogEntryRow.IpAddress)).MakeFixedWidth(FixedWidth.W096);
             Columns.Create("Method", nameof(LogEntryRow.Method)).MakeFixedWidth(FixedWidth.W076);
             Columns.Create("Request", nameof(LogEntryRow.Request));
+            Columns.Create("Http", nameof(LogEntryRow.HttpVersion)).MakeFixedWidth(FixedWidth.W052);
             Columns.Create("Status", nameof(LogEntryRow.Status))
                 .AddCellStyle(LocalResources.Styles.StatusTextBlockStyle)
                 .MakeFixedWidth(FixedWidth.W052);
@@ -146,7 +147,12 @@ namespace Restless.Logite.ViewModel.Domain
 
         protected override int OnDataRowCompare(LogEntryRow item1, LogEntryRow item2)
         {
-            return item2.Timestamp.CompareTo(item1.Timestamp);
+            int result = item2.Timestamp.CompareTo(item1.Timestamp);
+            if (result == 0)
+            {
+                result = item2.Id.CompareTo(item1.Id);
+            }
+            return result;
         }
         #endregion
 
