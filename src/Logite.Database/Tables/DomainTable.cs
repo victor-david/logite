@@ -130,7 +130,7 @@ namespace Restless.Logite.Database.Tables
                 /// <summary>
                 /// The default value for <see cref="Columns.Ignored"/>.
                 /// </summary>
-                public const string DefaultIgnored = "/asset;/robots.txt;/favicon;/appple.touch;/site.web.manifest";
+                public const string DefaultIgnored = "/asset;//asset;/robots.txt;/favicon;/apple.touch;/site.webmanifest";
 
                 /// <summary>
                 /// Provides static values for <see cref="Defs.Columns.DisplayMode"/>

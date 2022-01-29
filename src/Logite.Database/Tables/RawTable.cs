@@ -68,13 +68,24 @@ namespace Restless.Logite.Database.Tables
         /************************************************************************/
 
         #region Protected methods
+        /// <summary>
+        /// Loads <see cref="RawRows"/> from the specified sql string.
+        /// </summary>
+        /// <param name="sql">The sql to execute</param>
+        /// <param name="rawBuilder">
+        /// A callback that returns a raw row. Return null to skip the row.
+        /// </param>
         protected void LoadFromSql(string sql, Func<IDataReader, T> rawBuilder)
         {
             RawRows.Clear();
             IDataReader reader = Controller.Execution.Query(sql);
             while (reader.Read())
             {
-                RawRows.Add(rawBuilder(reader));
+                T rawRow = rawBuilder(reader);
+                if (rawRow != null)
+                {
+                    RawRows.Add(rawRow);
+                }
             }
         }
 

@@ -278,6 +278,8 @@ namespace Restless.Logite.Database.Tables
             Clear();
             ClearIdCollections();
 
+            HashSet<string> ignored = domain.GetIgnoredSet();
+
             string sql = 
                 $"SELECT " +
                 $"L.{Defs.Columns.Id},{Defs.Columns.RemoteUser},{Defs.Columns.Timestamp},{Defs.Columns.Status}," +
@@ -295,28 +297,32 @@ namespace Restless.Logite.Database.Tables
 
             LoadFromSql(sql, (reader) =>
             {
-                return new LogEntryRow()
+                string request = reader.GetString(17);
+                if (IsRequestIncluded(ignored, request))
                 {
-                    Id = reader.GetInt64(0),
-                    //RemoteUser = reader.GetString(1),
-                    Timestamp = reader.GetDateTime(2),
-                    Status = reader.GetInt64(3),
-                    BytesSent = reader.GetInt64(4),
-                    HttpVersion = reader.GetString(5),
-                    DomainId = reader.GetInt64(6),
-                    IpAddressId = reader.GetInt64(7),
-                    MethodId = reader.GetInt64(8),
-                    RequestId = reader.GetInt64(9),
-                    RefererId = reader.GetInt64(10),
-                    AgentId = reader.GetInt64(11),
-                    RequestAttackId = reader.GetInt64(12),
-                    RefererAttackId = reader.GetInt64(13),
-                    AgentAttackId = reader.GetInt64(14),
-                    IpAddress = reader.GetString(15),
-                    Method = reader.GetString(16),
-                    Request = reader.GetString(17)
-
-                };
+                    return new LogEntryRow()
+                    {
+                        Id = reader.GetInt64(0),
+                        //RemoteUser = reader.GetString(1),
+                        Timestamp = reader.GetDateTime(2),
+                        Status = reader.GetInt64(3),
+                        BytesSent = reader.GetInt64(4),
+                        HttpVersion = reader.GetString(5),
+                        DomainId = reader.GetInt64(6),
+                        IpAddressId = reader.GetInt64(7),
+                        MethodId = reader.GetInt64(8),
+                        RequestId = reader.GetInt64(9),
+                        RefererId = reader.GetInt64(10),
+                        AgentId = reader.GetInt64(11),
+                        RequestAttackId = reader.GetInt64(12),
+                        RefererAttackId = reader.GetInt64(13),
+                        AgentAttackId = reader.GetInt64(14),
+                        IpAddress = reader.GetString(15),
+                        Method = reader.GetString(16),
+                        Request = request
+                    };
+                }
+                return null;
             });
 
             foreach (LogEntryRow row in RawRows)
@@ -329,6 +335,21 @@ namespace Restless.Logite.Database.Tables
             Controller.GetTable<IpAddressTable>().Load(domain.Id, ipId);
             Controller.GetTable<MethodTable>().Load(domain.Id, methodId);
             Controller.GetTable<StatusTable>().Load(domain.Id, statusId);
+        }
+
+        private bool IsRequestIncluded(HashSet<string> ignored, string request)
+        {
+            if (!string.IsNullOrEmpty(request))
+            {
+                foreach (string ignore in ignored)
+                {
+                    if (request.StartsWith(ignore, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
 
         private void UnloadDomainPrivate()

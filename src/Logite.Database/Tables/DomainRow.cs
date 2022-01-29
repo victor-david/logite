@@ -1,5 +1,6 @@
 ﻿using Restless.Toolkit.Core.Database.SQLite;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using Columns = Restless.Logite.Database.Tables.DomainTable.Defs.Columns;
 
@@ -115,6 +116,28 @@ namespace Restless.Logite.Database.Tables
         public override string ToString()
         {
             return DisplayName;
+        }
+        #endregion
+
+        /************************************************************************/
+
+        #region Internal methods
+        /// <summary>
+        /// Gets a hash set that contains the ignored entries from <see cref="Ignored"/>
+        /// </summary>
+        /// <returns>A hash set</returns>
+        internal HashSet<string> GetIgnoredSet()
+        {
+            HashSet<string> result = new HashSet<string>();
+            string[] ignored = Ignored.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (string str in ignored)
+            {
+                if (!result.Contains(str))
+                {
+                    result.Add(str);
+                }
+            }
+            return result;
         }
         #endregion
     }
