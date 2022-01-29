@@ -141,9 +141,7 @@ namespace Restless.Logite.ViewModel.Domain
         #region Protected methods
         protected override bool OnDataRowFilter(LogEntryRow item)
         {
-            return 
-                !item.Request.StartsWith("/asset", StringComparison.InvariantCultureIgnoreCase) &&
-                EvaluateFilters(item);
+            return EvaluateFilters(item);
         }
 
         protected override int OnDataRowCompare(LogEntryRow item1, LogEntryRow item2)
