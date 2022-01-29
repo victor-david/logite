@@ -283,7 +283,7 @@ namespace Restless.Logite.Database.Tables
 
             HashSet<string> ignored = domain.GetIgnoredSet();
 
-            string sql = 
+            string sql =
                 $"SELECT " +
                 $"L.{Defs.Columns.Id},{Defs.Columns.RemoteUser},{Defs.Columns.Timestamp},{Defs.Columns.Status}," +
                 $"{Defs.Columns.BytesSent},{Defs.Columns.HttpVersion},{Defs.Columns.DomainId},{Defs.Columns.IpAddressId}," +
@@ -291,11 +291,13 @@ namespace Restless.Logite.Database.Tables
                 $"{Defs.Columns.AttackIdRequest},{Defs.Columns.AttackIdReferer},{Defs.Columns.AttackIdAgent}," +
                 $"IP.{IpAddressTable.Defs.Columns.IpAddress}," +
                 $"M.{MethodTable.Defs.Columns.Method}," +
-                $"R.{RequestTable.Defs.Columns.Request} " +
+                $"R.{RequestTable.Defs.Columns.Request}," +
+                $"RF.{RefererTable.Defs.Columns.Referer} " +
                 $"FROM {Namespace}.{TableName} L " +
                 $"LEFT JOIN {IpAddressTable.Defs.TableName} IP ON (L.{Defs.Columns.IpAddressId} = IP.{IpAddressTable.Defs.Columns.Id}) " +
                 $"LEFT JOIN {MethodTable.Defs.TableName} M ON (L.{Defs.Columns.MethodId} = M.{MethodTable.Defs.Columns.Id}) " +
                 $"LEFT JOIN {RequestTable.Defs.TableName} R ON (L.{Defs.Columns.RequestId} = R.{RequestTable.Defs.Columns.Id}) " +
+                $"LEFT JOIN {RefererTable.Defs.TableName} RF ON (L.{Defs.Columns.RefererId} = RF.{RefererTable.Defs.Columns.Id}) " +
                 $"WHERE {Defs.Columns.DomainId}={domain.Id} AND {Defs.Columns.Timestamp} > date('now','-{domain.Period} day')";
 
             LoadFromSql(sql, (reader) =>
@@ -323,7 +325,8 @@ namespace Restless.Logite.Database.Tables
                         AgentAttackId = reader.GetInt64(14),
                         IpAddress = reader.GetString(15),
                         Method = reader.GetString(16),
-                        Request = request
+                        Request = request,
+                        Referer = reader.GetString(18)
                     };
                 }
                 return null;
