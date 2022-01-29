@@ -9,6 +9,12 @@ namespace Restless.Logite.Database.Tables
     /// </summary>
     public class LogEntryRow : RawRow
     {
+        #region Private
+        private bool demandInitialized;
+        #endregion;
+
+        /************************************************************************/
+
         #region Helper class
         public class Property
         {
@@ -197,6 +203,15 @@ namespace Restless.Logite.Database.Tables
         }
 
         /// <summary>
+        /// Gets the user agent.
+        /// </summary>
+        public string Agent
+        {
+            get;
+            internal set;
+        }
+
+        /// <summary>
         /// Gets the request attack if any.
         /// </summary>
         public string RequestAttack
@@ -251,7 +266,7 @@ namespace Restless.Logite.Database.Tables
         /// </summary>
         private IEnumerable<Property> EnumerateProperties()
         {
-            InitializeAttackProperties();
+            InitializeDemandProperties();
             yield return new Property(nameof(Timestamp), Timestamp.ToString());
             yield return new Property(nameof(IpAddress), IpAddress);
             yield return new Property(nameof(HttpVersion), HttpVersion);
@@ -259,9 +274,21 @@ namespace Restless.Logite.Database.Tables
             yield return new Property(nameof(Request), Request);
             yield return new Property(nameof(Referer), Referer);
             yield return new Property(nameof(BytesSent), BytesSent.ToString());
+            yield return new Property(nameof(Agent), Agent);
             yield return new Property(nameof(RequestAttack), RequestAttack);
             yield return new Property(nameof(RefererAttack), RefererAttack);
             yield return new Property(nameof(AgentAttack), AgentAttack);
+        }
+
+        private void InitializeDemandProperties()
+        {
+            if (!demandInitialized)
+            {
+                InitializeAttackProperties();
+                InitializeRefererProperty();
+                InitializeAgentProperty();
+                demandInitialized = true;
+            }
         }
 
         /// <summary>
@@ -269,12 +296,9 @@ namespace Restless.Logite.Database.Tables
         /// </summary>
         private void InitializeAttackProperties()
         {
-            if (string.IsNullOrEmpty(RequestAttack))
-            {
-                RequestAttack = GetAttackProperty(RequestAttackId);
-                RefererAttack = GetAttackProperty(RefererAttackId);
-                AgentAttack = GetAttackProperty(AgentAttackId);
-            }
+            RequestAttack = GetAttackProperty(RequestAttackId);
+            RefererAttack = GetAttackProperty(RefererAttackId);
+            AgentAttack = GetAttackProperty(AgentAttackId);
         }
 
         /// <summary>
@@ -286,11 +310,26 @@ namespace Restless.Logite.Database.Tables
         {
             if (attackId > 0)
             {
-                string sql = $"select {AttackTable.Defs.Columns.AttackString} from {DatabaseController.MainAppSchemaName}.{AttackTable.Defs.TableName} where {AttackTable.Defs.Columns.Id}={attackId}";
-                object result = DatabaseController.Instance.Execution.Scalar(sql);
-                return result != null ? attackId.ToString() + "--" + result.ToString() : "(failed)";
+                return GetDemandString(AttackTable.Defs.TableName, AttackTable.Defs.Columns.AttackString, AttackTable.Defs.Columns.Id, attackId);
             }
             return "(none)";
+        }
+
+        private void InitializeRefererProperty()
+        {
+            Referer = GetDemandString(RefererTable.Defs.TableName, RefererTable.Defs.Columns.Referer, RefererTable.Defs.Columns.Id, RefererId);
+        }
+
+        private void InitializeAgentProperty()
+        {
+            Agent = GetDemandString(UserAgentTable.Defs.TableName, UserAgentTable.Defs.Columns.Agent, UserAgentTable.Defs.Columns.Id, AgentId);
+        }
+
+        private string GetDemandString(string table, string stringColumn, string idColumn, long id)
+        {
+            string sql = $"select {stringColumn} from {DatabaseController.MainAppSchemaName}.{table} where {idColumn}={id}";
+            object result = DatabaseController.Instance.Execution.Scalar(sql);
+            return result != null ? result.ToString() : "(failed)";
         }
         #endregion
     }

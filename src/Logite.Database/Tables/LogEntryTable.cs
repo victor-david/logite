@@ -291,13 +291,11 @@ namespace Restless.Logite.Database.Tables
                 $"{Defs.Columns.AttackIdRequest},{Defs.Columns.AttackIdReferer},{Defs.Columns.AttackIdAgent}," +
                 $"IP.{IpAddressTable.Defs.Columns.IpAddress}," +
                 $"M.{MethodTable.Defs.Columns.Method}," +
-                $"R.{RequestTable.Defs.Columns.Request}," +
-                $"RF.{RefererTable.Defs.Columns.Referer} " +
+                $"R.{RequestTable.Defs.Columns.Request} " +
                 $"FROM {Namespace}.{TableName} L " +
                 $"LEFT JOIN {IpAddressTable.Defs.TableName} IP ON (L.{Defs.Columns.IpAddressId} = IP.{IpAddressTable.Defs.Columns.Id}) " +
                 $"LEFT JOIN {MethodTable.Defs.TableName} M ON (L.{Defs.Columns.MethodId} = M.{MethodTable.Defs.Columns.Id}) " +
                 $"LEFT JOIN {RequestTable.Defs.TableName} R ON (L.{Defs.Columns.RequestId} = R.{RequestTable.Defs.Columns.Id}) " +
-                $"LEFT JOIN {RefererTable.Defs.TableName} RF ON (L.{Defs.Columns.RefererId} = RF.{RefererTable.Defs.Columns.Id}) " +
                 $"WHERE {Defs.Columns.DomainId}={domain.Id} AND {Defs.Columns.Timestamp} > date('now','-{domain.Period} day')";
 
             LoadFromSql(sql, (reader) =>
@@ -326,7 +324,6 @@ namespace Restless.Logite.Database.Tables
                         IpAddress = reader.GetString(15),
                         Method = reader.GetString(16),
                         Request = request,
-                        Referer = reader.GetString(18)
                     };
                 }
                 return null;
