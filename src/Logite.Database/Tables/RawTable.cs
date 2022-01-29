@@ -78,13 +78,15 @@ namespace Restless.Logite.Database.Tables
         protected void LoadFromSql(string sql, Func<IDataReader, T> rawBuilder)
         {
             RawRows.Clear();
-            IDataReader reader = Controller.Execution.Query(sql);
-            while (reader.Read())
+            using (IDataReader reader = Controller.Execution.Query(sql))
             {
-                T rawRow = rawBuilder(reader);
-                if (rawRow != null)
+                while (reader.Read())
                 {
-                    RawRows.Add(rawRow);
+                    T rawRow = rawBuilder(reader);
+                    if (rawRow != null)
+                    {
+                        RawRows.Add(rawRow);
+                    }
                 }
             }
         }

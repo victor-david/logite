@@ -137,14 +137,14 @@ namespace Restless.Logite.Database.Tables
         public void LoadDomain(DomainRow domain)
         {
             DataSet.EnforceConstraints = false;
-            LoadDomainPrivate(domain);
+            LoadRawDomainData(domain);
             DataSet.EnforceConstraints = true;
         }
 
         public void UnloadDomain()
         {
             DataSet.EnforceConstraints = false;
-            UnloadDomainPrivate();
+            UnloadRawDomainData();
             DataSet.EnforceConstraints = true;
         }
 
@@ -273,10 +273,13 @@ namespace Restless.Logite.Database.Tables
         /************************************************************************/
 
         #region Private methods
-        private void LoadDomainPrivate(DomainRow domain)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="domain"></param>
+        private void LoadRawDomainData(DomainRow domain)
         {
-            Clear();
-            ClearIdCollections();
+            UnloadRawDomainData();
 
             HashSet<string> ignored = domain.GetIgnoredSet();
 
@@ -337,38 +340,18 @@ namespace Restless.Logite.Database.Tables
             Controller.GetTable<StatusTable>().Load(domain.Id, statusId);
         }
 
-        private bool IsRequestIncluded(HashSet<string> ignored, string request)
-        {
-            if (!string.IsNullOrEmpty(request))
-            {
-                foreach (string ignore in ignored)
-                {
-                    if (request.StartsWith(ignore, StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        return false;
-                    }
-                }
-            }
-            return true;
-        }
-
-        private void UnloadDomainPrivate()
+        private void UnloadRawDomainData()
         {
             Clear();
             ClearRaw();
-            ClearIdCollections();
+            ipId.Clear();
+            methodId.Clear();
+            statusId.Clear();
             Controller.GetTable<IpAddressTable>().ClearRaw();
             Controller.GetTable<MethodTable>().ClearRaw();
             Controller.GetTable<RequestTable>().ClearRaw();
             Controller.GetTable<RefererTable>().ClearRaw();
             Controller.GetTable<UserAgentTable>().ClearRaw();
-        }
-
-        private void ClearIdCollections()
-        {
-            ipId.Clear();
-            methodId.Clear();
-            statusId.Clear();
         }
 
         private DataPointCollection<T> GetDateCountCollection<T>(DomainRow domain, Action<DataPointCollection<T>, LogEntryRow> processor) where T : DataPoint
@@ -384,18 +367,19 @@ namespace Restless.Logite.Database.Tables
                 $"WHERE {Defs.Columns.DomainId}={domain.Id} AND  {Defs.Columns.Timestamp} > date('now','-{domain.Period} day') " +
                 $"ORDER BY {Defs.Columns.Timestamp}";
 
-            IDataReader reader = Controller.Execution.Query(sql);
-
-            while (reader.Read())
+            using (IDataReader reader = Controller.Execution.Query(sql))
             {
-                LogEntryRow record =  GetLogEntryRecord(reader);
-                processor(dataPoints, record);
+                while (reader.Read())
+                {
+                    LogEntryRow row = GetLogEntryRow(reader);
+                    processor(dataPoints, row);
+                }
             }
 
             return dataPoints;
         }
 
-        private LogEntryRow GetLogEntryRecord(IDataReader reader)
+        private LogEntryRow GetLogEntryRow(IDataReader reader)
         {
             return new LogEntryRow()
             {
@@ -412,6 +396,21 @@ namespace Restless.Logite.Database.Tables
                 RefererAttackId = reader.GetInt64(10),
                 AgentAttackId = reader.GetInt64(11)
             };
+        }
+
+        private bool IsRequestIncluded(HashSet<string> ignored, string request)
+        {
+            if (!string.IsNullOrEmpty(request))
+            {
+                foreach (string ignore in ignored)
+                {
+                    if (request.StartsWith(ignore, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
         #endregion
     }
