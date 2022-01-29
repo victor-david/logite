@@ -203,14 +203,7 @@ namespace Restless.Logite.Database.Core
         {
             if (!string.IsNullOrEmpty(value))
             {
-                foreach (MethodRow method in DatabaseController.Instance.GetTable<MethodTable>().EnumerateAll())
-                {
-                    if (value.StartsWith(method.Method))
-                    {
-                        Method = method.Method;
-                        break;
-                    }
-                }
+                Method = DatabaseController.Instance.GetTable<MethodTable>().GetMethodName(value);
 
                 string request = string.IsNullOrEmpty(Method) ? value.Trim() : value.Substring(Method.Length).Trim();
                 if (string.IsNullOrEmpty(Method) || IsAttackString(request))

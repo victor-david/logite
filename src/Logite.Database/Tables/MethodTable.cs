@@ -11,6 +11,10 @@ namespace Restless.Logite.Database.Tables
     /// </summary>
     public class MethodTable : RawTable<MethodRow>
     {
+        #region Private
+        private List<MethodRow> rawMethodRows;
+        #endregion
+
         #region Public properties
         /// <summary>
         /// Provides static definitions for table properties such as column names and relation names.
@@ -64,6 +68,7 @@ namespace Restless.Logite.Database.Tables
         /// </summary>
         public MethodTable() : base(Defs.TableName)
         {
+            rawMethodRows = new List<MethodRow>();
         }
         #endregion
 
@@ -120,25 +125,52 @@ namespace Restless.Logite.Database.Tables
         /// </summary>
         /// <remarks>
         /// This method is called to have the methods loaded prior to an import operation.
-        /// MethodTable does not use <see cref="RawTable{T}.InsertEntryIf(LogEntry)"/>
-        /// because methods are inserted into the table at creation time; no new methods
-        /// may be added.
+        /// It uses a private data structure to hold the rows to avoid thread issues with 
+        /// <see cref="RawTable{T}.RawRows"/>.
         /// </remarks>
         internal void LoadMethodData()
         {
+            rawMethodRows.Clear();
             string sql =
                 $"select {Defs.Columns.Id},{Defs.Columns.Method} " +
                 $"from {Namespace}.{TableName} " +
                 $"order by {Defs.Columns.Id}";
 
-            LoadFromSql(sql, (reader) =>
+            using (IDataReader reader = Controller.Execution.Query(sql))
             {
-                return new MethodRow()
+                while (reader.Read())
                 {
-                    Id = reader.GetInt64(0),
-                    Method = reader.GetString(1)
-                };
-            });
+                    rawMethodRows.Add(new MethodRow()
+                    {
+                        Id = reader.GetInt64(0),
+                        Method = reader.GetString(1)
+                    });
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets the method name from a request string.
+        /// </summary>
+        /// <param name="request">The request string</param>
+        /// <returns>
+        /// The method name, or null if the request doesn't start with a method name.
+        /// </returns>
+        /// <remarks>
+        /// This method is called during import (which is async) to obtain a method name.
+        /// It uses a private data structure to hold the rows to avoid thread issues with 
+        /// <see cref="RawTable{T}.RawRows"/>.
+        /// </remarks>
+        internal string GetMethodName(string request)
+        {
+            foreach (MethodRow row in rawMethodRows)
+            {
+                if (request.StartsWith(row.Method, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    return row.Method;
+                }
+            }
+            return null;
         }
 
         /// <summary>
@@ -146,11 +178,16 @@ namespace Restless.Logite.Database.Tables
         /// </summary>
         /// <param name="entry">The log entry</param>
         /// <returns>The method id</returns>
+        /// <remarks>
+        /// This method is called during import (which is async) to obtain a method id.
+        /// It uses a private data structure to hold the rows to avoid thread issues with 
+        /// <see cref="RawTable{T}.RawRows"/>.
+        /// </remarks>
         internal long GetMethodId(LogEntry entry)
         {
             if (!string.IsNullOrEmpty(entry.Method))
             {
-                foreach (MethodRow row in EnumerateAll())
+                foreach (MethodRow row in rawMethodRows)
                 {
                     if (row.Method.Equals(entry.Method, StringComparison.InvariantCultureIgnoreCase))
                     {
