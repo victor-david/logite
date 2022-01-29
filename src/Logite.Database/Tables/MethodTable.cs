@@ -126,7 +126,6 @@ namespace Restless.Logite.Database.Tables
         /// </remarks>
         internal void LoadMethodData()
         {
-            ClearRaw();
             string sql =
                 $"select {Defs.Columns.Id},{Defs.Columns.Method} " +
                 $"from {Namespace}.{TableName} " +
