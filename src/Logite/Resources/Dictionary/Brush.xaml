@@ -9,7 +9,7 @@
     <SolidColorBrush x:Key="DefaultBackgroundBrush" Color="White"/>
     <SolidColorBrush x:Key="DefaultHeaderBackgroundBrush" Color="PaleGoldenrod"/>
     
-    <SolidColorBrush x:Key="DefaultForegroundBrush" Color="Blue"/>
+    <SolidColorBrush x:Key="DefaultForegroundBrush" Color="DarkBlue"/>
     <SolidColorBrush x:Key="DarkForegroundBrush" Color="Gray"/>
     <SolidColorBrush x:Key="LightForegroundBrush" Color="#AB000000"/>
     <SolidColorBrush x:Key="DisabledForegroundBrush" Color="Gainsboro"/>

@@ -258,6 +258,15 @@
   <data name="TextData" xml:space="preserve">
     <value>Data</value>
   </data>
+  <data name="TextDomainDisplayName" xml:space="preserve">
+    <value>Display Name</value>
+  </data>
+  <data name="TextDomainIgnored" xml:space="preserve">
+    <value>Ignored Requests</value>
+  </data>
+  <data name="TextDomainPreface" xml:space="preserve">
+    <value>Preface</value>
+  </data>
   <data name="TextEntries" xml:space="preserve">
     <value>Entries</value>
   </data>

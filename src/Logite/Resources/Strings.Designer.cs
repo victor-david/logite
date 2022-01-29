@@ -484,6 +484,33 @@ namespace Restless.Logite.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Display Name.
+        /// </summary>
+        public static string TextDomainDisplayName {
+            get {
+                return ResourceManager.GetString("TextDomainDisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ignored Requests.
+        /// </summary>
+        public static string TextDomainIgnored {
+            get {
+                return ResourceManager.GetString("TextDomainIgnored", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preface.
+        /// </summary>
+        public static string TextDomainPreface {
+            get {
+                return ResourceManager.GetString("TextDomainPreface", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Entries.
         /// </summary>
         public static string TextEntries {
