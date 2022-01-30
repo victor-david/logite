@@ -29,7 +29,7 @@ after log rotation, you need to configure log rotation like so:
 Note the **nocompress**, **nodelaycompress**, **dateext**, **dateformat -%Y%m%d**, and **dateyesterday** directives.
 These are neccessary to work correctly with **Logite**.
 
-Without the date suffix added to the rotated logs, the same file arrives with a different name. Consider
+Without the date suffix added to the rotated logs, the same file arrives with a different name. Consider the following:
 
 | File                 | Date    |
 | :------------------- | :------ |
