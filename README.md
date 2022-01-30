@@ -15,9 +15,10 @@ the files into a local database. Once imported, you can view the log files in di
 
 ### Current Limitations (may change)
 - The download setup for ftp supports key authetication only. If you don't have key authenication to your server, you'll need to download log files manually.
+- Download setup is global, not per domain.
 - Log parsing only works on nginx stand log format. There's a hook in the code to pass another regular expression to the parser, but it's not currently surfaced.
 - Compressed log files not supported
-- Only log files with a date suffix can be imported, although you can change this in settings (see next section)
+- By default, only log files with a date suffix can be downloaded. You can change this in settings, but see next section for info on log files.
 
 ### Log Files
 **Logite** uses the log file name to distinquish one from another. 
