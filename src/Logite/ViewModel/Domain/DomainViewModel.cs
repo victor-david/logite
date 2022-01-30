@@ -2,11 +2,7 @@
 using Restless.Logite.Database.Core;
 using Restless.Logite.Database.Tables;
 using Restless.Logite.Resources;
-using Restless.Toolkit.Controls;
 using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Diagnostics;
 
 namespace Restless.Logite.ViewModel.Domain
 {
@@ -147,6 +143,7 @@ namespace Restless.Logite.ViewModel.Domain
         /// </summary>
         protected override void OnActivated()
         {
+            ActivateControllers();
             Update();
             UpdateDomainStatus();
         }
@@ -155,16 +152,14 @@ namespace Restless.Logite.ViewModel.Domain
         {
             DatabaseController.Instance.GetTable<LogEntryTable>().UnloadDomain();
 
-            if (Domain.DisplayMode == DomainTable.Defs.Values.DisplayMode.Raw)
+            switch (Domain.DisplayMode)
             {
-                DatabaseController.Instance.GetTable<LogEntryTable>().LoadDomain(Domain);
-                UpdateControllers();
-
-            }
-            else
-            {
-                UpdateControllers();
-                Chart.Update();
+                case DomainTable.Defs.Values.DisplayMode.Raw:
+                    DatabaseController.Instance.GetTable<LogEntryTable>().LoadDomain(Domain);
+                    break;
+                case DomainTable.Defs.Values.DisplayMode.Chart:
+                    Chart.Update();
+                    break;
             }
         }
 
@@ -173,7 +168,7 @@ namespace Restless.Logite.ViewModel.Domain
         /// </summary>
         protected override void OnDeactivated()
         {
-            // nothing yet
+            DeactivateControllers();
         }
         #endregion
 
@@ -193,12 +188,20 @@ namespace Restless.Logite.ViewModel.Domain
             };
         }
 
-        private void UpdateControllers()
+        private void ActivateControllers()
         {
-            Method.Update();
-            Status.Update();
-            Ip.Update();
-            LogEntry.Update();
+            Method.Activate();
+            Status.Activate();
+            Ip.Activate();
+            LogEntry.Activate();
+        }
+
+        private void DeactivateControllers()
+        {
+            Method.Deactivate();
+            Status.Deactivate();
+            Ip.Deactivate();
+            LogEntry.Activate();
         }
 
         private void UpdateDomainStatus()

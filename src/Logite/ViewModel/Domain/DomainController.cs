@@ -112,6 +112,11 @@ namespace Restless.Logite.ViewModel.Domain
         /************************************************************************/
 
         #region Protected methods
+        protected override void OnActivated()
+        {
+            SelectedItem = null;
+        }
+
         protected override void OnDeactivated()
         {
             SelectedItem = null;
