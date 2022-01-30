@@ -24,5 +24,8 @@ the files into a local database. Once imported, you can view the log files in di
 **Logite** uses the log file name to distinquish one from another. 
 See the [Log Files & Rotation](/LOGFILES.md) for more information.
 
+### Screenshots
+See the [screenshot directory](/screens)
+
 ### Work in Progress
 **Logite** is decently functional at this point, but is still a work in progress. Questions, suggestions, tips, ideas, etc? Create an issue.
